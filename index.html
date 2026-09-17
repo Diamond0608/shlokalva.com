@@ -18,7 +18,10 @@
         const replacements = new Map([
           ["Vice-President And President", "President And Vice President"],
           ["Volunteered at Helios Interschool Robotics Fest and served as Deputy Event Head for Robo-FC at Iris.", "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris."],
-          ["Selected for Hack Club BEEST and worked through the project track. I could not make the Netherlands travel piece work out, but the build-and-ship mindset stuck hard.", "Selected as one of fewer than 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of visa issues and received approximately ₹40,000 INR instead."]
+          ["Selected for Hack Club BEEST and worked through the project track. I could not make the Netherlands travel piece work out, but the build-and-ship mindset stuck hard.", "Selected as one of the 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of travel-related issues and received approximately ₹40,000 INR instead."],
+          ["I like building things that can actually be tested, argued with, broken, fixed, and photographed looking slightly dramatic.", "I like building things that can actually be tested, argued with, broken, fixed, and looked back upon with pride."],
+          ["Played casually. Not everything needs a medal table; sometimes it is just fun to hit things very fast.", "Played casually. Not everything needs a medal table; sometimes it's just fun to hit things very fast."],
+          ["Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Winning Too.", "Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Hoping To Win Too."]
         ]);
 
         function walkText(root) {
@@ -38,147 +41,19 @@
             const heading = article.querySelector("h3")?.textContent?.trim() || "";
             const img = article.querySelector("img");
             if (!img) return;
-            if (heading === "IIT Madras Aerospace Course") img.src = "/assets/iitm-uploaded.png";
-            if (heading === "My Flying Academy Workshop") img.src = "/assets/flying-academy-uploaded.png";
+            if (heading === "IIT Madras Aerospace Course") img.src = "/assets/iitm.png";
+            if (heading === "My Flying Academy Workshop") img.src = "/assets/outline.svg";
           });
-        }
-
-        let soundStarted = false;
-        let audioContext = null;
-        let masterGain = null;
-        let soundButton = null;
-        let customPlaying = false;
-        let stopRequested = false;
-        let soundtrackTimer = null;
-
-        const notes = {
-          C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23, G4: 392.0, A4: 440.0, B4: 493.88,
-          C5: 523.25, D5: 587.33, E5: 659.25, F5: 698.46, G5: 783.99, A5: 880.0, B5: 987.77,
-          C6: 1046.5, D6: 1174.66, E6: 1318.51, G3: 196.0, A3: 220.0, F3: 174.61
-        };
-
-        const melody = [
-          "C4","E4","G4","B4","A4","G4","E4","D4","F4","A4","C5","A4","G4","E4","D4","C4",
-          "E4","G4","B4","D5","C5","B4","G4","E4","F4","A4","C5","E5","D5","C5","A4","F4",
-          "G4","B4","D5","F5","E5","D5","B4","G4","A4","C5","E5","G5","F5","E5","C5","A4",
-          "C5","E5","G5","B5","A5","G5","E5","D5","F5","A5","C6","A5","G5","E5","D5","C5",
-          "D4","F4","A4","C5","B4","A4","F4","E4","G4","B4","D5","B4","A4","F4","E4","D4",
-          "F4","A4","C5","E5","D5","C5","A4","G4","B4","D5","F5","D5","C5","A4","G4","F4",
-          "A4","C5","E5","G5","F5","E5","C5","A4","B4","D5","F5","A5","G5","F5","D5","B4",
-          "G4","B4","D5","G5","F5","D5","B4","G4","E4","G4","C5","E5","D5","C5","G4","E4"
-        ];
-
-        const bass = [
-          "C4","C4","A3","A3","F3","F3","G3","G3",
-          "E4","E4","F3","F3","G3","G3","C4","C4",
-          "D4","D4","B3","B3","G3","G3","A3","A3",
-          "F3","F3","G3","G3","C4","C4","G3","G3"
-        ];
-
-        function ensureAudio() {
-          if (audioContext) return audioContext;
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          if (!AudioContextClass) return null;
-          audioContext = new AudioContextClass();
-          masterGain = audioContext.createGain();
-          masterGain.gain.value = 0.055;
-          masterGain.connect(audioContext.destination);
-          return audioContext;
-        }
-
-        function tone(frequency, start, duration, type, gainAmount) {
-          if (!audioContext || !masterGain || stopRequested) return;
-          const osc = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          osc.type = type;
-          osc.frequency.value = frequency;
-          gain.gain.setValueAtTime(0.0001, start);
-          gain.gain.exponentialRampToValueAtTime(gainAmount, start + 0.025);
-          gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-          osc.connect(gain).connect(masterGain);
-          osc.start(start);
-          osc.stop(start + duration + 0.03);
-        }
-
-        function scheduleSoundtrack() {
-          if (!audioContext || !masterGain || stopRequested) return;
-          const start = audioContext.currentTime + 0.05;
-          const beat = 0.36;
-          melody.forEach((name, index) => {
-            const frequency = notes[name];
-            if (frequency) tone(frequency, start + index * beat, beat * 0.78, index % 16 < 8 ? "triangle" : "sine", 0.13);
-          });
-          bass.forEach((name, index) => {
-            const frequency = notes[name];
-            if (frequency) tone(frequency / 2, start + index * beat * 4, beat * 3.1, "sine", 0.105);
-          });
-          const totalSeconds = melody.length * beat + 1.2;
-          soundtrackTimer = window.setTimeout(scheduleSoundtrack, totalSeconds * 1000);
-        }
-
-        async function startCustomSound() {
-          const ctx = ensureAudio();
-          if (!ctx) return;
-          stopRequested = false;
-          try {
-            await ctx.resume();
-          } catch (_) {
-            return;
-          }
-          if (ctx.state !== "running") return;
-          if (!customPlaying) {
-            customPlaying = true;
-            scheduleSoundtrack();
-          }
-          soundStarted = true;
-        }
-
-        function stopCustomSound() {
-          stopRequested = true;
-          customPlaying = false;
-          if (soundtrackTimer) window.clearTimeout(soundtrackTimer);
-          soundtrackTimer = null;
-          if (masterGain && audioContext) {
-            masterGain.gain.cancelScheduledValues(audioContext.currentTime);
-            masterGain.gain.setTargetAtTime(0.0001, audioContext.currentTime, 0.03);
-          }
-        }
-
-        function installAudioControl() {
-          const button = document.querySelector(".flight-nav button");
-          if (!button || button === soundButton) return;
-          soundButton = button;
-
-          // Turn off the original short React melody once, then use the longer soundtrack below.
-          button.click();
-          button.setAttribute("aria-label", "Toggle Portfolio Soundtrack");
-          button.addEventListener("click", (event) => {
-            event.preventDefault();
-            event.stopImmediatePropagation();
-            if (customPlaying) {
-              stopCustomSound();
-            } else {
-              startCustomSound();
-            }
-          }, true);
-
-          startCustomSound();
         }
 
         function patchPage() {
           walkText(document.body);
           patchImages();
-          installAudioControl();
         }
 
         const observer = new MutationObserver(patchPage);
         observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
         window.addEventListener("load", patchPage, { once: true });
-        ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
-          window.addEventListener(eventName, () => {
-            if (!soundStarted) startCustomSound();
-          }, { passive: true });
-        });
       })();
     </script>
   </body>
