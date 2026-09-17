@@ -13,7 +13,7 @@
   background: #05070a !important;
 }
 
-/* Small plane cursor throughout the portfolio. */
+/* Slightly left-angled 747 outline cursor. */
 html,
 body,
 button,
@@ -22,7 +22,7 @@ a,
 .project-card,
 .cockpit-grid button,
 .lightbox {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath d='M3 21l18-9L3 3l2 7 8 2-8 2-2 7z' fill='%2389d8ff' stroke='%2305070a' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='rotate(-18 14 14)' fill='none' stroke='%2389d8ff' stroke-width='1.35' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2.5C12.8 5.2 12.2 8.1 12.2 11.3L12.2 25.3L14 26.5L15.8 25.3L15.8 11.3C15.8 8.1 15.2 5.2 14 2.5Z'/%3E%3Cpath d='M12.5 12.2L3.2 8.7L2.3 10.1L11.8 16.2'/%3E%3Cpath d='M15.5 12.2L24.8 8.7L25.7 10.1L16.2 16.2'/%3E%3Cpath d='M12.3 19.2L7.5 23.5L8.8 24.5L12.8 22.5'/%3E%3Cpath d='M15.7 19.2L20.5 23.5L19.2 24.5L15.2 22.5'/%3E%3C/g%3E%3C/svg%3E") 4 4, auto !important;
 }
 
 /* Keep the navigation tiles completely inside their rail. */
@@ -84,6 +84,12 @@ a,
   z-index: 3;
 }
 
+/* Drop the Flying Towards Aviation status readout slightly lower so it clears the Concorde motion path. */
+.mascot-readout {
+  bottom: 0.35rem !important;
+  z-index: 6;
+}
+
 /* Mission content uses the available card height instead of bunching at the top. */
 .mission {
   align-items: stretch;
@@ -113,6 +119,21 @@ a,
   min-height: 100%;
 }
 
+/* Make Other Stuff Worth Keeping on the Radar cards follow the actual image dimensions. */
+.signal-grid article {
+  grid-template-rows: auto 1fr !important;
+}
+
+.signal-grid img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: 18rem;
+  object-fit: contain !important;
+  object-position: center;
+  display: block;
+  background: rgba(5, 7, 10, 0.28);
+}
+
 /* Remove the decorative back-face label requested by the user. */
 .project-back > span {
   display: none !important;
@@ -128,6 +149,10 @@ a,
   .mascot-card {
     min-height: 25rem;
   }
+
+  .signal-grid img {
+    max-height: 16rem;
+  }
 }
 
 @media (max-width: 620px) {
@@ -141,5 +166,14 @@ a,
   .concorde-photo-wrap {
     top: 68% !important;
     width: 70% !important;
+  }
+
+  .mascot-readout {
+    bottom: 0.2rem !important;
+    font-size: 0.75rem;
+  }
+
+  .signal-grid img {
+    max-height: 13rem;
   }
 }
