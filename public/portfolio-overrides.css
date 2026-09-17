@@ -1,6 +1,6 @@
 /* Portfolio polish overrides */
 
-/* Loading screen must fully cover the viewport; no page content should peek out below it. */
+/* Keep the loading screen fully opaque and above the page while React boots. */
 .flight-loader {
   z-index: 9999 !important;
   position: fixed !important;
@@ -9,11 +9,20 @@
   height: 100dvh !important;
   min-height: 100vh !important;
   transform: none !important;
-  animation: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
   overflow: hidden !important;
   background: #05070a !important;
+}
+
+/* Small plane cursor throughout the portfolio. */
+html,
+body,
+button,
+a,
+.photo-tile,
+.project-card,
+.cockpit-grid button,
+.lightbox {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24'%3E%3Cpath d='M3 21l18-9L3 3l2 7 8 2-8 2-2 7z' fill='%2389d8ff' stroke='%2305070a' stroke-width='1.2' stroke-linejoin='round'/%3E%3C/svg%3E") 4 4, auto !important;
 }
 
 /* Keep the navigation tiles completely inside their rail. */
