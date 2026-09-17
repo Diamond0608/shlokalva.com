@@ -2,6 +2,7 @@
   const FIGARO_URL = "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mozart%2C_The_Marriage_of_Figaro_%28overture%29.ogg";
   let soundEnabled = true;
   let switchedToFigaro = false;
+  let handoffInProgress = false;
   let figaro = null;
 
   const setupAudio = () => {
@@ -18,7 +19,7 @@
     document.body.appendChild(figaro);
 
     button.addEventListener("click", () => {
-      soundEnabled = !soundEnabled;
+      if (!handoffInProgress) soundEnabled = !soundEnabled;
       if (!figaro || !switchedToFigaro) return;
       if (soundEnabled) {
         figaro.play().catch(() => {});
@@ -31,12 +32,17 @@
     // Stop it before its second phrase begins, then hand over to the unchanged
     // Marriage of Figaro recording.
     window.setTimeout(() => {
+      handoffInProgress = true;
+      button.click();
+      handoffInProgress = false;
       switchedToFigaro = true;
-      if (!soundEnabled || !figaro) return;
-      figaro.play().catch(() => {
-        // Browsers may require a user gesture for media autoplay. If so,
-        // the existing sound toggle will start it on the next click.
-      });
+
+      if (soundEnabled && figaro) {
+        figaro.play().catch(() => {
+          // Browsers may require a user gesture for media autoplay. If so,
+          // the existing sound toggle will start it on the next click.
+        });
+      }
     }, 8100);
   };
 
