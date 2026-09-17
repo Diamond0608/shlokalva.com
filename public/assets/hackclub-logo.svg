@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="title desc">
+  <title id="title">Hack Club</title>
+  <desc id="desc">Hack Club flag-inspired badge.</desc>
+  <rect width="900" height="560" rx="36" fill="#111827"/>
+  <path d="M260 116h330l-42 109 42 110H260l42-110-42-109Z" fill="#ec3750"/>
+  <path d="M339 188h53l-21 74h-53l21-74Zm104 0h53l-21 74h-53l21-74Z" fill="#fff"/>
+  <text x="450" y="430" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="70" font-weight="900" fill="#fff1df">Hack Club</text>
+  <text x="450" y="482" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="800" fill="#ff8a2a">BEEST</text>
+</svg>

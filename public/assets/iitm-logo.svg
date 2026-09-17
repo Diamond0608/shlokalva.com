@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">IIT Madras Aerospace Course</title>
+  <desc id="desc">A clean text badge for IIT Madras aerospace coursework.</desc>
+  <rect width="800" height="520" rx="34" fill="#101820"/>
+  <circle cx="400" cy="196" r="108" fill="none" stroke="#ff8a2a" stroke-width="14"/>
+  <path d="M304 212c42-48 93-72 153-72 34 0 63 8 89 24-42 47-93 70-153 70-34 0-64-7-89-22Z" fill="#fff1df"/>
+  <path d="M400 88v218M292 196h216" stroke="#89d8ff" stroke-width="8" stroke-linecap="round" opacity=".7"/>
+  <text x="400" y="368" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="72" font-weight="800" fill="#fff1df">IITM</text>
+  <text x="400" y="425" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="31" font-weight="700" fill="#ff8a2a">Aerospace Coursework</text>
+</svg>
