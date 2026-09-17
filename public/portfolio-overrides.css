@@ -1,0 +1,114 @@
+/* Portfolio polish overrides */
+
+/* Keep the loader opaque for its entire lifetime so the page underneath never shows. */
+.flight-loader {
+  z-index: 9999 !important;
+  min-height: 100dvh;
+  animation: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: #05070a !important;
+}
+
+/* Keep the navigation tiles inside their own rail. */
+.flight-nav {
+  width: 7.6rem;
+  overflow: hidden;
+  padding-right: 0.55rem;
+  padding-left: 0.55rem;
+}
+
+.flight-nav a,
+.flight-nav button {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* Concorde copy gets its own readable layer instead of sharing the image space. */
+.mascot-card {
+  min-height: 27rem;
+}
+
+.concorde-line {
+  position: absolute !important;
+  top: 1.25rem;
+  right: 1.5rem;
+  left: 1.5rem;
+  z-index: 4;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0.7rem 1rem !important;
+  border: 1px solid rgba(137, 216, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.82);
+  color: #fff1df !important;
+  text-shadow: 0 2px 12px #05070a;
+  backdrop-filter: blur(8px);
+}
+
+.concorde-photo-wrap {
+  top: 57% !important;
+  width: min(70%, 25rem) !important;
+  z-index: 2;
+}
+
+.mini-runway {
+  bottom: 25% !important;
+  z-index: 3;
+}
+
+/* Mission content uses the available card height more deliberately. */
+.mission-copy {
+  min-height: 100%;
+  display: grid;
+  align-content: space-between;
+  gap: 1.2rem;
+}
+
+.mission-copy p {
+  margin: 0;
+}
+
+.mission-status {
+  margin-top: 0;
+}
+
+/* Remove the decorative back-face label requested by the user. */
+.project-back > span {
+  display: none !important;
+}
+
+/* Slightly more breathing room for the mission heading column. */
+.mission > div:first-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+@media (max-width: 980px) {
+  .flight-nav {
+    width: auto;
+    overflow: hidden;
+    padding: 0.45rem;
+  }
+
+  .mascot-card {
+    min-height: 25rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .concorde-line {
+    top: 1rem;
+    right: 1rem;
+    left: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .concorde-photo-wrap {
+    width: 72% !important;
+  }
+}
