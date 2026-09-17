@@ -2,8 +2,28 @@
   const FIGARO_URL = "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mozart%2C_The_Marriage_of_Figaro_%28overture%29.ogg";
   let soundEnabled = true;
   let switchedToFigaro = false;
-  let handoffInProgress = false;
   let figaro = null;
+  let originalConnect = null;
+  const silentGains = new WeakMap();
+
+  const silenceSynthOutput = () => {
+    if (originalConnect || !window.AudioNode) return;
+    originalConnect = AudioNode.prototype.connect;
+
+    AudioNode.prototype.connect = function (destination, ...args) {
+      if (destination && destination.context && destination === destination.context.destination) {
+        let silentGain = silentGains.get(destination.context);
+        if (!silentGain) {
+          silentGain = destination.context.createGain();
+          silentGain.gain.value = 0;
+          originalConnect.call(silentGain, destination);
+          silentGains.set(destination.context, silentGain);
+        }
+        return originalConnect.call(this, silentGain, ...args);
+      }
+      return originalConnect.call(this, destination, ...args);
+    };
+  };
 
   const setupAudio = () => {
     const button = document.querySelector('.flight-nav button[aria-label="Toggle Interface Sound"]');
@@ -19,7 +39,7 @@
     document.body.appendChild(figaro);
 
     button.addEventListener("click", () => {
-      if (!handoffInProgress) soundEnabled = !soundEnabled;
+      soundEnabled = !soundEnabled;
       if (!figaro || !switchedToFigaro) return;
       if (soundEnabled) {
         figaro.play().catch(() => {});
@@ -29,12 +49,11 @@
     });
 
     // The existing Web Audio synth plays its first 8.2-second phrase once.
-    // Stop it before its second phrase begins, then hand over to the unchanged
-    // Marriage of Figaro recording.
+    // Before its second phrase begins, silence that synth output and hand over
+    // to the unchanged Marriage of Figaro recording. The React sound toggle
+    // remains visually and logically in the enabled state.
     window.setTimeout(() => {
-      handoffInProgress = true;
-      button.click();
-      handoffInProgress = false;
+      silenceSynthOutput();
       switchedToFigaro = true;
 
       if (soundEnabled && figaro) {
