@@ -1,19 +1,27 @@
 /* Portfolio polish overrides */
 
-/* Keep the loader opaque for its entire lifetime so the page underneath never shows. */
+/* Loading screen must fully cover the viewport; no page content should peek out below it. */
 .flight-loader {
   z-index: 9999 !important;
-  min-height: 100dvh;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  min-height: 100vh !important;
+  transform: none !important;
   animation: none !important;
   opacity: 1 !important;
   visibility: visible !important;
+  overflow: hidden !important;
   background: #05070a !important;
 }
 
-/* Keep the navigation tiles inside their own rail. */
+/* Keep the navigation tiles completely inside their rail. */
 .flight-nav {
   width: 7.6rem;
+  max-width: 100%;
   overflow: hidden;
+  box-sizing: border-box;
   padding-right: 0.55rem;
   padding-left: 0.55rem;
 }
@@ -23,48 +31,62 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
+  box-sizing: border-box;
   overflow: hidden;
 }
 
-/* Concorde copy gets its own readable layer instead of sharing the image space. */
+.flight-nav a > *,
+.flight-nav button > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Concorde copy gets its own readable layer above the image instead of sharing its space. */
 .mascot-card {
   min-height: 27rem;
+  overflow: hidden;
 }
 
 .concorde-line {
   position: absolute !important;
-  top: 1.25rem;
+  top: 1.15rem;
   right: 1.5rem;
   left: 1.5rem;
-  z-index: 4;
+  z-index: 5;
   max-width: none !important;
   margin: 0 !important;
   padding: 0.7rem 1rem !important;
   border: 1px solid rgba(137, 216, 255, 0.28);
   border-radius: 8px;
-  background: rgba(5, 7, 10, 0.82);
+  background: rgba(5, 7, 10, 0.9);
   color: #fff1df !important;
   text-shadow: 0 2px 12px #05070a;
   backdrop-filter: blur(8px);
 }
 
 .concorde-photo-wrap {
-  top: 57% !important;
-  width: min(70%, 25rem) !important;
+  top: 65% !important;
+  width: min(66%, 24rem) !important;
   z-index: 2;
 }
 
 .mini-runway {
-  bottom: 25% !important;
+  bottom: 19% !important;
   z-index: 3;
 }
 
-/* Mission content uses the available card height more deliberately. */
+/* Mission content uses the available card height instead of bunching at the top. */
+.mission {
+  align-items: stretch;
+}
+
 .mission-copy {
   min-height: 100%;
-  display: grid;
-  align-content: space-between;
-  gap: 1.2rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.5rem;
 }
 
 .mission-copy p {
@@ -72,20 +94,19 @@
 }
 
 .mission-status {
-  margin-top: 0;
+  margin-top: auto;
 }
 
-/* Remove the decorative back-face label requested by the user. */
-.project-back > span {
-  display: none !important;
-}
-
-/* Slightly more breathing room for the mission heading column. */
 .mission > div:first-child {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   min-height: 100%;
+}
+
+/* Remove the decorative back-face label requested by the user. */
+.project-back > span {
+  display: none !important;
 }
 
 @media (max-width: 980px) {
@@ -109,6 +130,7 @@
   }
 
   .concorde-photo-wrap {
-    width: 72% !important;
+    top: 68% !important;
+    width: 70% !important;
   }
 }
