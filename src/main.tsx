@@ -9,6 +9,12 @@ import {
   Github,
   Plane,
   Radar,
+  RotateCcw,
+  Maximize2,
+  Play,
+  Pause,
+  ChevronLeft,
+  ChevronRight,
   Rocket,
   Shield,
   type LucideIcon,
@@ -33,6 +39,7 @@ type GalleryImage = {
   type?: "image" | "video" | "model";
   modelPath?: string;
   youtubeId?: string;
+  mediaType?: "overview" | "build" | "electronics" | "video" | "3d";
 };
 
 type Project = {
@@ -46,6 +53,7 @@ type Project = {
   gallery: GalleryImage[];
   link?: string;
   caution?: string;
+  stats: Array<{ label: string; value: string }>;
 };
 
 const images = {
@@ -120,6 +128,12 @@ const projects: Project[] = [
     ],
     stack: ["Fusion 360", "ESP32", "ESP8266", "Arduino IDE", "RFID", "LCD", "Motor Control"],
     link: "https://github.com/Diamond0608/Little-Helper",
+    stats: [
+      { label: "Build Time", value: "~70 hrs" },
+      { label: "Controllers", value: "ESP32 + ESP8266" },
+      { label: "Drive", value: "4WD Tracks" },
+      { label: "Auth", value: "RFID + PIN" }
+    ],
     gallery: [
       { src: images.littleHelperReal, alt: "Little Helper physical robot with LEDs on", caption: "Physical Build" },
       { src: images.littleHelperCad, alt: "Little Helper CAD render with cargo box", caption: "CAD Assembly" },
@@ -170,6 +184,12 @@ const projects: Project[] = [
       "Documented propulsion concepts and the methodology behind the model choices."
     ],
     stack: ["Fusion 360", "CAD Modelling", "Aircraft Propulsion", "Simulation", "Technical Reporting"],
+    stats: [
+      { label: "Duration", value: "1 Month" },
+      { label: "Domain", value: "Propulsion" },
+      { label: "Models", value: "3" },
+      { label: "Output", value: "Report + Animation" }
+    ],
     gallery: [
       { src: images.dwelloOne, alt: "Turbofan can type CAD render", caption: "Turbofan CAD Render" },
       { src: images.dwelloTwo, alt: "Turbofan side CAD render", caption: "Propulsion Assembly" },
@@ -191,6 +211,12 @@ const projects: Project[] = [
     ],
     stack: ["Fusion 360", "3D Printing", "Mechanism Design", "Assembly Planning"],
     link: "https://github.com/Diamond0608/Trinetra",
+    stats: [
+      { label: "CAD", value: "Fusion 360" },
+      { label: "Format", value: "STEP + STL" },
+      { label: "Focus", value: "Wearable Tech" },
+      { label: "Type", value: "Mechanism" }
+    ],
     gallery: [
       { src: images.trinetraOne, alt: "Trinetra CAD exploded view", caption: "CAD View" },
       { src: images.trinetraTwo, alt: "Trinetra enclosure CAD render", caption: "Enclosure Render" },
@@ -212,6 +238,12 @@ const projects: Project[] = [
       "Used servo motors to control the ailerons, plus a transmitter, receiver, and 2600KV motors."
     ],
     stack: ["Aviation", "Scratch Build", "Iteration", "Failure Analysis"],
+    stats: [
+      { label: "Airfoil", value: "NACA 0012" },
+      { label: "Motor", value: "2600KV" },
+      { label: "Body", value: "Foamboard" },
+      { label: "Controls", value: "Ailerons" }
+    ],
     gallery: [
       { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" }
     ]
@@ -466,352 +498,36 @@ function FlightMascot() {
 }
 
 function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (image: GalleryImage) => void }) {
+  const stripRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (direction: number) => {
+    stripRef.current?.scrollBy({ left: direction * 280, behavior: "smooth" });
+  };
+
   return (
-    <div className="photo-strip" aria-label="Scrollable Photo Gallery">
-      {gallery.map((image) => (
-        <button key={`${image.src}-${image.caption}`} className="photo-tile" onClick={() => onOpen(image)}>
-          {image.type === "video" ? (
-            <video src={image.src} muted loop playsInline preload="metadata" />
-          ) : (
-            <img src={image.src} alt={image.alt} loading="lazy" />
-          )}
-          <span>{image.caption}</span>
-          {image.youtubeId || image.type === "video" || image.type === "model" ? <small>Click To Open</small> : null}
-        </button>
-      ))}
+    <div className="media-strip-wrap">
+      <button className="media-scroll media-scroll-left" onClick={() => scroll(-1)} aria-label="Scroll media left">
+        <ChevronLeft size={17} />
+      </button>
+      <div ref={stripRef} className="photo-strip" aria-label="Scrollable Photo Gallery">
+        {gallery.map((image) => (
+          <button key={`${image.src}-${image.caption}`} className="photo-tile" onClick={() => onOpen(image)}>
+            {image.type === "video" ? (
+              <video src={image.src} muted loop playsInline preload="metadata" />
+            ) : (
+              <img src={image.src} alt={image.alt} loading="lazy" />
+            )}
+            <span>{image.caption}</span>
+            {image.youtubeId || image.type === "video" || image.type === "model" ? (
+              <small>{image.type === "model" ? "3D MODEL • CLICK TO OPEN" : "CLICK TO OPEN"}</small>
+            ) : null}
+          </button>
+        ))}
+      </div>
+      <button className="media-scroll media-scroll-right" onClick={() => scroll(1)} aria-label="Scroll media right">
+        <ChevronRight size={17} />
+      </button>
     </div>
   );
 }
 
-function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: GalleryImage) => void }) {
-  const Icon = project.icon;
-  return (
-    <motion.article
-      className="project-card"
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.16 }}
-    >
-      <div className="project-flip">
-        <div className="project-face project-front">
-          <img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
-          <div className="project-overlay">
-            <span>{project.eyebrow}</span>
-            <h3>{project.title}</h3>
-          </div>
-        </div>
-        <div className="project-face project-back">
-          <Icon size={28} />
-          <h3>{project.title}</h3>
-          <p>{project.summary}</p>
-          <span>Flight Notes</span>
-        </div>
-      </div>
-      <div className="project-copy">
-        <p>{project.summary}</p>
-        <ul>
-          {project.facts.map((fact) => (
-            <li key={fact}>{fact}</li>
-          ))}
-        </ul>
-        {project.caution && <p className="caution">{project.caution}</p>}
-        <div className="chip-row">
-          {project.stack.map((item) => (
-            <span key={item}>{item}</span>
-          ))}
-        </div>
-        {project.link && (
-          <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
-            Open Source Link <ExternalLink size={15} />
-          </a>
-        )}
-      </div>
-      <PhotoStrip gallery={project.gallery} onOpen={onOpen} />
-    </motion.article>
-  );
-}
-
-function App() {
-  const [booted, setBooted] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
-  const reducedMotion = useReducedMotion();
-  useOpeningSynth(soundEnabled);
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 5000);
-    return () => window.clearTimeout(timeout);
-  }, [reducedMotion]);
-
-  return (
-    <main className="shell">
-      <div className="flight-background" aria-hidden="true">
-        <Plane className="bg-plane bg-plane-one" size={32} />
-        <Plane className="bg-plane bg-plane-two" size={24} />
-        <Plane className="bg-plane bg-plane-three" size={28} />
-        <div className="radar-sweep" />
-      </div>
-      {!booted && <FlightLoader />}
-
-      <aside className="flight-nav" aria-label="Flight Deck Navigation">
-        <a className="seat-brand" href="#top">
-          VT-PLN
-        </a>
-        {nav.map(([seat, label, target]) => (
-          <a key={seat} href={`#${target}`}>
-            <span>{seat}</span>
-            <strong>{label}</strong>
-          </a>
-        ))}
-        <button onClick={() => setSoundEnabled((value) => !value)} aria-label="Toggle Interface Sound">
-          {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
-        </button>
-      </aside>
-
-      <section id="top" className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">Boarding Pass / Engineering Portfolio</p>
-          <h1>Shlok Alva</h1>
-          <p className="lede">
-            Robotics, Aerospace, CAD, Software, And The Habit Of Trying To Build The Thing Instead Of Just Talking About It.
-          </p>
-          <div className="hero-actions">
-            <a href="#projects" className="primary">
-              Enter Project Hangar <ChevronRight size={18} />
-            </a>
-            <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer" className="secondary">
-              GitHub <Github size={18} />
-            </a>
-          </div>
-        </div>
-        <div className="hero-board">
-          <div className="flight-card">
-            <span>Aircraft Registry</span>
-            <strong>VT-PLN</strong>
-            <p>Engineering • Robotics • Aerospace • Software</p>
-          </div>
-          <FlightMascot />
-        </div>
-      </section>
-
-      <section id="mission" className="section mission">
-        <div>
-          <p className="eyebrow">Mission</p>
-          <h2>Mostly Robots, Planes, And Questionable Sleep Schedules</h2>
-        </div>
-        <div className="mission-copy">
-          <p>I like building things that can actually be tested, argued with, broken, fixed, and photographed looking slightly dramatic.</p>
-          <p>Most of my favorite projects started with a sketch, a CAD file, or a very optimistic “yeah, this should work.”</p>
-          <div className="mission-status">
-            <span>Current Mission</span>
-            <strong>Making It To The World Of Aviation</strong>
-            <em>Status: In Progress</em>
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" className="section">
-        <div className="section-head">
-          <p className="eyebrow">Projects</p>
-          <h2>Project Hangar</h2>
-          <p>Things I Built, Helped Build, Or Learned From The Hard Way.</p>
-        </div>
-        <div className="project-grid">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
-          ))}
-        </div>
-      </section>
-
-      <section id="aerospace" className="section aerospace">
-        <div className="section-head">
-          <p className="eyebrow">Aerospace</p>
-          <h2>Propulsion, Flight, And Systems Thinking</h2>
-        </div>
-        <div className="cockpit-grid">
-          <button onClick={() => setActiveImage(projects[2].gallery[0])}>
-            <img src={images.dwelloOne} alt="Turbofan CAD render" loading="lazy" />
-            <span>Dwello Turbofan CAD</span>
-          </button>
-          <button
-            onClick={() =>
-              setActiveImage({ src: images.rcPlane, alt: "Scratch-built RC plane", caption: "NACA 0012 RC Plane" })
-            }
-          >
-            <img src={images.rcPlane} alt="Scratch-built RC plane" loading="lazy" />
-            <span>NACA 0012 RC Plane</span>
-          </button>
-          <div className="instrument-panel">
-            <h3>Flight Thread</h3>
-            <p>Dwello Propulsion, IIT Madras Aerospace Coursework, My Flying Academy, And The RC Plane All Sit In The Same Aviation Obsession.</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="experiences" className="section">
-        <div className="section-head">
-          <p className="eyebrow">Experiences</p>
-          <h2>Flight Log</h2>
-        </div>
-        <div className="experience-grid">
-          {experiences.map((experience) => (
-            <article key={experience.title} className="experience-card">
-              <img src={experience.image} alt="" loading="lazy" />
-              <div>
-                <span>{experience.subtitle}</span>
-                <h3>{experience.title}</h3>
-                <p>{experience.body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-head">
-          <p className="eyebrow">Scenes</p>
-          <h2>More Than Just Project Cards</h2>
-        </div>
-        <div className="spotlight-grid">
-          {spotlight.map((item) => (
-            <article className="spotlight-card" key={item.title}>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </div>
-              <PhotoStrip gallery={item.gallery} onOpen={setActiveImage} />
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="skills" className="section skills">
-        <div className="section-head">
-          <p className="eyebrow">Skills</p>
-          <h2>Skills And Tech Stack</h2>
-          <p>Tools I Use Across Hardware Builds, CAD Work, Robotics, Documentation, And Software-Backed Projects.</p>
-        </div>
-        <div className="skills-grid">
-          {skills.map((skill) => (
-            <article key={skill.title}>
-              <BadgeInfo size={20} />
-              <h3>{skill.title}</h3>
-              <p>{skill.detail}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-head">
-          <p className="eyebrow">Signals</p>
-          <h2>Other Stuff Worth Keeping On The Radar</h2>
-          <p>A few more pieces of the story that still matter, even when they do not need a giant project card.</p>
-        </div>
-        <div className="signal-grid">
-          {signals.map((signal) => (
-            <article key={signal.title}>
-              <img src={signal.image} alt="" loading="lazy" />
-              <div>
-                <Radar size={18} />
-                <h3>{signal.title}</h3>
-                <p>{signal.body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="interests" className="section interests">
-        <div className="section-head">
-          <p className="eyebrow">Other Interests</p>
-          <h2>Outside The Hangar</h2>
-          <p>I like having a life outside CAD files too, even if the CAD files keep trying to win.</p>
-        </div>
-        <div className="interest-grid">
-          {interests.map((interest) => (
-            <article key={interest.title}>
-              <h3>{interest.title}</h3>
-              <p>{interest.body}</p>
-            </article>
-          ))}
-          <article className="poem-card">
-            <h3>Poems</h3>
-            <p>I often write poems to express myself better. A couple of examples:</p>
-            <div className="poem-grid">
-              {poems.map((poem) => (
-                <details key={poem.title}>
-                  <summary>{poem.title}</summary>
-                  <pre>{poem.body}</pre>
-                </details>
-              ))}
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section className="section engine-showcase">
-        <div className="section-head">
-          <p className="eyebrow">Propulsion System</p>
-          <h2>Engine Room</h2>
-          <p>The turbofan from my Dwello Aerospace internship, brought into the portfolio as a live engineering display.</p>
-        </div>
-        <div className="engine-stage" aria-label="Interactive 3D turbofan CAD model">
-          <div className="engine-stage-glow engine-stage-glow-one" />
-          <div className="engine-stage-glow engine-stage-glow-two" />
-          <EngineViewer />
-          <div className="engine-overlay engine-overlay-top">
-            <span>DWELLO / TURBOFAN</span>
-            <strong>PROPULSION CORE</strong>
-          </div>
-          <div className="engine-overlay engine-overlay-bottom">
-            <span>MOTION STUDY</span>
-            <p>Drag to inspect • Internal inspection cycle</p>
-          </div>
-        </div>
-      </section>
-
-      <section id="contact" className="section contact">
-        <div>
-          <p className="eyebrow">Contact</p>
-          <h2>Ready For Final Boarding</h2>
-          <p>Email: alvashlok@gmail.com</p>
-          <p>Phone: +91 9845394885</p>
-        </div>
-        <div className="contact-actions">
-          <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer">
-            GitHub <ExternalLink size={17} />
-          </a>
-          <a href="https://www.instagram.com/teamdinoco_nrl?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer">
-            Team Dinoco Instagram <ExternalLink size={17} />
-          </a>
-        </div>
-      </section>
-
-      {activeImage && (
-        <div className="lightbox" role="dialog" aria-modal="true" aria-label={activeImage.caption} onClick={() => setActiveImage(null)}>
-          <button aria-label="Close Image Preview">Close</button>
-          <figure onClick={(event) => event.stopPropagation()}>
-            {activeImage.youtubeId ? (
-              <iframe
-                src={`https://www.youtube.com/embed/${activeImage.youtubeId}?autoplay=1&rel=0`}
-                title={activeImage.alt}
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-              />
-            ) : activeImage.type === "video" ? (
-              <video src={activeImage.src} controls autoPlay muted loop playsInline />
-            ) : activeImage.type === "model" && activeImage.modelPath ? (
-              <ProjectModelViewer src={activeImage.modelPath} />
-            ) : (
-              <img src={activeImage.src} alt={activeImage.alt} />
-            )}
-            <figcaption>{activeImage.caption}</figcaption>
-          </figure>
-        </div>
-      )}
-    </main>
-  );
-}
-
-createRoot(document.getElementById("root")!).render(<App />);
