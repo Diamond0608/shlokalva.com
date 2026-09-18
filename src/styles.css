@@ -1703,3 +1703,368 @@ h3 {
     bottom: 0.5rem;
   }
 }
+
+
+/* A350-inspired flight-deck layer */
+.flight-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.flight-card::after {
+  content: "AIRBUS-STYLE FLIGHT DECK / PORTFOLIO SYSTEM";
+  position: absolute;
+  right: 0.9rem;
+  bottom: 0.65rem;
+  color: rgba(137, 216, 255, 0.48);
+  font-size: 0.52rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.flight-card-status {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.7rem;
+  color: var(--muted);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.flight-card-status b {
+  color: var(--sky);
+  font-size: 0.58rem;
+}
+
+.flight-card-status i {
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 50%;
+  background: #68e0a0;
+  box-shadow: 0 0 10px rgba(104, 224, 160, 0.7);
+  animation: cockpitStatusPulse 2s ease-in-out infinite;
+}
+
+.audio-control span {
+  display: none;
+}
+
+.cockpit-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(137, 216, 255, 0.22);
+  border-radius: 8px;
+  padding: 0.75rem;
+  background:
+    linear-gradient(rgba(137, 216, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(137, 216, 255, 0.025) 1px, transparent 1px),
+    radial-gradient(circle at 50% 20%, rgba(137, 216, 255, 0.08), transparent 18rem),
+    #070a0e;
+  background-size: 28px 28px, 28px 28px, auto;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.45), 0 16px 40px rgba(0, 0, 0, 0.2);
+}
+
+.cockpit-panel::before,
+.cockpit-panel::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.cockpit-panel::before {
+  inset: 0.35rem;
+  border: 1px solid rgba(137, 216, 255, 0.07);
+  border-radius: 5px;
+}
+
+.cockpit-panel::after {
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 1px;
+  background: linear-gradient(transparent, rgba(137, 216, 255, 0.12), transparent);
+}
+
+.cockpit-panel-header,
+.cockpit-readouts {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cockpit-panel-header strong {
+  color: var(--amber);
+}
+
+.cockpit-instruments {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.05fr 1.05fr 0.9fr;
+  gap: 0.55rem;
+  margin: 0.7rem 0;
+}
+
+.pfd-mini,
+.nd-mini,
+.ecam-mini {
+  position: relative;
+  min-height: 8.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(137, 216, 255, 0.17);
+  border-radius: 5px;
+  background: #05080b;
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.55);
+}
+
+.pfd-mini {
+  background: #111a20;
+}
+
+.pfd-sky,
+.pfd-ground {
+  position: absolute;
+  inset: 0;
+}
+
+.pfd-sky {
+  background: linear-gradient(#123b4f 0 48%, #0a1b23 48%);
+}
+
+.pfd-ground {
+  top: 52%;
+  background: linear-gradient(#60452b, #2d2118);
+  transform: skewY(-3deg);
+  transform-origin: top;
+}
+
+.pfd-horizon {
+  position: absolute;
+  top: 50%;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: rgba(255, 241, 223, 0.85);
+  box-shadow: 0 -0.9rem 0 rgba(255, 241, 223, 0.24), 0 0.9rem 0 rgba(255, 241, 223, 0.24);
+}
+
+.pfd-aircraft {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3.7rem;
+  height: 1rem;
+  transform: translate(-50%, -50%);
+}
+
+.pfd-aircraft i {
+  position: absolute;
+  top: 0.42rem;
+  height: 0.12rem;
+  background: var(--amber);
+}
+
+.pfd-aircraft i:nth-child(1) {
+  left: 0;
+  width: 1.35rem;
+}
+
+.pfd-aircraft i:nth-child(2) {
+  left: 1.15rem;
+  width: 1.4rem;
+}
+
+.pfd-aircraft i:nth-child(3) {
+  right: 0;
+  width: 1.35rem;
+}
+
+.pfd-label {
+  position: absolute;
+  color: #d9f4ff;
+  font-size: 0.48rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+}
+
+.pfd-label strong {
+  display: block;
+  margin-top: 0.15rem;
+  color: #fff;
+  font-size: 0.58rem;
+}
+
+.pfd-alt {
+  top: 0.5rem;
+  right: 0.5rem;
+  text-align: right;
+}
+
+.pfd-spd {
+  top: 0.5rem;
+  left: 0.5rem;
+}
+
+.pfd-vsi {
+  position: absolute;
+  right: 0.5rem;
+  bottom: 0.5rem;
+  color: var(--sky);
+  font-size: 0.7rem;
+}
+
+.nd-mini {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(137, 216, 255, 0.06), transparent 50%),
+    #071017;
+}
+
+.nd-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  background:
+    linear-gradient(90deg, transparent 49.5%, rgba(137, 216, 255, 0.2) 50%, transparent 50.5%),
+    linear-gradient(0deg, transparent 49.5%, rgba(137, 216, 255, 0.2) 50%, transparent 50.5%);
+}
+
+.nd-compass {
+  position: absolute;
+  top: 0.55rem;
+  left: 50%;
+  width: 130%;
+  color: #d9f4ff;
+  font-size: 0.55rem;
+  font-weight: 900;
+  letter-spacing: 0.3em;
+  text-align: center;
+  transform: translateX(-50%);
+}
+
+.nd-compass span {
+  color: var(--amber);
+}
+
+.nd-compass b {
+  color: var(--sky);
+}
+
+.nd-track {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: var(--amber);
+  font-size: 1rem;
+  transform: translate(-50%, -50%);
+}
+
+.nd-readout {
+  position: absolute;
+  right: 0.55rem;
+  bottom: 0.5rem;
+  left: 0.55rem;
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.48rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.nd-readout strong {
+  color: #d9f4ff;
+}
+
+.ecam-mini {
+  display: grid;
+  align-content: center;
+  gap: 0.42rem;
+  padding: 0.65rem;
+  background: #080b0e;
+}
+
+.ecam-title {
+  margin-bottom: 0.15rem;
+  color: var(--amber);
+  font-size: 0.5rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+}
+
+.ecam-mini div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.35rem;
+  border-bottom: 1px solid rgba(137, 216, 255, 0.08);
+  padding-bottom: 0.25rem;
+  color: var(--muted);
+  font-size: 0.46rem;
+  font-weight: 900;
+}
+
+.ecam-mini i {
+  color: #68e0a0;
+  font-style: normal;
+}
+
+.cockpit-readouts {
+  justify-content: flex-start;
+  gap: 1rem;
+  border-top: 1px solid rgba(137, 216, 255, 0.12);
+  padding-top: 0.55rem;
+}
+
+.cockpit-readouts b {
+  color: var(--sky);
+}
+
+.cockpit-readouts em {
+  color: #68e0a0;
+  font-style: normal;
+}
+
+@keyframes cockpitStatusPulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 620px) {
+  .cockpit-instruments {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ecam-mini {
+    grid-column: 1 / -1;
+    min-height: auto;
+    grid-template-columns: repeat(4, 1fr);
+    align-items: center;
+  }
+
+  .ecam-title {
+    display: none;
+  }
+
+  .cockpit-readouts {
+    gap: 0.55rem;
+    font-size: 0.48rem;
+  }
+
+  .flight-card::after {
+    display: none;
+  }
+
+  .audio-control span {
+    display: none;
+  }
+}
