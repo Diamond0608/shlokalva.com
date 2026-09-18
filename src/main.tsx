@@ -112,7 +112,7 @@ const projects: Project[] = [
     eyebrow: "Teacher Book-Carrying Robot",
     icon: Wrench,
     summary:
-      "A track-based 4WD robot built to carry books and papers for teachers, moving from Fusion CAD to 3D printed parts, wiring, code, and physical testing.",
+      "Shlok Alva's Little Helper is a track-based 4WD robot built to carry books and papers for teachers, moving from Fusion 360 CAD to 3D printed parts, wiring, code, and physical testing.",
     facts: [
       "The current version runs on a PS3 controller, with room to tweak the code for phone control later.",
       "Uses an ESP32 and ESP8266 architecture with separate code paths.",
@@ -143,7 +143,7 @@ const projects: Project[] = [
     eyebrow: "National Robotics League",
     icon: Radar,
     summary:
-      "Months of robotics work, one cancelled flight, a very late arrival, and a bracket run that somehow turned into one of my favorite chaos stories.",
+      "Shlok Alva's Team Dinoco robotics project documents months of National Robotics League work, including his role as team captain, mechanical build work, coordination, and competition preparation.",
     facts: [
       "I was team captain, which in practice meant coordination, travel planning, documentation, social media help, mechanical build work, development, and driving the bot.",
       "We reached a day late after our match had already started because our flight got cancelled, then paid for another flight because giving up was not really on the menu.",
@@ -176,7 +176,7 @@ const projects: Project[] = [
     eyebrow: "Dwello Aerospace",
     icon: Rocket,
     summary:
-      "A one-month aircraft propulsion internship focused on designing ramjet and turbofan engine models, with calculations, simulation, animation, and a final report.",
+      "Shlok Alva's one-month Dwello Aerospace internship focused on aircraft propulsion, including ramjet and turbofan CAD models, calculations, simulation, animation, and a final technical report.",
     facts: [
       "Designed three propulsion models around ramjet and turbofan problem statements.",
       "Produced CAD models including turbofan and ramjet variants.",
@@ -203,7 +203,7 @@ const projects: Project[] = [
     eyebrow: "Wearable Tech CAD Project",
     icon: Shield,
     summary:
-      "A wearable-tech CAD project built around a compact enclosure and extension mechanism, shown here from the design side.",
+      "Trinetra is Shlok Alva's wearable-tech CAD project, built around a compact enclosure and extension mechanism and presented here from the design side.",
     facts: [
       "Designed in Fusion 360 with separate CAD, STEP, STL, and print files.",
       "The project includes an enclosure, moving parts, and print planning.",
@@ -229,7 +229,7 @@ const projects: Project[] = [
     eyebrow: "Scratch-Built Attempt",
     icon: Boxes,
     summary:
-      "A scratch-built RC plane attempt where I started from dimensions and sketches instead of a tutorial, then learned a lot from the parts that worked and the parts that absolutely did not.",
+      "Shlok Alva's self-made RC plane is a scratch-built aviation project started from dimensions and sketches, with lessons from both the successful and unsuccessful parts of the build.",
     facts: [
       "Used a NACA 0012 airfoil and MotoCalc while working through the sizing and setup.",
       "Started with dimensions, electronics sketches, and a plan for how the plane should come together.",
@@ -593,6 +593,7 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
         <summary>Technical Spec Sheet</summary>
         <div className="spec-sheet-grid">
           <div><span>Project</span><strong>{project.title}</strong></div>
+          <div><span>Creator</span><strong>Shlok Alva</strong></div>
           <div><span>Category</span><strong>{project.eyebrow}</strong></div>
           <div><span>Stack</span><strong>{project.stack.join(" • ")}</strong></div>
         </div>
