@@ -707,13 +707,22 @@ function App() {
         </div>
         <div className="hero-board">
           <div className="flight-card">
-            <span>Aircraft Registry</span>
-            <strong>VT-PLN</strong>
-            <p>Engineering • Robotics • Aerospace • Software</p>
-            <div className="flight-card-status">
-              <span>FLIGHT DECK</span>
-              <b>CONFIG / VT-PLN</b>
-              <i />
+            <div className="runway-approach" aria-hidden="true">
+              <div className="runway-perspective">
+                <i /><i /><i /><i />
+              </div>
+              <Plane className="approach-plane" size={54} strokeWidth={1.8} />
+              <span className="approach-glow" />
+            </div>
+            <div className="flight-card-copy">
+              <span>Aircraft Registry</span>
+              <strong>VT-PLN</strong>
+              <p>Engineering • Robotics • Aerospace • Software</p>
+              <div className="flight-card-status">
+                <span>FLIGHT DECK</span>
+                <b>CONFIG / VT-PLN</b>
+                <i />
+              </div>
             </div>
           </div>
           <CockpitPanel />

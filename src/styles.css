@@ -474,6 +474,143 @@ h3 {
   animation: panelPulse 5.5s ease-in-out infinite;
 }
 
+.flight-card {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.9fr) minmax(0, 1.35fr);
+  align-items: stretch;
+  gap: clamp(1rem, 2vw, 1.75rem);
+  min-height: 12rem;
+}
+
+.flight-card-copy {
+  position: relative;
+  z-index: 3;
+  min-width: 0;
+}
+
+.runway-approach {
+  position: relative;
+  min-height: 10rem;
+  overflow: hidden;
+  border: 1px solid rgba(137, 216, 255, 0.12);
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 50% 58%, rgba(137, 216, 255, 0.13), transparent 42%),
+    linear-gradient(180deg, rgba(5, 9, 13, 0.2), rgba(5, 7, 10, 0.82));
+  perspective: 500px;
+}
+
+.runway-approach::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, transparent 49.5%, rgba(137, 216, 255, 0.1) 50%, transparent 50.5%),
+    linear-gradient(180deg, rgba(137, 216, 255, 0.04), transparent 45%);
+}
+
+.runway-perspective {
+  position: absolute;
+  right: 12%;
+  bottom: -18%;
+  left: 12%;
+  height: 72%;
+  transform: perspective(180px) rotateX(58deg);
+  transform-origin: bottom;
+  border-top: 1px solid rgba(255, 138, 42, 0.5);
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 22%,
+    rgba(255, 241, 223, 0.72) 22.5% 24%,
+    transparent 24.5% 46%
+  );
+  animation: runwayApproachMove 1.15s linear infinite;
+}
+
+.runway-perspective i {
+  position: absolute;
+  left: 50%;
+  width: 0.25rem;
+  height: 2rem;
+  background: rgba(255, 241, 223, 0.8);
+  transform: translateX(-50%);
+  box-shadow: 0 0 12px rgba(255, 241, 223, 0.25);
+}
+
+.runway-perspective i:nth-child(1) { top: 8%; }
+.runway-perspective i:nth-child(2) { top: 31%; }
+.runway-perspective i:nth-child(3) { top: 56%; }
+.runway-perspective i:nth-child(4) { top: 82%; }
+
+.approach-plane {
+  position: absolute;
+  z-index: 3;
+  top: 54%;
+  left: 50%;
+  color: var(--cream);
+  filter: drop-shadow(0 0 10px rgba(137, 216, 255, 0.65));
+  transform: translate(-50%, -50%) scale(0.22);
+  animation: planeApproach 3.2s cubic-bezier(0.35, 0.02, 0.25, 1) infinite;
+}
+
+.approach-glow {
+  position: absolute;
+  z-index: 2;
+  top: 54%;
+  left: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: rgba(137, 216, 255, 0.28);
+  filter: blur(12px);
+  transform: translate(-50%, -50%);
+  animation: approachGlow 3.2s ease-in-out infinite;
+}
+
+@keyframes planeApproach {
+  0%, 100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.18);
+  }
+  12% {
+    opacity: 0.9;
+  }
+  52% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.72);
+  }
+  78% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.28);
+  }
+  86% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.62);
+  }
+}
+
+@keyframes approachGlow {
+  0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
+  45% { opacity: 0.55; }
+  78% { opacity: 0.95; transform: translate(-50%, -50%) scale(2.2); }
+  88% { opacity: 0; transform: translate(-50%, -50%) scale(3.8); }
+}
+
+@keyframes runwayApproachMove {
+  from { transform: perspective(180px) rotateX(58deg) translateY(0); }
+  to { transform: perspective(180px) rotateX(58deg) translateY(18%); }
+}
+
+@media (max-width: 620px) {
+  .flight-card {
+    grid-template-columns: 1fr;
+  }
+
+  .runway-approach {
+    min-height: 8rem;
+  }
+}
+
 .flight-card span {
   color: var(--sky);
   font-size: 0.75rem;
