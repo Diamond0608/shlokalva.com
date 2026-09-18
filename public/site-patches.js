@@ -2,142 +2,114 @@
   const FIGARO_URL = "https://upload.wikimedia.org/wikipedia/commons/e/e2/Mozart%2C_The_Marriage_of_Figaro_%28overture%29.ogg";
   let soundEnabled = true;
   let figaro = null;
-  let uiContext = null;
-  let musicStarted = false;
+  let originalConnect = null;
+  let soundContext = null;
+  const silentGains = new WeakMap();
   let lastHoverTarget = null;
-  let buttonBound = false;
 
-  const ensureUiContext = () => {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return null;
-    uiContext ||= new AudioContextClass();
-    if (uiContext.state === "suspended") uiContext.resume().catch(() => {});
-    return uiContext;
+  const silenceSynthOutput = () => {
+    if (originalConnect || !window.AudioNode) return;
+    originalConnect = AudioNode.prototype.connect;
+    AudioNode.prototype.connect = function (destination, ...args) {
+      if (destination && destination.context && destination === destination.context.destination) {
+        let silentGain = silentGains.get(destination.context);
+        if (!silentGain) {
+          silentGain = destination.context.createGain();
+          silentGain.gain.value = 0;
+          originalConnect.call(silentGain, destination);
+          silentGains.set(destination.context, silentGain);
+        }
+        return originalConnect.call(this, silentGain, ...args);
+      }
+      return originalConnect.call(this, destination, ...args);
+    };
   };
 
-  const duckMusic = (duration = 180) => {
-    if (!figaro || figaro.paused) return;
-    const original = figaro.volume;
-    figaro.volume = 0.015;
-    window.setTimeout(() => {
-      if (figaro) figaro.volume = original;
-    }, duration);
+  const ensureSoundContext = () => {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+    soundContext ||= new AudioContextClass();
+    if (soundContext.state === "suspended") soundContext.resume().catch(() => {});
+    return soundContext;
   };
 
   const playUiSound = (kind) => {
     if (!soundEnabled) return;
-    const context = ensureUiContext();
+    const context = ensureSoundContext();
     if (!context) return;
-
-    // Interface/game sounds deliberately sit above the background music.
-    duckMusic(kind === "click" ? 220 : 150);
-
     const osc = context.createOscillator();
     const gain = context.createGain();
     const now = context.currentTime;
-    const click = kind === "click";
-
-    osc.type = click ? "square" : "triangle";
-    osc.frequency.setValueAtTime(click ? 700 : 400, now);
-    osc.frequency.exponentialRampToValueAtTime(click ? 1180 : 820, now + (click ? 0.075 : 0.06));
+    osc.type = kind === "click" ? "square" : "triangle";
+    osc.frequency.setValueAtTime(kind === "click" ? 620 : 420, now);
+    osc.frequency.exponentialRampToValueAtTime(kind === "click" ? 980 : 610, now + (kind === "click" ? 0.055 : 0.045));
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(click ? 0.18 : 0.095, now + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + (click ? 0.15 : 0.105));
+    gain.gain.exponentialRampToValueAtTime(kind === "click" ? 0.045 : 0.022, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + (kind === "click" ? 0.075 : 0.055));
     osc.connect(gain).connect(context.destination);
     osc.start(now);
-    osc.stop(now + 0.16);
+    osc.stop(now + 0.09);
   };
 
   const startMusic = () => {
-    if (!figaro || !soundEnabled || musicStarted) return;
-    const attempt = figaro.play();
-    if (!attempt) return;
-    attempt.then(() => {
-      musicStarted = true;
-    }).catch(() => {
-      musicStarted = false;
-    });
-  };
-
-  const pauseMusic = () => {
-    if (!figaro) return;
-    figaro.pause();
-    musicStarted = false;
+    if (!figaro || !soundEnabled) return;
+    figaro.play().catch(() => {});
   };
 
   const setupAudio = () => {
-    if (!figaro) {
-      figaro = document.createElement("audio");
-      figaro.src = FIGARO_URL;
-      figaro.preload = "auto";
-      figaro.loop = true;
-      figaro.volume = 0.22;
-      figaro.setAttribute("aria-hidden", "true");
-      figaro.style.display = "none";
-      document.body.appendChild(figaro);
-    }
-
     const button = document.querySelector('.flight-nav button[aria-label="Toggle Interface Sound"]');
-    if (button && !buttonBound) {
-      buttonBound = true;
-      button.addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-        if (soundEnabled) {
-          ensureUiContext();
-          startMusic();
-        } else {
-          pauseMusic();
-        }
-      });
-    }
+    if (!button || button.dataset.audioPatchBound === "true") return;
 
-    if (!window.__portfolioAudioEventsBound) {
-      window.__portfolioAudioEventsBound = true;
+    button.dataset.audioPatchBound = "true";
+    figaro = document.createElement("audio");
+    figaro.src = FIGARO_URL;
+    figaro.preload = "auto";
+    figaro.loop = true;
+    figaro.autoplay = true;
+    figaro.volume = 0.22;
+    figaro.setAttribute("aria-hidden", "true");
+    figaro.style.display = "none";
+    document.body.appendChild(figaro);
 
-      const triggerMusicFromUserAction = () => {
-        if (!soundEnabled) return;
-        ensureUiContext();
-        startMusic();
-      };
+    const primeAndPlay = () => {
+      if (!soundEnabled) return;
+      ensureSoundContext();
+      startMusic();
+    };
 
-      // Scroll/wheel/touch scrolling can unlock the soundtrack if autoplay was blocked.
-      window.addEventListener("wheel", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("scroll", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("touchmove", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("touchstart", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("pointerdown", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("keydown", triggerMusicFromUserAction);
+    button.addEventListener("click", () => {
+      soundEnabled = !soundEnabled;
+      if (soundEnabled) primeAndPlay();
+      else figaro?.pause();
+    });
 
-      window.addEventListener("portfolio:synth-finished", triggerMusicFromUserAction);
-
-      document.addEventListener("pointerover", (event) => {
-        const target = event.target;
-        if (!(target instanceof Element)) return;
-        const interactive = target.closest("a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
-        if (!interactive || interactive === lastHoverTarget) return;
-        lastHoverTarget = interactive;
-        playUiSound("hover");
-      }, true);
-
-      document.addEventListener("pointerout", (event) => {
-        const target = event.target;
-        if (!(target instanceof Element)) return;
-        const interactive = target.closest("a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
-        if (interactive === lastHoverTarget) lastHoverTarget = null;
-      }, true);
-
-      document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof Element)) return;
-        if (target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) {
-          playUiSound("click");
-        }
-      }, true);
-    }
-
-    // Try immediately. Browsers may reject this until a user gesture, so the
-    // wheel/scroll/touch/pointer listeners above provide the fallback.
     startMusic();
+    ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+      document.addEventListener(eventName, primeAndPlay, { passive: true });
+    });
+
+    document.addEventListener("pointerover", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const interactive = target.closest("a, button, summary, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
+      if (!interactive || interactive === lastHoverTarget) return;
+      lastHoverTarget = interactive;
+      playUiSound("hover");
+    }, true);
+
+    document.addEventListener("click", (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) {
+        playUiSound("click");
+        primeAndPlay();
+      }
+    }, true);
+
+    window.setTimeout(() => {
+      silenceSynthOutput();
+      startMusic();
+    }, 8100);
   };
 
   const patchResponsiveSignals = () => {
@@ -159,5 +131,5 @@
   const observer = new MutationObserver(setup);
   observer.observe(document.documentElement, { childList: true, subtree: true });
   window.addEventListener("load", setup, { once: true });
-  setup();
+  window.setInterval(setup, 1000);
 })();
