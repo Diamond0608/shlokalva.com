@@ -2056,3 +2056,41 @@ h3 {
     display: none;
   }
 }
+
+
+.engine-project-model {
+  width: min(1220px, calc(100% - 2rem));
+  margin: clamp(2rem, 5vw, 4rem) auto 0;
+}
+
+.engine-project-model .section-head {
+  margin-bottom: 1.25rem;
+}
+
+.project-model-viewer {
+  position: relative;
+  width: 100%;
+  min-height: 34rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(137, 216, 255, 0.09), transparent 32%),
+    #080a0f;
+}
+
+.project-model-viewer canvas {
+  display: block;
+  width: 100% !important;
+  height: 34rem !important;
+}
+
+@media (max-width: 620px) {
+  .project-model-viewer {
+    min-height: 25rem;
+  }
+
+  .project-model-viewer canvas {
+    height: 25rem !important;
+  }
+}
