@@ -3,9 +3,9 @@
   let soundEnabled = true;
   let figaro = null;
   let uiContext = null;
-  let lastHoverTarget = null;
   let musicStarted = false;
-  let musicReady = false;
+  let lastHoverTarget = null;
+  let buttonBound = false;
 
   const ensureUiContext = () => {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -15,10 +15,10 @@
     return uiContext;
   };
 
-  const duckMusic = (duration = 150) => {
+  const duckMusic = (duration = 180) => {
     if (!figaro || figaro.paused) return;
     const original = figaro.volume;
-    figaro.volume = Math.min(original, 0.07);
+    figaro.volume = 0.015;
     window.setTimeout(() => {
       if (figaro) figaro.volume = original;
     }, duration);
@@ -29,7 +29,8 @@
     const context = ensureUiContext();
     if (!context) return;
 
-    duckMusic(kind === "click" ? 190 : 130);
+    // Interface/game sounds deliberately sit above the background music.
+    duckMusic(kind === "click" ? 220 : 150);
 
     const osc = context.createOscillator();
     const gain = context.createGain();
@@ -37,21 +38,22 @@
     const click = kind === "click";
 
     osc.type = click ? "square" : "triangle";
-    osc.frequency.setValueAtTime(click ? 680 : 390, now);
-    osc.frequency.exponentialRampToValueAtTime(click ? 1080 : 760, now + (click ? 0.07 : 0.055));
+    osc.frequency.setValueAtTime(click ? 700 : 400, now);
+    osc.frequency.exponentialRampToValueAtTime(click ? 1180 : 820, now + (click ? 0.075 : 0.06));
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(click ? 0.12 : 0.065, now + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + (click ? 0.13 : 0.09));
+    gain.gain.exponentialRampToValueAtTime(click ? 0.18 : 0.095, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + (click ? 0.15 : 0.105));
     osc.connect(gain).connect(context.destination);
     osc.start(now);
-    osc.stop(now + 0.14);
+    osc.stop(now + 0.16);
   };
 
   const startMusic = () => {
     if (!figaro || !soundEnabled || musicStarted) return;
-    musicStarted = true;
-    figaro.play().then(() => {
-      musicReady = true;
+    const attempt = figaro.play();
+    if (!attempt) return;
+    attempt.then(() => {
+      musicStarted = true;
     }).catch(() => {
       musicStarted = false;
     });
@@ -64,69 +66,77 @@
   };
 
   const setupAudio = () => {
+    if (!figaro) {
+      figaro = document.createElement("audio");
+      figaro.src = FIGARO_URL;
+      figaro.preload = "auto";
+      figaro.loop = true;
+      figaro.volume = 0.22;
+      figaro.setAttribute("aria-hidden", "true");
+      figaro.style.display = "none";
+      document.body.appendChild(figaro);
+    }
+
     const button = document.querySelector('.flight-nav button[aria-label="Toggle Interface Sound"]');
-    if (!button || button.dataset.audioPatchBound === "true") return;
-    button.dataset.audioPatchBound = "true";
+    if (button && !buttonBound) {
+      buttonBound = true;
+      button.addEventListener("click", () => {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+          ensureUiContext();
+          startMusic();
+        } else {
+          pauseMusic();
+        }
+      });
+    }
 
-    figaro = document.createElement("audio");
-    figaro.src = FIGARO_URL;
-    figaro.preload = "auto";
-    figaro.loop = true;
-    figaro.volume = 0.22;
-    figaro.setAttribute("aria-hidden", "true");
-    figaro.style.display = "none";
-    document.body.appendChild(figaro);
+    if (!window.__portfolioAudioEventsBound) {
+      window.__portfolioAudioEventsBound = true;
 
-    const triggerMusic = () => {
-      if (!soundEnabled) return;
-      ensureUiContext();
-      startMusic();
-    };
+      const triggerMusicFromUserAction = () => {
+        if (!soundEnabled) return;
+        ensureUiContext();
+        startMusic();
+      };
 
-    button.addEventListener("click", () => {
-      soundEnabled = !soundEnabled;
-      if (soundEnabled) triggerMusic();
-      else pauseMusic();
-    });
+      // Scroll/wheel/touch scrolling can unlock the soundtrack if autoplay was blocked.
+      window.addEventListener("wheel", triggerMusicFromUserAction, { passive: true });
+      window.addEventListener("scroll", triggerMusicFromUserAction, { passive: true });
+      window.addEventListener("touchmove", triggerMusicFromUserAction, { passive: true });
+      window.addEventListener("touchstart", triggerMusicFromUserAction, { passive: true });
+      window.addEventListener("pointerdown", triggerMusicFromUserAction, { passive: true });
+      window.addEventListener("keydown", triggerMusicFromUserAction);
 
-    figaro.addEventListener("ended", () => {
-      musicStarted = false;
-      startMusic();
-    });
+      window.addEventListener("portfolio:synth-finished", triggerMusicFromUserAction);
 
-    window.addEventListener("portfolio:synth-finished", triggerMusic);
-    window.addEventListener("pointerdown", triggerMusic, { passive: true });
-    window.addEventListener("keydown", triggerMusic);
-    window.addEventListener("touchstart", triggerMusic, { passive: true });
-    window.addEventListener("wheel", triggerMusic, { passive: true });
-    window.addEventListener("scroll", triggerMusic, { passive: true });
-    window.addEventListener("touchmove", triggerMusic, { passive: true });
+      document.addEventListener("pointerover", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const interactive = target.closest("a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
+        if (!interactive || interactive === lastHoverTarget) return;
+        lastHoverTarget = interactive;
+        playUiSound("hover");
+      }, true);
 
-    document.addEventListener("pointerover", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const interactive = target.closest("a, button, summary, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
-      if (!interactive || interactive === lastHoverTarget) return;
-      lastHoverTarget = interactive;
-      playUiSound("hover");
-    }, true);
+      document.addEventListener("pointerout", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        const interactive = target.closest("a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
+        if (interactive === lastHoverTarget) lastHoverTarget = null;
+      }, true);
 
-    document.addEventListener("pointerout", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      const interactive = target.closest("a, button, summary, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
-      if (interactive === lastHoverTarget) lastHoverTarget = null;
-    }, true);
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof Element)) return;
+        if (target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) {
+          playUiSound("click");
+        }
+      }, true);
+    }
 
-    document.addEventListener("click", (event) => {
-      const target = event.target;
-      if (!(target instanceof Element)) return;
-      if (target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) {
-        playUiSound("click");
-        triggerMusic();
-      }
-    }, true);
-
+    // Try immediately. Browsers may reject this until a user gesture, so the
+    // wheel/scroll/touch/pointer listeners above provide the fallback.
     startMusic();
   };
 
@@ -149,5 +159,5 @@
   const observer = new MutationObserver(setup);
   observer.observe(document.documentElement, { childList: true, subtree: true });
   window.addEventListener("load", setup, { once: true });
-  window.setInterval(setup, 1000);
+  setup();
 })();
