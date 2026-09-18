@@ -1,74 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Airbus A350 front-view aircraft cutout">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-label="Airbus A350 front-view aircraft">
   <defs>
-    <linearGradient id="fuselage" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#cbd3da"/>
-      <stop offset="0.22" stop-color="#f7f9fb"/>
-      <stop offset="0.5" stop-color="#ffffff"/>
-      <stop offset="0.78" stop-color="#e5e9ed"/>
-      <stop offset="1" stop-color="#aeb8c1"/>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#9faab3"/><stop offset=".22" stop-color="#f4f7f9"/>
+      <stop offset=".5" stop-color="#ffffff"/><stop offset=".78" stop-color="#e8edf0"/><stop offset="1" stop-color="#9da8b1"/>
     </linearGradient>
     <linearGradient id="wing" x1="0" y1="0" x2="0" y2="1">
-      <stop stop-color="#eef2f5"/>
-      <stop offset="0.55" stop-color="#c8d0d7"/>
-      <stop offset="1" stop-color="#87939e"/>
+      <stop stop-color="#f5f7f9"/><stop offset=".65" stop-color="#c5cdd3"/><stop offset="1" stop-color="#7e8a94"/>
     </linearGradient>
     <linearGradient id="engine" x1="0" y1="0" x2="1" y2="0">
-      <stop stop-color="#6f7b85"/>
-      <stop offset="0.45" stop-color="#e9edf0"/>
-      <stop offset="1" stop-color="#5b6670"/>
+      <stop stop-color="#707c86"/><stop offset=".45" stop-color="#eef1f3"/><stop offset="1" stop-color="#59656f"/>
     </linearGradient>
-    <radialGradient id="window" cx="50%" cy="45%">
-      <stop stop-color="#30495a"/>
-      <stop offset="0.7" stop-color="#101c26"/>
-      <stop offset="1" stop-color="#05090d"/>
-    </radialGradient>
-    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%">
-      <feGaussianBlur stdDeviation="12" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="5"/>
-    </filter>
+    <radialGradient id="glass"><stop stop-color="#355365"/><stop offset=".65" stop-color="#101e28"/><stop offset="1" stop-color="#05090d"/></radialGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
-
   <g filter="url(#shadow)">
-    <path d="M600 74 C574 76 555 101 545 137 L529 238 L174 405 C158 413 151 429 161 439 C171 449 187 448 204 443 L501 355 L462 535 C458 553 470 565 487 557 L600 497 L713 557 C730 565 742 553 738 535 L699 355 L996 443 C1013 448 1029 449 1039 439 C1049 429 1042 413 1026 405 L671 238 L655 137 C645 101 626 76 600 74 Z" fill="url(#wing)"/>
-
-    <path d="M600 66 C562 67 535 98 526 146 L508 284 L521 506 C527 548 558 578 600 590 C642 578 673 548 679 506 L692 284 L674 146 C665 98 638 67 600 66 Z" fill="url(#fuselage)"/>
-
-    <path d="M536 171 C551 126 570 106 600 103 C630 106 649 126 664 171 L652 210 C636 196 619 188 600 188 C581 188 564 196 548 210 Z" fill="url(#window)"/>
-
-    <path d="M548 211 C564 199 581 193 600 193 C619 193 636 199 652 211 L646 239 C632 231 617 227 600 227 C583 227 568 231 554 239 Z" fill="#101820"/>
-
-    <path d="M544 244 C565 235 582 232 600 232 C618 232 635 235 656 244 L650 270 C633 264 618 261 600 261 C582 261 567 264 550 270 Z" fill="#f4f6f8" opacity=".75"/>
-
-    <ellipse cx="402" cy="400" rx="82" ry="55" fill="url(#engine)"/>
-    <ellipse cx="798" cy="400" rx="82" ry="55" fill="url(#engine)"/>
-    <ellipse cx="402" cy="400" rx="59" ry="39" fill="#121a20"/>
-    <ellipse cx="798" cy="400" rx="59" ry="39" fill="#121a20"/>
-    <ellipse cx="402" cy="400" rx="39" ry="25" fill="#05080b"/>
-    <ellipse cx="798" cy="400" rx="39" ry="25" fill="#05080b"/>
-    <ellipse cx="402" cy="400" rx="17" ry="11" fill="#5e6c77"/>
-    <ellipse cx="798" cy="400" rx="17" ry="11" fill="#5e6c77"/>
-
-    <path d="M526 315 L242 398 L188 425 L523 348 Z" fill="#aeb8c1" opacity=".65"/>
-    <path d="M674 315 L958 398 L1012 425 L677 348 Z" fill="#aeb8c1" opacity=".65"/>
-
-    <path d="M540 420 C557 433 575 440 600 442 C625 440 643 433 660 420 L650 512 C637 540 620 556 600 562 C580 556 563 540 550 512 Z" fill="#e8ecef"/>
-
-    <path d="M565 548 L600 528 L635 548 L620 576 L600 590 L580 576 Z" fill="#c2cbd2"/>
-    <path d="M581 571 L600 581 L619 571 L613 604 L600 616 L587 604 Z" fill="#737f89"/>
-
-    <path d="M570 252 C582 246 590 244 600 244 C610 244 618 246 630 252 L626 263 C616 260 609 258 600 258 C591 258 584 260 574 263 Z" fill="#ffffff" opacity=".9"/>
-    <path d="M576 275 C586 271 592 269 600 269 C608 269 614 271 624 275" fill="none" stroke="#9ca8b1" stroke-width="5" stroke-linecap="round"/>
-
-    <circle cx="566" cy="306" r="3.5" fill="#ffffff"/>
-    <circle cx="634" cy="306" r="3.5" fill="#ffffff"/>
-    <circle cx="556" cy="329" r="2.8" fill="#d9e8f0"/>
-    <circle cx="644" cy="329" r="2.8" fill="#d9e8f0"/>
-
-    <path d="M522 497 C546 516 570 527 600 530 C630 527 654 516 678 497" fill="none" stroke="#7c8993" stroke-width="5" opacity=".55"/>
+    <!-- broad, level front-view wings -->
+    <path d="M526 300 L190 360 L82 395 Q68 402 82 412 L112 420 L526 344 Z" fill="url(#wing)"/>
+    <path d="M674 300 L1010 360 L1118 395 Q1132 402 1118 412 L1088 420 L674 344 Z" fill="url(#wing)"/>
+    <!-- engine nacelles -->
+    <ellipse cx="310" cy="390" rx="82" ry="57" fill="url(#engine)"/>
+    <ellipse cx="890" cy="390" rx="82" ry="57" fill="url(#engine)"/>
+    <ellipse cx="310" cy="390" rx="59" ry="40" fill="#101820"/>
+    <ellipse cx="890" cy="390" rx="59" ry="40" fill="#101820"/>
+    <ellipse cx="310" cy="390" rx="38" ry="26" fill="#05080b"/>
+    <ellipse cx="890" cy="390" rx="38" ry="26" fill="#05080b"/>
+    <ellipse cx="310" cy="390" rx="15" ry="10" fill="#687680"/>
+    <ellipse cx="890" cy="390" rx="15" ry="10" fill="#687680"/>
+    <!-- fuselage -->
+    <path d="M600 62 C562 64 538 96 528 145 L506 290 L520 505 C526 552 558 586 600 604 C642 586 674 552 680 505 L694 290 L672 145 C662 96 638 64 600 62 Z" fill="url(#body)"/>
+    <!-- cockpit -->
+    <path d="M536 172 C550 125 573 102 600 100 C627 102 650 125 664 172 L650 214 C633 199 618 191 600 191 C582 191 567 199 550 214 Z" fill="url(#glass)"/>
+    <path d="M550 216 Q600 190 650 216 L644 244 Q600 228 556 244 Z" fill="#101820"/>
+    <!-- lower fuselage -->
+    <path d="M548 252 Q600 235 652 252 L646 274 Q600 263 554 274 Z" fill="#f5f7f8" opacity=".8"/>
+    <path d="M540 320 L520 505 Q528 551 550 567 L600 586 L650 567 Q672 551 680 505 L660 320 Q600 342 540 320 Z" fill="#e5eaed" opacity=".95"/>
+    <!-- lower wing/fuselage fairings -->
+    <path d="M525 320 L245 375 L190 405 L525 347 Z" fill="#9da8b1" opacity=".65"/>
+    <path d="M675 320 L955 375 L1010 405 L675 347 Z" fill="#9da8b1" opacity=".65"/>
+    <!-- nose gear -->
+    <path d="M570 555 L600 535 L630 555 L618 585 L600 600 L582 585 Z" fill="#b8c2c9"/>
+    <path d="M586 582 L600 592 L614 582 L610 615 L600 624 L590 615 Z" fill="#707c86"/>
+    <!-- small navigation lights -->
+    <circle cx="205" cy="397" r="4" fill="#fff"/>
+    <circle cx="995" cy="397" r="4" fill="#fff"/>
   </g>
-
-  <ellipse cx="600" cy="640" rx="270" ry="22" fill="#89d8ff" opacity=".08" filter="url(#soft)"/>
 </svg>
