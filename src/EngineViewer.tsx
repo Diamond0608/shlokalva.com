@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Center, OrbitControls, useGLTF } from "@react-three/drei";
+import { Bounds, Center, OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 
 function TurbofanModel() {
@@ -98,7 +98,9 @@ export default function EngineViewer() {
             <directionalLight position={[4, 5, 6]} intensity={3.2} />
             <directionalLight position={[-4, -2, -3]} intensity={1.4} />
             <Suspense fallback={null}>
-              <TurbofanModel />
+              <Bounds fit clip observe margin={1.25}>
+                <TurbofanModel />
+              </Bounds>
             </Suspense>
             <OrbitControls
               enablePan={false}
