@@ -952,6 +952,17 @@ h3 {
   margin: 0;
 }
 
+.lightbox iframe {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  max-height: 82vh;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #080a0f;
+}
+
 .lightbox img,
 .lightbox video {
   display: block;
