@@ -23,29 +23,7 @@ function TurbofanModel() {
   const motionRootRef = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, modelRef);
 
-  const modelAxis = useMemo(() => {
-    const box = new THREE.Box3().setFromObject(scene);
-    const size = box.getSize(new THREE.Vector3());
-
-    // The engine's longitudinal axis is the longest dimension of the imported CAD model.
-    return size.x >= size.y && size.x >= size.z
-      ? new THREE.Vector3(1, 0, 0)
-      : size.y >= size.z
-        ? new THREE.Vector3(0, 1, 0)
-        : new THREE.Vector3(0, 0, 1);
-  }, [scene]);
-
   const parts = useMemo<MotionPart[]>(() => {
-    const box = new THREE.Box3().setFromObject(scene);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-
-    const axis = size.x >= size.y && size.x >= size.z
-      ? new THREE.Vector3(1, 0, 0)
-      : size.y >= size.z
-        ? new THREE.Vector3(0, 1, 0)
-        : new THREE.Vector3(0, 0, 1);
-
     const candidates: MotionPart[] = [];
 
     scene.traverse((object) => {
@@ -54,9 +32,11 @@ function TurbofanModel() {
 
       const objectBox = new THREE.Box3().setFromObject(object);
       const objectCenter = objectBox.getCenter(new THREE.Vector3());
+      // Keep the motion-study approximation aligned with the imported model's X axis.
+      // The GLB from Fusion is already oriented in its own model coordinates.
       const relative = objectCenter.clone().sub(center);
-      const projection = relative.dot(axis);
-      const radial = relative.clone().sub(axis.clone().multiplyScalar(projection));
+      const projection = relative.x;
+      const radial = relative.clone().sub(new THREE.Vector3(projection, 0, 0));
 
       candidates.push({
         object,
@@ -105,9 +85,6 @@ function TurbofanModel() {
     if (!root) return;
 
     const elapsed = state.clock.elapsedTime;
-    // Rotate around the engine's own longitudinal axis, not the viewer/world Y axis.
-    root.rotateOnAxis(modelAxis, delta * 0.16);
-
     // If Fusion's animation was exported into the GLB, let the actual clips drive it.
     // Otherwise reproduce the intended motion-study feel procedurally:
     // closed -> progressively opened/exploded -> held -> reassembled.
@@ -129,21 +106,13 @@ function TurbofanModel() {
         const radial = radialOffset.multiplyScalar(explode * 0.08 * weight);
         object.position.copy(position).add(
           new THREE.Vector3(
-            modelAxis.x * axial,
-            modelAxis.y * axial,
-            modelAxis.z * axial
+            axial,
+            0,
+            0
           )
         ).add(radial);
       });
     }
-
-    // Keep identifiable rotating turbofan internals moving like the real rotating assembly.
-    scene.traverse((object) => {
-      const name = object.name.toLowerCase();
-      if (!/(fan|rotor|blade|spinner|hub|shaft|turbine|compressor)/.test(name)) return;
-
-      object.rotation.z += delta * 2.8;
-    });
 
   });
 
@@ -253,12 +222,10 @@ export default function EngineViewer() {
 
             <OrbitControls
               enablePan={false}
-              minDistance={2.5}
-              maxDistance={9}
+              enableZoom={false}
               enableDamping
               dampingFactor={0.06}
               rotateSpeed={0.65}
-              zoomSpeed={0.7}
             />
           </Canvas>
         </EngineErrorBoundary>
