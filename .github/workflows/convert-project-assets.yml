@@ -6,6 +6,7 @@ on:
       - "Little Helper Main.rar"
       - "Trinetra.rar"
       - "littlehelper.pdf"
+      - "WhatsApp Video *.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
 permissions:
@@ -20,7 +21,7 @@ jobs:
       - name: Install conversion tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full poppler-utils blender python3-venv python3-numpy
+          sudo apt-get install -y p7zip-full poppler-utils blender python3-venv python3-numpy ffmpeg
           python3 -m venv /tmp/cq
           /tmp/cq/bin/pip install cadquery
 
@@ -95,6 +96,17 @@ jobs:
           convert_one "$TR" /tmp/converted/trinetra.glb
           ls -lh /tmp/converted/*.glb
 
+      - name: Prepare uploaded project videos
+        shell: bash
+        run: |
+          set -e
+          mkdir -p public/assets
+          # The three WhatsApp uploads are: 1.00.44 (plane), 1.02.12 (Team Dinoco),
+          # and 1.03.08 (moving plane). The moving-plane clip is intentionally reversed.
+          cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
+          ffmpeg -y -i "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" -vf reverse -af areverse public/assets/rc-plane-moving-reversed.mp4
+          cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
+
       - name: Make Little Helper PDF preview
         shell: bash
         run: |
@@ -119,7 +131,7 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/little-helper.glb public/assets/trinetra.glb
+          git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/rc-plane-detail.mp4 public/assets/rc-plane-moving-reversed.mp4 public/assets/team-dinoco-video.mp4
           if [ -f public/assets/littlehelper-preview.png ]; then
             git add public/assets/littlehelper-preview.png
           fi
