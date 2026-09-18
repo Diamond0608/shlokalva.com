@@ -1092,7 +1092,10 @@ h3 {
   }
 
   .flight-nav .seat-brand {
-    display: none;
+    display: grid;
+    min-height: 2.9rem !important;
+    font-size: 0.72rem;
+    padding: 0.25rem;
   }
 
   .flight-nav a,
