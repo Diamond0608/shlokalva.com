@@ -570,18 +570,20 @@ h3 {
   animation: a350AircraftApproach 4.2s cubic-bezier(0.18, 0.03, 0.16, 1) infinite;
 }
 
-.a350-approach-image {
+.a350-approach-video {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(88%, 34rem);
-  height: auto;
-  max-width: 100%;
-  max-height: 100%;
+  width: min(92%, 36rem);
+  height: 100%;
+  max-width: none;
   object-fit: contain;
-  transform: translate(-50%, -50%);
+  object-position: center;
+  transform: translate(-50%, -50%) scale(0.45);
   transform-origin: center;
-  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 22px rgba(137, 216, 255, 0.3));
+  mix-blend-mode: screen;
+  filter: saturate(1.08) contrast(1.08) drop-shadow(0 14px 22px rgba(0, 0, 0, 0.62));
+  animation: a350VideoApproach 4.2s cubic-bezier(0.18, 0.03, 0.16, 1) infinite;
 }
 
 .a350-approach-glow {
@@ -601,20 +603,34 @@ h3 {
 @keyframes a350AircraftApproach {
   0%, 100% {
     opacity: 0;
-    transform: translate(-50%, 18%) scale(0.16);
+    transform: translateY(18%);
   }
-  9% { opacity: 0.9; }
-  44% {
-    opacity: 1;
-    transform: translate(-50%, 2%) scale(0.5);
-  }
-  68% {
-    opacity: 1;
-    transform: translate(-50%, -2%) scale(1);
-  }
-  82% {
+  9% { opacity: 1; }
+  44% { opacity: 1; }
+  68% { opacity: 1; }
+  82% { opacity: 0; }
+}
+
+@keyframes a350VideoApproach {
+  0%, 100% {
     opacity: 0;
-    transform: translate(-50%, -7%) scale(1.55);
+    transform: translate(-50%, 18%) scale(0.42);
+  }
+  8% {
+    opacity: 0.95;
+    transform: translate(-50%, 11%) scale(0.5);
+  }
+  38% {
+    opacity: 1;
+    transform: translate(-50%, 3%) scale(0.68);
+  }
+  62% {
+    opacity: 1;
+    transform: translate(-50%, -1%) scale(0.9);
+  }
+  80% {
+    opacity: 0;
+    transform: translate(-50%, -8%) scale(1.16);
   }
 }
 
