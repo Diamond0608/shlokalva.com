@@ -89,10 +89,13 @@ function TurbofanModel() {
 
       materials.forEach((material) => {
         if ("metalness" in material && typeof material.metalness === "number") {
-          material.metalness = Math.max(material.metalness, 0.22);
+          material.metalness = 0.95;
         }
         if ("roughness" in material && typeof material.roughness === "number") {
-          material.roughness = Math.min(material.roughness, 0.48);
+          material.roughness = 0.22;
+        }
+        if ("color" in material && material.color instanceof THREE.Color) {
+          material.color.lerp(new THREE.Color("#aeb5bc"), 0.72);
         }
       });
     });
@@ -135,20 +138,17 @@ function TurbofanModel() {
         ).add(radial);
       });
 
-      // Inspection phase: reveal the internal bodies by hiding the two outer
-      // Fusion bodies for the middle of the cycle.
-      const reveal = phase >= 6 && phase < 12
-        ? Math.min(1, Math.max(0, Math.min((phase - 6) / 1.2, (12 - phase) / 1.2)))
-        : 0;
-
-      shellParts.forEach((part) => {
-        part.visible = reveal < 0.5;
+      // During the 10-second exploded inspection hold, hide only bodies
+      // 640, 576 and 577. Never hide a parent assembly.
+      const inspecting = phase >= 6 && phase < 16;
+      inspectionBodies.forEach((body) => {
+        body.visible = !inspecting;
       });
     } else {
       // If a real Fusion animation was exported into the GLB, don't interfere
       // with its timeline or visibility.
-      shellParts.forEach((part) => {
-        part.visible = true;
+      inspectionBodies.forEach((body) => {
+        body.visible = true;
       });
     }
 
