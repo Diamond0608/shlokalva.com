@@ -114,4 +114,3 @@ export default function EngineViewer() {
   );
 }
 
-useGLTF.preload("/scene.glb");
