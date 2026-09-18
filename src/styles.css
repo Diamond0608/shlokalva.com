@@ -382,7 +382,7 @@ h3 {
 
 .concorde-photo-wrap {
   position: absolute;
-  top: 64%;
+  top: 55%;
   left: 50%;
   width: min(76%, 28rem);
   overflow: hidden;
@@ -1048,7 +1048,7 @@ h3 {
     transform: translate(-50%, -50%) rotate(-2deg);
   }
   50% {
-    transform: translate(-44%, -58%) rotate(1deg);
+    transform: translate(-44%, -50%) rotate(1deg);
   }
 }
 
@@ -1273,7 +1273,7 @@ h3 {
 
 @media (max-width: 620px) {
   .concorde-photo-wrap {
-    top: 66%;
+    top: 58%;
     width: min(88%, 28rem);
   }
 
