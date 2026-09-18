@@ -1091,6 +1091,10 @@ h3 {
     border-right: 0;
   }
 
+  .flight-nav .seat-brand {
+    display: none;
+  }
+
   .flight-nav a,
   .flight-nav button {
     min-height: 2.9rem;
