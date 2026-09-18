@@ -232,7 +232,12 @@ button {
 }
 
 .flight-nav strong {
-  font-size: 0.72rem;
+  display: block;
+  max-width: 100%;
+  font-size: 0.68rem;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: visible;
 }
 
 .seat-brand {
