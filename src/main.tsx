@@ -699,11 +699,18 @@ function App() {
               <span />
             </div>
             <div className="a350-approach-aircraft">
-              <img
-                className="a350-approach-image"
-                src="/assets/a350-front-cutout.svg"
-                alt=""
-              />
+              <video
+                className="a350-approach-video"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+                aria-hidden="true"
+              >
+                <source src="https://pixabay.com/videos/download/x-265555_medium.mp4" type="video/mp4" />
+                <source src="https://pixabay.com/videos/download/x-41406_medium.mp4" type="video/mp4" />
+              </video>
               <div className="a350-approach-glow" />
             </div>
           </div>
