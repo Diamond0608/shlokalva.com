@@ -275,7 +275,7 @@ const experiences = [
   },
   {
     title: "Robotics Club",
-    subtitle: "President And Vice President",
+    subtitle: "Founder And Committee Member",
     image: images.blackShirtCohorts,
     body:
       "I helped get more people into robotics and tech at school, while learning that explaining a build can be harder than building it."
