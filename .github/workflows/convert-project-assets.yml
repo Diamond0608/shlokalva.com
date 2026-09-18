@@ -9,6 +9,7 @@ on:
       - "littlehelper.pdf"
       - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
+      - "video project2.mp4"
       - "rc-plane-moving-reversed.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
@@ -21,11 +22,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install media tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg p7zip-full poppler-utils
-
       - name: Prepare uploaded GLB and project media
         shell: bash
         run: |
@@ -34,7 +30,7 @@ jobs:
           rm -rf /tmp/project-assets
           mkdir -p /tmp/project-assets
 
-          # Little Helper: use the final uploaded GLB directly. No CAD conversion.
+          # Little Helper: use the uploaded GLB directly. No CAD conversion.
           if [ -f "untitled.glb" ]; then
             cp "untitled.glb" public/assets/little-helper.glb
           elif [ -f "untitled.rar" ]; then
@@ -45,18 +41,16 @@ jobs:
             else
               echo "untitled.rar did not contain a GLB; leaving the existing Little Helper model untouched."
             fi
-          else
-            echo "No Little Helper GLB upload in this commit; leaving the existing model untouched."
           fi
 
-          # Trinetra: accept an already-built GLB from the scene archive. No conversion.
+          # Trinetra: use the uploaded GLB from the archive directly. No conversion.
           if [ -f "scene (1).rar" ]; then
             7z x "scene (1).rar" -o/tmp/project-assets/trinetra -y
             TR="$(find /tmp/project-assets/trinetra -type f -iname '*.glb' | head -n 1 || true)"
             if [ -n "$TR" ]; then
               cp "$TR" public/assets/trinetra.glb
             else
-              echo "scene (1).rar did not contain a GLB; no Trinetra conversion will be attempted."
+              echo "scene (1).rar did not contain a GLB; leaving the existing Trinetra model untouched."
             fi
           fi
 
@@ -69,7 +63,7 @@ jobs:
             cp "image_2026-09-18_132632793.png" public/assets/image_2026-09-18_132632793.png
           fi
 
-      - name: Prepare uploaded project videos
+      - name: Copy uploaded project videos unchanged
         shell: bash
         run: |
           set -e
@@ -79,18 +73,11 @@ jobs:
             cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
           fi
 
-          # The moving RC-plane clip is the only one that needs reversing.
-          # If the already-reversed MP4 is uploaded, use it directly.
-          if [ -f "rc-plane-moving-reversed.mp4" ]; then
+          # User supplies the already-reversed Project 2 video. Copy it unchanged; do not process it.
+          if [ -f "video project2.mp4" ]; then
+            cp "video project2.mp4" public/assets/rc-plane-moving-reversed.mp4
+          elif [ -f "rc-plane-moving-reversed.mp4" ]; then
             cp "rc-plane-moving-reversed.mp4" public/assets/rc-plane-moving-reversed.mp4
-          elif [ -f "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" ]; then
-            input="WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4"
-            output="public/assets/rc-plane-moving-reversed.mp4"
-            if ffprobe -v error -select_streams a:0 -show_entries stream=index -of csv=p=0 "$input" | grep -q .; then
-              ffmpeg -y -i "$input" -vf reverse -af areverse -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart "$output"
-            else
-              ffmpeg -y -i "$input" -vf reverse -an -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -movflags +faststart "$output"
-            fi
           fi
 
           if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
