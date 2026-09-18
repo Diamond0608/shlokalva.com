@@ -17,11 +17,26 @@ type MotionPart = {
   weight: number;
 };
 
+function containsMesh(object: THREE.Object3D) {
+  let found = false;
+  object.traverse((child) => {
+    if (child instanceof THREE.Mesh) found = true;
+  });
+  return found;
+}
+
 function TurbofanModel() {
   const { scene, animations } = useGLTF("/scene.glb");
   const modelRef = useRef<THREE.Group>(null);
   const motionRootRef = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, modelRef);
+
+  // The first two top-level Fusion bodies are treated as the outer shell/cowl.
+  // They temporarily disappear during the inspection phase so the internal
+  // compressor/turbine geometry can be seen.
+  const shellParts = useMemo(() => {
+    return scene.children.filter(containsMesh).slice(0, 2);
+  }, [scene]);
 
   const parts = useMemo<MotionPart[]>(() => {
     const box = new THREE.Box3().setFromObject(scene);
@@ -108,12 +123,24 @@ function TurbofanModel() {
         const axial = axisOffset * explode * 0.62 * (0.45 + weight);
         const radial = radialOffset.multiplyScalar(explode * 0.08 * weight);
         object.position.copy(position).add(
-          new THREE.Vector3(
-            axial,
-            0,
-            0
-          )
+          new THREE.Vector3(axial, 0, 0)
         ).add(radial);
+      });
+
+      // Inspection phase: reveal the internal bodies by hiding the two outer
+      // Fusion bodies for the middle of the cycle.
+      const reveal = phase >= 6 && phase < 12
+        ? Math.min(1, Math.max(0, Math.min((phase - 6) / 1.2, (12 - phase) / 1.2)))
+        : 0;
+
+      shellParts.forEach((part) => {
+        part.visible = reveal < 0.5;
+      });
+    } else {
+      // If a real Fusion animation was exported into the GLB, don't interfere
+      // with its timeline or visibility.
+      shellParts.forEach((part) => {
+        part.visible = true;
       });
     }
 
