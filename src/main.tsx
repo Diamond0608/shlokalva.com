@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useReducedMotion } from "framer-motion";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, useGLTF } from "@react-three/drei";
+import * as THREE from "three";
 import {
   BadgeInfo,
   Boxes,
@@ -427,6 +430,112 @@ function useInterfaceSynth(enabled: boolean) {
   }, [enabled]);
 }
 
+function EngineModel() {
+  const { scene } = useGLTF("/scene.glb");
+  const rootRef = useRef<THREE.Group>(null);
+  const partsRef = useRef<Array<{ object: THREE.Object3D; base: THREE.Vector3; direction: THREE.Vector3; phase: number }>>([]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    const parts: Array<{ object: THREE.Object3D; base: THREE.Vector3; direction: THREE.Vector3; phase: number }> = [];
+    const box = new THREE.Box3().setFromObject(scene);
+    const center = box.getCenter(new THREE.Vector3());
+
+    scene.traverse((object) => {
+      if (!(object instanceof THREE.Mesh)) return;
+      object.castShadow = true;
+      object.receiveShadow = true;
+      const worldPosition = new THREE.Vector3();
+      object.getWorldPosition(worldPosition);
+      const direction = worldPosition.sub(center);
+      if (direction.lengthSq() < 0.001) direction.set(0, 0, 1);
+      direction.normalize();
+      parts.push({ object, base: object.position.clone(), direction, phase: parts.length * 0.17 });
+    });
+    partsRef.current = parts;
+  }, [scene]);
+
+  useFrame((state) => {
+    const root = rootRef.current;
+    if (!root) return;
+    const t = state.clock.getElapsedTime();
+    root.rotation.y = t * 0.16;
+    const opening = (Math.sin(t * 0.42) + 1) / 2;
+    const eased = opening * opening * (3 - 2 * opening);
+
+    partsRef.current.forEach(({ object, base, direction, phase }) => {
+      const amount = eased * 0.22;
+      object.position.set(
+        base.x + direction.x * amount,
+        base.y + direction.y * amount,
+        base.z + direction.z * amount
+      );
+      object.rotation.y += Math.sin(t * 0.55 + phase) * 0.0008;
+    });
+  });
+
+  return (
+    <group ref={rootRef} scale={2.15} rotation={[0, 0.2, 0]}>
+      <primitive object={scene} />
+    </group>
+  );
+}
+
+useGLTF.preload("/scene.glb");
+
+function EngineRoom() {
+  return (
+    <section className="section engine-showcase">
+      <div className="section-head">
+        <p className="eyebrow">Propulsion System</p>
+        <h2>Engine Room</h2>
+        <p>My Dwello turbofan, rendered directly from the uploaded CAD export. Drag to inspect it, then watch the assembly slowly open and re-form.</p>
+      </div>
+      <div className="engine-panel">
+        <div className="engine-visual engine-canvas-wrap">
+          <Canvas
+            camera={{ position: [0, 0, 6], fov: 38 }}
+            dpr={[1, 1.7]}
+            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+            shadows
+          >
+            <color attach="background" args={["#05070a"]} />
+            <ambientLight intensity={1.6} />
+            <directionalLight position={[4, 5, 6]} intensity={3.2} />
+            <directionalLight position={[-4, 2, -4]} intensity={1.8} color="#89d8ff" />
+            <pointLight position={[0, 0, 3]} intensity={2.2} color="#ff8a2a" />
+            <Suspense fallback={null}>
+              <EngineModel />
+            </Suspense>
+            <OrbitControls
+              enablePan={false}
+              enableZoom
+              minDistance={3.5}
+              maxDistance={9}
+              autoRotate={false}
+              touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
+            />
+          </Canvas>
+          <div className="engine-hud">
+            <span>THREE.JS / LIVE CAD</span>
+            <small>DRAG TO ROTATE • PINCH TO ZOOM</small>
+          </div>
+        </div>
+        <div className="engine-readout">
+          <span>DWELLO / TURBOFAN</span>
+          <strong>Propulsion Core</strong>
+          <p>Fusion 360 → GLB → Three.js. The model rotates continuously while the assembly gently moves through an exploded/open state.</p>
+          <div className="engine-status">
+            <span>MODEL</span>
+            <strong>SCENE.GLB LOADED</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function FlightLoader() {
   return (
     <div className="flight-loader" aria-live="polite">
@@ -745,29 +854,7 @@ function App() {
         </div>
       </section>
 
-      <section className="section engine-showcase">
-        <div className="section-head">
-          <p className="eyebrow">Propulsion System</p>
-          <h2>Engine Room</h2>
-          <p>My Dwello turbofan CAD model will be presented here as an interactive Three.js assembly once exported to a web-ready GLB/GLTF format.</p>
-        </div>
-        <div className="engine-panel">
-          <div className="engine-visual engine-model-placeholder" aria-label="Turbofan 3D model export status">
-            <div className="engine-glow" />
-            <div className="engine-core-mark">
-              <span>DWELLO</span>
-              <strong>F3D</strong>
-              <small>3D WEB EXPORT REQUIRED</small>
-            </div>
-          </div>
-          <div className="engine-readout">
-            <span>DWELLO / TURBOFAN</span>
-            <strong>Propulsion Core</strong>
-            <p>Fusion 360 source uploaded • Three.js viewer prepared • GLB/GLTF export pending</p>
-            <a className="text-link" href="/Turbofan%20Can%20Type%20Shlok%20Dwello.f3d" download>Open Fusion 360 Source <ExternalLink size={15} /></a>
-          </div>
-        </div>
-      </section>
+      <EngineRoom />
 
       <section id="contact" className="section contact">
         <div>
