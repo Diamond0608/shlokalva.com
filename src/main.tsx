@@ -52,6 +52,7 @@ type Project = {
 
 const images = {
   littleHelperCad: "/assets/little-helper-cad.jpg",
+  littleHelperPreview: "/assets/littlehelper-preview.png",
   littleHelperFront: "/assets/little-helper-front.jpg",
   littleHelperWiring: "/assets/little-helper-wiring.jpg",
   littleHelperReal: "/assets/little-helper-real.jpg",
@@ -134,7 +135,7 @@ const projects: Project[] = [
       { src: images.littleHelperFront, alt: "Little Helper front CAD view", caption: "Front Plate And Tracks" },
       { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" },
       { src: images.littleHelperCad, alt: "Little Helper interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/little-helper.glb" },
-      { src: "/assets/littlehelper-preview.png", alt: "Little Helper project PDF preview", caption: "Project PDF Preview" },
+      { src: images.littleHelperPreview, alt: "Little Helper project preview", caption: "Project Preview" },
       { src: "https://img.youtube.com/vi/gsAc9kgTfto/hqdefault.jpg", alt: "Little Helper project video", caption: "Little Helper — Project Video", youtubeId: "gsAc9kgTfto" }
     ]
   },
