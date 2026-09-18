@@ -246,7 +246,7 @@ const projects: Project[] = [
     gallery: [
       { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" },
       { src: "/assets/rc-plane-detail.mp4", alt: "RC plane detail video", caption: "Plane Detail Video", type: "video" },
-      { src: "/assets/rc-plane-moving-reversed.mp4", alt: "RC plane moving video, reversed", caption: "Plane Flight Video — Reversed", type: "video" }
+      { src: "/assets/plane-video.mp4", alt: "RC plane moving video, reversed", caption: "Plane Flight Video — Reversed", type: "video" }
     ]
   }
 ];
