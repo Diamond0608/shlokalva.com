@@ -362,56 +362,61 @@ And by being the chaos we are infact God's Magnum Opus.`
   }
 ];
 
-function useMozartLoop(enabled: boolean) {
+function useOpeningSynth(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
-  const timeoutRefs = useRef<number[]>([]);
+  const timersRef = useRef<number[]>([]);
+  const startedRef = useRef(false);
 
   useEffect(() => {
-    const clearTimers = () => {
-      timeoutRefs.current.forEach((timeout) => window.clearTimeout(timeout));
-      timeoutRefs.current = [];
-    };
+    timersRef.current.forEach((timer) => window.clearTimeout(timer));
+    timersRef.current = [];
 
-    clearTimers();
-
-    if (!enabled) return;
+    if (!enabled || startedRef.current) return;
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
 
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
+    startedRef.current = true;
 
-    // This is the opening synth cue. It plays exactly once.
+    // Opening synth cue: deliberately one-shot. There is NO interval or loop.
     const synth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
     const step = 185;
-    const totalDuration = synth.length * step + 260;
 
     context.resume().catch(() => {});
 
     synth.forEach((frequency, index) => {
-      const timeout = window.setTimeout(() => {
+      const timer = window.setTimeout(() => {
+        const now = context.currentTime;
         const osc = context.createOscillator();
         const gain = context.createGain();
+
         osc.type = "sine";
         osc.frequency.value = frequency;
-        gain.gain.setValueAtTime(0.0001, context.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 0.025);
-        gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.22);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.035, now + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
         osc.connect(gain).connect(context.destination);
-        osc.start();
-        osc.stop(context.currentTime + 0.24);
+        osc.start(now);
+        osc.stop(now + 0.24);
       }, index * step);
-      timeoutRefs.current.push(timeout);
+
+      timersRef.current.push(timer);
     });
 
-    // Tell the external soundtrack patch only after the synth has completely finished.
-    const finishedTimeout = window.setTimeout(() => {
+    // Mozart is allowed only after the final synth note has finished.
+    const finishedTimer = window.setTimeout(() => {
       window.dispatchEvent(new Event("portfolio:synth-finished"));
-    }, totalDuration);
-    timeoutRefs.current.push(finishedTimeout);
+    }, (synth.length - 1) * step + 300);
 
-    return clearTimers;
+    timersRef.current.push(finishedTimer);
+
+    return () => {
+      timersRef.current.forEach((timer) => window.clearTimeout(timer));
+      timersRef.current = [];
+    };
   }, [enabled]);
 }
 
@@ -519,7 +524,7 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const reducedMotion = useReducedMotion();
-  useMozartLoop(soundEnabled);
+  useOpeningSynth(soundEnabled);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 5000);
