@@ -9,7 +9,7 @@ on:
       - "littlehelper.pdf"
       - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
-      - "video project2.mp4"
+      - "Video Project 2.mp4"
       - "rc-plane-moving-reversed.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
@@ -79,11 +79,8 @@ jobs:
           fi
 
           # User supplies the already-reversed Project 2 video. Copy it unchanged; do not process it.
-          if [ -f "video project2.mp4" ]; then
-            cp "video project2.mp4" public/assets/rc-plane-moving-reversed.mp4
-          elif [ -f "rc-plane-moving-reversed.mp4" ]; then
-            cp "rc-plane-moving-reversed.mp4" public/assets/rc-plane-moving-reversed.mp4
-          fi
+          test -f "Video Project 2.mp4"
+          cp "Video Project 2.mp4" public/assets/rc-plane-moving-reversed.mp4
 
           if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
             cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
