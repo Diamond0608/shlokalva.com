@@ -755,7 +755,7 @@ function App() {
           </div>
           <div className="engine-overlay engine-overlay-bottom">
             <span>MOTION STUDY</span>
-            <p>Drag to inspect • Scroll or pinch to zoom • Assembly cycles continuously</p>
+            <p>Drag to inspect • Internal inspection cycle</p>
           </div>
         </div>
       </section>
