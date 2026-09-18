@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import "./styles.css";
 import EngineViewer from "./EngineViewer";
+import ProjectModelViewer from "./ProjectModelViewer";
 
 declare global {
   interface Window {
@@ -29,7 +30,8 @@ type GalleryImage = {
   src: string;
   alt: string;
   caption: string;
-  type?: "image" | "video";
+  type?: "image" | "video" | "model";
+  modelPath?: string;
   youtubeId?: string;
 };
 
@@ -123,6 +125,8 @@ const projects: Project[] = [
       { src: images.littleHelperCad, alt: "Little Helper CAD render with cargo box", caption: "CAD Assembly" },
       { src: images.littleHelperFront, alt: "Little Helper front CAD view", caption: "Front Plate And Tracks" },
       { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" },
+      { src: images.littleHelperCad, alt: "Little Helper interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/little-helper.glb" },
+      { src: "/assets/littlehelper-preview.png", alt: "Little Helper project PDF preview", caption: "Project PDF Preview" },
       { src: "https://img.youtube.com/vi/gsAc9kgTfto/hqdefault.jpg", alt: "Little Helper project video", caption: "Little Helper — Project Video", youtubeId: "gsAc9kgTfto" }
     ]
   },
@@ -190,6 +194,7 @@ const projects: Project[] = [
     gallery: [
       { src: images.trinetraOne, alt: "Trinetra CAD exploded view", caption: "CAD View" },
       { src: images.trinetraTwo, alt: "Trinetra enclosure CAD render", caption: "Enclosure Render" },
+      { src: images.trinetraOne, alt: "Trinetra interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/trinetra.glb" },
       { src: "https://img.youtube.com/vi/FA887wvikZQ/hqdefault.jpg", alt: "Trinetra project video", caption: "Trinetra — Project Video", youtubeId: "FA887wvikZQ" }
     ]
   },
@@ -471,7 +476,7 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
             <img src={image.src} alt={image.alt} loading="lazy" />
           )}
           <span>{image.caption}</span>
-          {image.youtubeId || image.type === "video" ? <small>Click To Open</small> : null}
+          {image.youtubeId || image.type === "video" || image.type === "model" ? <small>Click To Open</small> : null}
         </button>
       ))}
     </div>
@@ -796,6 +801,8 @@ function App() {
               />
             ) : activeImage.type === "video" ? (
               <video src={activeImage.src} controls autoPlay muted loop playsInline />
+            ) : activeImage.type === "model" && activeImage.modelPath ? (
+              <ProjectModelViewer src={activeImage.modelPath} />
             ) : (
               <img src={activeImage.src} alt={activeImage.alt} />
             )}
