@@ -1466,11 +1466,12 @@ h3 {
 
 .stat-card strong {
   display: block;
-  overflow: hidden;
+  overflow: visible;
   color: var(--cream);
   font-size: clamp(0.78rem, 1.5vw, 1rem);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  white-space: normal;
 }
 
 .stat-card {
