@@ -362,61 +362,68 @@ And by being the chaos we are infact God's Magnum Opus.`
   }
 ];
 
-function useMozartLoop(enabled: boolean) {
+function useInterfaceSynth(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
-  const intervalRef = useRef<number | null>(null);
-  const timeoutRefs = useRef<number[]>([]);
+  const timersRef = useRef<number[]>([]);
+  const finishedRef = useRef(false);
 
   useEffect(() => {
-    const clearTimers = () => {
-      if (intervalRef.current) window.clearInterval(intervalRef.current);
-      timeoutRefs.current.forEach((timeout) => window.clearTimeout(timeout));
-      intervalRef.current = null;
-      timeoutRefs.current = [];
-    };
-
-    if (!enabled) {
-      clearTimers();
-      return;
-    }
-
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
+    if (!AudioContextClass || !enabled) return;
+
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
+    finishedRef.current = false;
 
-    let loopCount = 0;
-    const shortMelody = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
-    const figaroLike = [
-      392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440,
-      392, 494, 587, 659, 698, 659, 587, 523, 494, 587, 659, 784, 880, 784, 659, 587,
-      523, 659, 784, 988, 880, 784, 698, 659, 587, 659, 698, 784, 659, 587, 523, 494
-    ];
-    const playMelody = () => {
-      context.resume();
-      const melody = loopCount < 2 ? shortMelody : figaroLike;
-      const step = loopCount < 2 ? 185 : 155;
-      loopCount += 1;
-      melody.forEach((frequency, index) => {
-        const timeout = window.setTimeout(() => {
-          const osc = context.createOscillator();
-          const gain = context.createGain();
-          osc.type = "sine";
-          osc.frequency.value = frequency;
-          gain.gain.setValueAtTime(0.0001, context.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 0.025);
-          gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.22);
-          osc.connect(gain).connect(context.destination);
-          osc.start();
-          osc.stop(context.currentTime + 0.24);
-        }, index * step);
-        timeoutRefs.current.push(timeout);
-      });
+    const clearTimers = () => {
+      timersRef.current.forEach((timer) => window.clearTimeout(timer));
+      timersRef.current = [];
     };
 
-    playMelody();
-    intervalRef.current = window.setInterval(playMelody, 8200);
-    return clearTimers;
+    const melody = [392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440];
+    const step = 185;
+
+    const playNote = (frequency: number, index: number) => {
+      const timer = window.setTimeout(() => {
+        if (!enabled) return;
+        const osc = context.createOscillator();
+        const gain = context.createGain();
+        const now = context.currentTime;
+        osc.type = "sawtooth";
+        osc.frequency.setValueAtTime(frequency, now);
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(0.028, now + 0.018);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
+        osc.connect(gain).connect(context.destination);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      }, index * step);
+      timersRef.current.push(timer);
+    };
+
+    const start = () => {
+      context.resume().catch(() => {});
+      clearTimers();
+      melody.forEach(playNote);
+      melody.forEach((frequency, index) => playNote(frequency, index + melody.length));
+      const finishTimer = window.setTimeout(() => {
+        if (finishedRef.current) return;
+        finishedRef.current = true;
+        window.dispatchEvent(new Event("portfolio:synth-finished"));
+      }, melody.length * step * 2 + 250);
+      timersRef.current.push(finishTimer);
+    };
+
+    start();
+    const unlock = () => context.resume().catch(() => {});
+    window.addEventListener("pointerdown", unlock, { passive: true });
+    window.addEventListener("keydown", unlock);
+
+    return () => {
+      clearTimers();
+      window.removeEventListener("pointerdown", unlock);
+      window.removeEventListener("keydown", unlock);
+    };
   }, [enabled]);
 }
 
@@ -524,7 +531,7 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const reducedMotion = useReducedMotion();
-  useMozartLoop(soundEnabled);
+  useInterfaceSynth(soundEnabled);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 5000);
@@ -742,17 +749,22 @@ function App() {
         <div className="section-head">
           <p className="eyebrow">Propulsion System</p>
           <h2>Engine Room</h2>
-          <p>A front view of my turbofan CAD model, rotating like a live systems display before final boarding.</p>
+          <p>My Dwello turbofan CAD model will be presented here as an interactive Three.js assembly once exported to a web-ready GLB/GLTF format.</p>
         </div>
         <div className="engine-panel">
-          <div className="engine-visual" aria-label="Rotating turbofan CAD model">
+          <div className="engine-visual engine-model-placeholder" aria-label="Turbofan 3D model export status">
             <div className="engine-glow" />
-            <img src={images.dwelloThree} alt="Front view of Shlok's turbofan CAD model" loading="lazy" />
+            <div className="engine-core-mark">
+              <span>DWELLO</span>
+              <strong>F3D</strong>
+              <small>3D WEB EXPORT REQUIRED</small>
+            </div>
           </div>
           <div className="engine-readout">
             <span>DWELLO / TURBOFAN</span>
             <strong>Propulsion Core</strong>
-            <p>CAD model • Aircraft propulsion • Simulation and animation</p>
+            <p>Fusion 360 source uploaded • Three.js viewer prepared • GLB/GLTF export pending</p>
+            <a className="text-link" href="/Turbofan%20Can%20Type%20Shlok%20Dwello.f3d" download>Open Fusion 360 Source <ExternalLink size={15} /></a>
           </div>
         </div>
       </section>
