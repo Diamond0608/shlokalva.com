@@ -613,6 +613,46 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
   );
 }
 
+function CockpitPanel() {
+  return (
+    <div className="cockpit-panel" aria-label="A350-inspired flight deck instrumentation">
+      <div className="cockpit-panel-header">
+        <span>FLIGHT DECK / VT-PLN</span>
+        <strong>CRZ PROFILE</strong>
+      </div>
+      <div className="cockpit-instruments">
+        <div className="pfd-mini">
+          <div className="pfd-sky" />
+          <div className="pfd-ground" />
+          <div className="pfd-horizon" />
+          <div className="pfd-aircraft"><i /><i /><i /></div>
+          <div className="pfd-label pfd-alt">ALT <strong>PORTFOLIO</strong></div>
+          <div className="pfd-label pfd-spd">SPD <strong>BUILD</strong></div>
+          <div className="pfd-vsi">↕</div>
+        </div>
+        <div className="nd-mini">
+          <div className="nd-grid" />
+          <div className="nd-compass">N <span>3</span> <b>E</b> <span>6</span> S <span>12</span> W</div>
+          <div className="nd-track">▲</div>
+          <div className="nd-readout"><span>HDG</span><strong>VT-PLN</strong></div>
+        </div>
+        <div className="ecam-mini">
+          <span className="ecam-title">SYSTEMS</span>
+          <div><b>HYD</b><i>GREEN</i></div>
+          <div><b>ELEC</b><i>NOMINAL</i></div>
+          <div><b>ENG</b><i>ONLINE</i></div>
+          <div><b>DATA</b><i>READY</i></div>
+        </div>
+      </div>
+      <div className="cockpit-readouts">
+        <span><b>FLT</b> PORTFOLIO</span>
+        <span><b>PHASE</b> BUILDING</span>
+        <span><b>STATUS</b> <em>NORMAL</em></span>
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [booted, setBooted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -645,8 +685,9 @@ function App() {
             <strong>{label}</strong>
           </a>
         ))}
-        <button onClick={() => setSoundEnabled((value) => !value)} aria-label="Toggle Interface Sound">
+        <button className="audio-control" onClick={() => setSoundEnabled((value) => !value)} aria-label="Toggle Interface Sound">
           {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          <span>AUDIO</span>
         </button>
       </aside>
 
@@ -671,7 +712,13 @@ function App() {
             <span>Aircraft Registry</span>
             <strong>VT-PLN</strong>
             <p>Engineering • Robotics • Aerospace • Software</p>
+            <div className="flight-card-status">
+              <span>FLIGHT DECK</span>
+              <b>CONFIG / A350</b>
+              <i />
+            </div>
           </div>
+          <CockpitPanel />
           <FlightMascot />
         </div>
       </section>
