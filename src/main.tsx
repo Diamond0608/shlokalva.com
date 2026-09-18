@@ -714,7 +714,7 @@ function App() {
             <p>Engineering • Robotics • Aerospace • Software</p>
             <div className="flight-card-status">
               <span>FLIGHT DECK</span>
-              <b>CONFIG / A350</b>
+              <b>CONFIG / VT-PLN</b>
               <i />
             </div>
           </div>
