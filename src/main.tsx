@@ -691,6 +691,20 @@ function App() {
 
       <section id="top" className="hero">
         <div className="hero-copy">
+          <div className="a350-approach" aria-hidden="true">
+            <div className="a350-runway">
+              <i /><i /><i />
+            </div>
+            <div className="a350-aircraft">
+              <div className="a350-cockpit"><i /><i /></div>
+              <div className="a350-fuselage" />
+              <div className="a350-wing a350-wing-left" />
+              <div className="a350-wing a350-wing-right" />
+              <div className="a350-engine a350-engine-left" />
+              <div className="a350-engine a350-engine-right" />
+              <div className="a350-nose-light" />
+            </div>
+          </div>
           <p className="eyebrow">Boarding Pass / Engineering Portfolio</p>
           <h1>Shlok Alva</h1>
           <p className="lede">
@@ -707,13 +721,6 @@ function App() {
         </div>
         <div className="hero-board">
           <div className="flight-card">
-            <div className="runway-approach" aria-hidden="true">
-              <div className="runway-perspective">
-                <i /><i /><i /><i />
-              </div>
-              <Plane className="approach-plane" size={54} strokeWidth={1.8} />
-              <span className="approach-glow" />
-            </div>
             <div className="flight-card-copy">
               <span>Aircraft Registry</span>
               <strong>VT-PLN</strong>
