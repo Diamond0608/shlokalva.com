@@ -302,7 +302,6 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
     gallery: [
       { src: images.cyberPodium, alt: "Speaking at a Cyber Club or Helios event", caption: "On Stage" },
       { src: images.cyberLabOne, alt: "Running a school tech event", caption: "Running Events" },
-      { src: images.cyberRoboticsOne, alt: "Robotics event field", caption: "Robotics Event" },
       { src: images.blackShirtCohorts, alt: "Group photo in black shirts at an event", caption: "Event Crew" }
     ]
   }
