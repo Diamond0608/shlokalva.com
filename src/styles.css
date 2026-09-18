@@ -369,9 +369,9 @@ h3 {
 
 .concorde-line {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   max-width: 34rem;
-  margin: 1.5rem auto 0;
+  margin: 2.25rem auto 0;
   padding: 0 1rem;
   color: var(--cream);
   font-size: clamp(1.05rem, 2.5vw, 1.6rem);
@@ -382,7 +382,7 @@ h3 {
 
 .concorde-photo-wrap {
   position: absolute;
-  top: 58%;
+  top: 64%;
   left: 50%;
   width: min(76%, 28rem);
   overflow: hidden;
@@ -1172,5 +1172,112 @@ h3 {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+
+/* Interactive propulsion display */
+.engine-showcase {
+  position: relative;
+}
+
+.engine-stage {
+  position: relative;
+  min-height: clamp(30rem, 62vw, 46rem);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.075), transparent 42%),
+    radial-gradient(circle at 50% 50%, rgba(137, 216, 255, 0.06), transparent 68%),
+    rgba(8, 10, 14, 0.72);
+}
+
+.engine-viewer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: clamp(30rem, 62vw, 46rem);
+  touch-action: pan-y;
+}
+
+.engine-viewer canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: pan-y !important;
+}
+
+.engine-overlay {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.65rem 0.8rem;
+  background: rgba(5, 7, 10, 0.72);
+  backdrop-filter: blur(8px);
+}
+
+.engine-overlay-top {
+  top: 1rem;
+  left: 1rem;
+}
+
+.engine-overlay-bottom {
+  right: 1rem;
+  bottom: 1rem;
+  max-width: min(26rem, calc(100% - 2rem));
+}
+
+.engine-overlay span {
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.engine-overlay strong {
+  display: block;
+  margin-top: 0.18rem;
+}
+
+.engine-overlay p {
+  margin: 0.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.engine-stage-glow {
+  position: absolute;
+  z-index: 1;
+  width: 24rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(55px);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.engine-stage-glow-one {
+  top: 15%;
+  left: 22%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.engine-stage-glow-two {
+  right: 18%;
+  bottom: 8%;
+  background: rgba(137, 216, 255, 0.28);
+}
+
+@media (max-width: 620px) {
+  .concorde-photo-wrap {
+    top: 66%;
+    width: min(88%, 28rem);
+  }
+
+  .engine-overlay-bottom {
+    display: none;
   }
 }
