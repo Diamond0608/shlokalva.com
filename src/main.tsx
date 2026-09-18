@@ -471,6 +471,7 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
             <img src={image.src} alt={image.alt} loading="lazy" />
           )}
           <span>{image.caption}</span>
+          {image.youtubeId || image.type === "video" ? <small>Click To Open</small> : null}
         </button>
       ))}
     </div>
