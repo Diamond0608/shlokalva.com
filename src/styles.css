@@ -2362,7 +2362,7 @@ h3 {
   z-index: 5;
   width: 0;
   height: 0;
-  transform: translate(-50%, -50%) rotate(0deg);
+  transform: translate(-50%, -50%) rotate(5deg);
   transform-origin: center;
 }
 
