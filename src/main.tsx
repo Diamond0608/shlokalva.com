@@ -133,7 +133,6 @@ const projects: Project[] = [
       { src: images.littleHelperCad, alt: "Little Helper CAD render with cargo box", caption: "CAD Assembly" },
       { src: images.littleHelperFront, alt: "Little Helper front CAD view", caption: "Front Plate And Tracks" },
       { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" },
-      { src: images.littleHelperCad, alt: "Little Helper interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/little-helper.glb" },
       { src: "/assets/image_2026-09-18_132632793.png", alt: "Little Helper additional project image", caption: "Additional Project Image" },
       { src: "https://img.youtube.com/vi/gsAc9kgTfto/hqdefault.jpg", alt: "Little Helper project video", caption: "Little Helper — Project Video", youtubeId: "gsAc9kgTfto" }
     ]
@@ -221,7 +220,6 @@ const projects: Project[] = [
     gallery: [
       { src: images.trinetraOne, alt: "Trinetra CAD exploded view", caption: "CAD View" },
       { src: images.trinetraTwo, alt: "Trinetra enclosure CAD render", caption: "Enclosure Render" },
-      { src: images.trinetraOne, alt: "Trinetra interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/trinetra.glb" },
       { src: "https://img.youtube.com/vi/FA887wvikZQ/hqdefault.jpg", alt: "Trinetra project video", caption: "Trinetra — Project Video", youtubeId: "FA887wvikZQ" }
     ]
   },
@@ -897,6 +895,14 @@ function App() {
             <span>MOTION STUDY</span>
             <p>Drag to inspect • Internal inspection cycle</p>
           </div>
+        </div>
+        <div className="engine-project-model">
+          <div className="section-head">
+            <p className="eyebrow">Engineering Model</p>
+            <h3>Little Helper — Interactive CAD Model</h3>
+            <p>Inspect the uploaded Little Helper model directly here instead of opening it from the project image gallery.</p>
+          </div>
+          <ProjectModelViewer src="/assets/little-helper.glb" />
         </div>
       </section>
 
