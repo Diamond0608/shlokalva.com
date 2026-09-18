@@ -390,6 +390,7 @@ h3 {
   top: 55%;
   left: 50%;
   width: min(76%, 28rem);
+  aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 8px;
   transform: translate(-50%, -50%);
@@ -400,7 +401,8 @@ h3 {
 .concorde-photo-wrap img {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
 .mini-runway {
@@ -1712,17 +1714,6 @@ h3 {
   overflow: hidden;
 }
 
-.flight-card::after {
-  content: "AIRBUS-STYLE FLIGHT DECK / PORTFOLIO SYSTEM";
-  position: absolute;
-  right: 0.9rem;
-  bottom: 0.65rem;
-  color: rgba(137, 216, 255, 0.48);
-  font-size: 0.52rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-}
-
 .flight-card-status {
   display: flex;
   align-items: center;
@@ -2059,10 +2050,6 @@ h3 {
   .cockpit-readouts {
     gap: 0.55rem;
     font-size: 0.48rem;
-  }
-
-  .flight-card::after {
-    display: none;
   }
 
   .audio-control span {
