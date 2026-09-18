@@ -231,18 +231,18 @@ export default function EngineViewer() {
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
             onCreated={({ gl }) => {
               gl.toneMapping = THREE.ACESFilmicToneMapping;
-              gl.toneMappingExposure = 1.12;
+              gl.toneMappingExposure = 1.0;
             }}
           >
-            <hemisphereLight intensity={1.5} color="#e8f5ff" groundColor="#1a1110" />
+            <hemisphereLight intensity={1.8} color="#ffffff" groundColor="#202020" />
             <directionalLight
               position={[5, 6, 7]}
-              intensity={4.5}
+              intensity={5.2}
               castShadow
               shadow-mapSize={[2048, 2048]}
             />
-            <directionalLight position={[-5, 2, 2]} intensity={2.2} color="#89d8ff" />
-            <directionalLight position={[2, -2, -6]} intensity={2.4} color="#ffb078" />
+            <directionalLight position={[-5, 2, 2]} intensity={2.4} color="#ffffff" />
+            <directionalLight position={[2, -2, -6]} intensity={2.0} color="#ffffff" />
 
             <Suspense fallback={null}>
               <Bounds fit clip margin={1.18}>
