@@ -72,7 +72,7 @@
       figaro.src = FIGARO_URL;
       figaro.preload = "auto";
       figaro.loop = true;
-      figaro.volume = 0.16;
+      figaro.volume = 0.22;
       figaro.setAttribute("aria-hidden", "true");
       figaro.style.display = "none";
       document.body.appendChild(figaro);
