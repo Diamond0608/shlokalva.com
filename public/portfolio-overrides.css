@@ -66,44 +66,15 @@ a,
   box-shadow: 0 0 60px rgba(137, 216, 255, 0.12), inset 0 0 45px rgba(255, 138, 42, 0.08);
 }
 
-.engine-model-placeholder {
-  overflow: hidden;
-  isolation: isolate;
-}
-
-.engine-core-mark {
+.engine-visual img {
   position: relative;
-  z-index: 2;
-  display: grid;
-  place-items: center;
-  gap: 0.3rem;
-  width: 58%;
-  aspect-ratio: 1;
-  border: 1px solid rgba(137, 216, 255, 0.3);
+  z-index: 1;
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
   border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(137, 216, 255, 0.1), rgba(5, 7, 10, 0.92) 62%),
-    repeating-radial-gradient(circle, transparent 0 16px, rgba(137, 216, 255, 0.07) 17px 18px);
-  box-shadow: 0 0 45px rgba(137, 216, 255, 0.12), inset 0 0 35px rgba(255, 138, 42, 0.08);
-  text-align: center;
-}
-
-.engine-core-mark span {
-  color: var(--sky);
-  font-size: 0.7rem;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-}
-
-.engine-core-mark strong {
-  font-size: clamp(3rem, 8vw, 5rem);
-  line-height: 0.8;
-}
-
-.engine-core-mark small {
-  color: var(--muted);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
+  animation: engineSpin 5.5s linear infinite;
+  filter: drop-shadow(0 0 26px rgba(137, 216, 255, 0.2));
 }
 
 .engine-readout {
@@ -131,6 +102,11 @@ a,
   margin: 0;
   color: var(--muted);
   line-height: 1.65;
+}
+
+@keyframes engineSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 @media (max-width: 980px) {
@@ -293,270 +269,5 @@ a,
 
   .signal-grid img {
     max-height: 13rem;
-  }
-}
-
-
-/* Live Three.js engine viewer. */
-.engine-canvas-wrap {
-  width: 100%;
-  min-height: 25rem;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #05070a;
-  touch-action: none;
-}
-
-.engine-canvas-wrap canvas {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 25rem;
-  touch-action: none;
-}
-
-.engine-hud {
-  position: absolute;
-  right: 0.9rem;
-  bottom: 0.9rem;
-  left: 0.9rem;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.7rem;
-  pointer-events: none;
-  border: 1px solid rgba(137, 216, 255, 0.2);
-  border-radius: 6px;
-  padding: 0.55rem 0.7rem;
-  background: rgba(5, 7, 10, 0.78);
-  backdrop-filter: blur(8px);
-}
-
-.engine-hud span {
-  color: var(--sky);
-  font-size: 0.68rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-}
-
-.engine-hud small {
-  color: var(--muted);
-  font-size: 0.62rem;
-  letter-spacing: 0.05em;
-}
-
-.engine-status {
-  display: grid;
-  gap: 0.25rem;
-  margin-top: 0.4rem;
-  border-top: 1px solid var(--line);
-  padding-top: 0.8rem;
-}
-
-.engine-status span {
-  color: var(--muted);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-}
-
-.engine-status strong {
-  color: var(--sky);
-  font-size: 0.78rem;
-  letter-spacing: 0.06em;
-}
-
-@media (max-width: 980px) {
-  .engine-panel {
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .engine-visual.engine-canvas-wrap {
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    min-height: 20rem;
-  }
-
-  .engine-canvas-wrap canvas {
-    min-height: 20rem;
-  }
-
-  .engine-hud {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 620px) {
-  .shell {
-    padding-bottom: 4.6rem;
-  }
-
-  .hero,
-  .section {
-    width: calc(100% - 1rem);
-  }
-
-  .hero {
-    min-height: auto;
-    padding-top: 5.2rem;
-    padding-bottom: 3rem;
-    gap: 1.25rem;
-  }
-
-  .hero-board {
-    gap: 0.65rem;
-  }
-
-  .mascot-card {
-    min-height: 22rem;
-  }
-
-  .flight-card {
-    padding: 1rem;
-  }
-
-  .mascot-readout {
-    right: 0.7rem;
-    left: 0.7rem;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.25rem;
-  }
-
-  .concorde-line {
-    font-size: 0.9rem;
-  }
-
-  .section {
-    padding: 3.4rem 0;
-  }
-
-  .section-head {
-    margin-bottom: 1.1rem;
-  }
-
-  .section-head p {
-    line-height: 1.55;
-  }
-
-  .project-card,
-  .spotlight-card,
-  .instrument-panel,
-  .experience-card div,
-  .skills-grid article,
-  .interest-grid article,
-  .contact {
-    padding: 0.9rem;
-  }
-
-  .project-flip {
-    min-height: 15rem;
-  }
-
-  .photo-tile img,
-  .photo-tile video {
-    max-width: 15rem;
-    height: 9.5rem;
-  }
-
-  .cockpit-grid button {
-    min-height: 17rem;
-  }
-
-  .engine-panel {
-    min-height: 0;
-    padding: 0.75rem;
-    border-radius: 7px;
-  }
-
-  .engine-visual.engine-canvas-wrap {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    min-height: 17rem;
-    border-radius: 7px;
-  }
-
-  .engine-canvas-wrap canvas {
-    min-height: 17rem;
-  }
-
-  .engine-readout {
-    padding: 0.9rem;
-  }
-
-  .engine-readout strong {
-    font-size: 1.8rem;
-  }
-
-  .engine-hud {
-    right: 0.55rem;
-    bottom: 0.55rem;
-    left: 0.55rem;
-    padding: 0.45rem 0.55rem;
-  }
-
-  .engine-hud span {
-    font-size: 0.58rem;
-  }
-
-  .engine-hud small {
-    font-size: 0.56rem;
-  }
-
-  .flight-nav {
-    gap: 0.25rem;
-    padding: 0.35rem;
-  }
-
-  .flight-nav a,
-  .flight-nav button {
-    min-height: 3rem;
-    border-radius: 6px;
-  }
-
-  .flight-nav span {
-    font-size: 0.55rem;
-    letter-spacing: 0.04em;
-  }
-
-  .seat-brand {
-    min-height: 3rem !important;
-    font-size: 0.78rem;
-  }
-}
-
-@media (max-width: 370px) {
-  .flight-nav {
-    gap: 0.15rem;
-    padding: 0.25rem;
-  }
-
-  .flight-nav span {
-    font-size: 0.48rem;
-  }
-
-  .engine-visual.engine-canvas-wrap,
-  .engine-canvas-wrap canvas {
-    min-height: 15rem;
-  }
-}
-
-@media (pointer: coarse) {
-  .project-card:hover {
-    transform: none;
-  }
-
-  .project-card:hover .project-front,
-  .project-card:hover .project-back {
-    transform: none;
-  }
-
-  .photo-tile:hover img,
-  .photo-tile:hover video,
-  .experience-card:hover img {
-    transform: none;
   }
 }
