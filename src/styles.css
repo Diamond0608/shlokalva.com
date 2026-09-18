@@ -2334,12 +2334,24 @@ h3 {
   position: absolute;
   top: 50%;
   left: 50%;
-  z-index: 4;
+  z-index: 8;
   color: var(--amber);
   font-size: 0.55rem;
   font-weight: 950;
   letter-spacing: 0.2em;
-  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  transform: translate(2.7rem, -50%);
+  text-shadow: 0 0 12px rgba(255, 138, 42, 0.45);
+}
+
+.compass-aviation-label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 0.45rem);
+  width: 2.2rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--amber));
 }
 
 .compass-needle {
