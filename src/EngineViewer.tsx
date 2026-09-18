@@ -24,6 +24,9 @@ function TurbofanModel() {
   const { actions } = useAnimations(animations, modelRef);
 
   const parts = useMemo<MotionPart[]>(() => {
+    const box = new THREE.Box3().setFromObject(scene);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
     const candidates: MotionPart[] = [];
 
     scene.traverse((object) => {
