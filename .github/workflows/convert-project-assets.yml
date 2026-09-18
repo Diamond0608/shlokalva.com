@@ -82,8 +82,8 @@ jobs:
           test -f "Video Project 2.mp4"
           cp "Video Project 2.mp4" public/assets/plane-video.mp4
 
-          if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
-            cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/rc-plane-detail.mp4
+          if [ -f "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" ]; then
+            cp "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" public/assets/rc-plane-detail.mp4
           fi
 
       - name: Commit generated assets
