@@ -430,6 +430,34 @@ function useInterfaceSynth(enabled: boolean) {
   }, [enabled]);
 }
 
+class EngineErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  componentDidCatch(error: unknown) {
+    console.error("Engine viewer failed to load:", error);
+  }
+
+  render() {
+    if (this.state.failed) {
+      return (
+        <div className="engine-fallback">
+          <span>PROPULSION SYSTEM</span>
+          <strong>3D VIEWER TEMPORARILY UNAVAILABLE</strong>
+          <p>The rest of the portfolio remains fully available.</p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function EngineModel() {
   const { scene } = useGLTF("/scene.glb");
   const rootRef = useRef<THREE.Group>(null);
@@ -527,7 +555,8 @@ function EngineRoom() {
       </div>
       <div className="engine-panel">
         <div className="engine-visual engine-canvas-wrap">
-          <Canvas
+          <EngineErrorBoundary>
+            <Canvas
             camera={{ position: [0, 0, 6], fov: 38 }}
             dpr={[1, 1.35]}
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
@@ -551,6 +580,7 @@ function EngineRoom() {
               touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
             />
           </Canvas>
+          </EngineErrorBoundary>
           <div className="engine-hud">
             <span>THREE.JS / LIVE CAD</span>
             <small>DRAG TO ROTATE • PINCH TO ZOOM</small>
