@@ -50,74 +50,37 @@ jobs:
         shell: bash
         run: |
           set -e
-
-          convert_step() {
-            input="$1"
-            output="$2"
-            cat > /tmp/step_to_stl.py <<'PY'
-import FreeCAD
-import Part
-import Mesh
-import sys
-
-src = sys.argv[1]
-dst = sys.argv[2]
-
-doc = FreeCAD.newDocument("Conversion")
-shape = Part.read(src)
-if shape.isNull():
-    raise RuntimeError("STEP file did not contain a valid shape")
-obj = doc.addObject("Part::Feature", "ImportedShape")
-obj.Shape = shape
-doc.recompute()
-Mesh.export([obj], dst)
-FreeCAD.closeDocument(doc.Name)
-PY
-            freecadcmd /tmp/step_to_stl.py "$input" "$output"
-          }
-
           for root in /tmp/little-helper /tmp/trinetra; do
+            find "$root" -type f \( -iname '*.step' -o -iname '*.stp' \) -print0 |
             while IFS= read -r -d '' step; do
               base="$(basename "$step")"
               safe="$(echo "$base" | tr ' /' '__')"
-              convert_step "$step" "/tmp/converted/$safe.stl"
-            done < <(find "$root" -type f \( -iname '*.step' -o -iname '*.stp' \) -print0)
+              python3 -c 'import sys, FreeCAD, Part, Mesh; src=sys.argv[1]; dst=sys.argv[2]; doc=FreeCAD.newDocument("Conversion"); shape=Part.read(src); assert not shape.isNull(), "Invalid STEP shape"; obj=doc.addObject("Part::Feature","ImportedShape"); obj.Shape=shape; doc.recompute(); Mesh.export([obj],dst); FreeCAD.closeDocument(doc.Name)' "$step" "/tmp/converted/$safe.stl"
+            done
           done
-
-          echo "===== GENERATED STL FILES ====="
-          find /tmp/converted -type f -name '*.stl' -printf '%p\n' | sort || true
+          find /tmp/converted -type f -name '*.stl' -print | sort || true
 
       - name: Convert the actual project model files to GLB
         shell: bash
         run: |
           set -e
-
           convert_with_blender() {
             input="$1"
             output="$2"
             blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); bpy.ops.object.select_all(action='SELECT'); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True)" -- "$input" "$output"
           }
-
           find_source() {
             root="$1"
-            # Prefer native interchange/mesh files already present in the extracted
-            # project. STEP/STP were tessellated in the previous step.
             find "$root" -type f \( -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' -o -iname '*.glb' -o -iname '*.gltf' \) -print | head -n 1
           }
-
           LH="$(find_source /tmp/little-helper || true)"
           TR="$(find_source /tmp/trinetra || true)"
-
-          # If the archives contain STEP/STP, the generated STL is the fallback.
-          [ -n "$LH" ] || LH="$(find /tmp/converted -type f -name '*.stl' | head -n 1 || true)"
-          [ -n "$TR" ] || TR="$(find /tmp/converted -type f -name '*.stl' | tail -n 1 || true)"
-
+          if [ -z "$LH" ]; then LH="$(find /tmp/converted -type f -name '*.stl' | head -n 1 || true)"; fi
+          if [ -z "$TR" ]; then TR="$(find /tmp/converted -type f -name '*.stl' | tail -n 1 || true)"; fi
           echo "Little Helper conversion source: $LH"
           echo "Trinetra conversion source: $TR"
-
-          [ -n "$LH" ] || { echo "No supported Little Helper model file was found inside the extracted archive."; exit 1; }
-          [ -n "$TR" ] || { echo "No supported Trinetra model file was found inside the extracted archive."; exit 1; }
-
+          [ -n "$LH" ] || { echo "No Little Helper model source found."; exit 1; }
+          [ -n "$TR" ] || { echo "No Trinetra model source found."; exit 1; }
           convert_one() {
             input="$1"
             output="$2"
@@ -128,7 +91,6 @@ PY
               convert_with_blender "$input" "$output"
             fi
           }
-
           convert_one "$LH" /tmp/converted/little-helper.glb
           convert_one "$TR" /tmp/converted/trinetra.glb
 
