@@ -17,6 +17,7 @@ import {
   Wrench
 } from "lucide-react";
 import "./styles.css";
+import EngineViewer from "./EngineViewer";
 
 declare global {
   interface Window {
@@ -742,17 +743,17 @@ function App() {
         <div className="section-head">
           <p className="eyebrow">Propulsion System</p>
           <h2>Engine Room</h2>
-          <p>A front view of my turbofan CAD model, rotating like a live systems display before final boarding.</p>
+          <p>An interactive front view of my turbofan CAD model. Rotate it, inspect the assembly, and explore the propulsion core.</p>
         </div>
         <div className="engine-panel">
-          <div className="engine-visual" aria-label="Rotating turbofan CAD model">
+          <div className="engine-visual" aria-label="Interactive 3D turbofan CAD model">
             <div className="engine-glow" />
-            <img src={images.dwelloThree} alt="Front view of Shlok's turbofan CAD model" loading="lazy" />
+            <EngineViewer />
           </div>
           <div className="engine-readout">
             <span>DWELLO / TURBOFAN</span>
             <strong>Propulsion Core</strong>
-            <p>CAD model • Aircraft propulsion • Simulation and animation</p>
+            <p>Interactive CAD model • Aircraft propulsion • Drag to orbit • Scroll to zoom</p>
           </div>
         </div>
       </section>
