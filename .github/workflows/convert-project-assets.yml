@@ -20,66 +20,121 @@ jobs:
       - name: Install conversion tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full poppler-utils blender
-          sudo apt-get install -y freecad || true
+          sudo apt-get install -y p7zip-full poppler-utils blender freecad
 
-      - name: Extract project archives
-        run: |
-          mkdir -p /tmp/little-helper /tmp/trinetra /tmp/converted
-          7z x "Little Helper Main.rar" -o/tmp/little-helper -y
-          7z x "Trinetra.rar" -o/tmp/trinetra -y
-          echo "Little Helper files:"
-          find /tmp/little-helper -type f | sort
-          echo "Trinetra files:"
-          find /tmp/trinetra -type f | sort
-
-      - name: Convert supported CAD meshes to GLB
+      - name: Extract archives and inspect the real project files
         shell: bash
         run: |
           set -e
+          rm -rf /tmp/little-helper /tmp/trinetra /tmp/converted
+          mkdir -p /tmp/little-helper /tmp/trinetra /tmp/converted
+
+          7z x "Little Helper Main.rar" -o/tmp/little-helper -y
+          7z x "Trinetra.rar" -o/tmp/trinetra -y
+
+          # Also unpack any archives nested inside the supplied RARs.
+          for root in /tmp/little-helper /tmp/trinetra; do
+            for archive in $(find "$root" -type f \( -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z' \)); do
+              dest="${archive%.*}_extracted"
+              mkdir -p "$dest"
+              7z x "$archive" -o"$dest" -y || true
+            done
+          done
+
+          echo "===== LITTLE HELPER: actual files inside archive ====="
+          find /tmp/little-helper -type f -printf '%p\n' | sort
+          echo "===== TRINETRA: actual files inside archive ====="
+          find /tmp/trinetra -type f -printf '%p\n' | sort
+
+      - name: Convert STEP/STP source files to STL
+        shell: bash
+        run: |
+          set -e
+
+          convert_step() {
+            input="$1"
+            output="$2"
+            cat > /tmp/step_to_stl.py <<'PY'
+import FreeCAD
+import Part
+import Mesh
+import sys
+
+src = sys.argv[1]
+dst = sys.argv[2]
+
+doc = FreeCAD.newDocument("Conversion")
+shape = Part.read(src)
+if shape.isNull():
+    raise RuntimeError("STEP file did not contain a valid shape")
+obj = doc.addObject("Part::Feature", "ImportedShape")
+obj.Shape = shape
+doc.recompute()
+Mesh.export([obj], dst)
+FreeCAD.closeDocument(doc.Name)
+PY
+            freecadcmd /tmp/step_to_stl.py "$input" "$output"
+          }
+
+          for root in /tmp/little-helper /tmp/trinetra; do
+            while IFS= read -r -d '' step; do
+              base="$(basename "$step")"
+              safe="$(echo "$base" | tr ' /' '__')"
+              convert_step "$step" "/tmp/converted/$safe.stl"
+            done < <(find "$root" -type f \( -iname '*.step' -o -iname '*.stp' \) -print0)
+          done
+
+          echo "===== GENERATED STL FILES ====="
+          find /tmp/converted -type f -name '*.stl' -printf '%p\n' | sort || true
+
+      - name: Convert the actual project model files to GLB
+        shell: bash
+        run: |
+          set -e
+
           convert_with_blender() {
             input="$1"
             output="$2"
-            blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True)" -- "$input" "$output"
+            blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); bpy.ops.object.select_all(action='SELECT'); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True)" -- "$input" "$output"
           }
 
-          find_mesh() {
+          find_source() {
             root="$1"
-            find "$root" -type f \( -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' -o -iname '*.glb' -o -iname '*.gltf' \) | head -n 1
+            # Prefer native interchange/mesh files already present in the extracted
+            # project. STEP/STP were tessellated in the previous step.
+            find "$root" -type f \( -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' -o -iname '*.glb' -o -iname '*.gltf' \) -print | head -n 1
           }
 
-          LH="$(find_mesh /tmp/little-helper || true)"
-          TR="$(find_mesh /tmp/trinetra || true)"
+          LH="$(find_source /tmp/little-helper || true)"
+          TR="$(find_source /tmp/trinetra || true)"
 
-          if [ -n "$LH" ]; then
-            ext="${LH##*.}"
+          # If the archives contain STEP/STP, the generated STL is the fallback.
+          [ -n "$LH" ] || LH="$(find /tmp/converted -type f -name '*.stl' | head -n 1 || true)"
+          [ -n "$TR" ] || TR="$(find /tmp/converted -type f -name '*.stl' | tail -n 1 || true)"
+
+          echo "Little Helper conversion source: $LH"
+          echo "Trinetra conversion source: $TR"
+
+          [ -n "$LH" ] || { echo "No supported Little Helper model file was found inside the extracted archive."; exit 1; }
+          [ -n "$TR" ] || { echo "No supported Trinetra model file was found inside the extracted archive."; exit 1; }
+
+          convert_one() {
+            input="$1"
+            output="$2"
+            ext="${input##*.}"
             if [ "${ext,,}" = "glb" ]; then
-              cp "$LH" /tmp/converted/little-helper.glb
+              cp "$input" "$output"
             else
-              convert_with_blender "$LH" /tmp/converted/little-helper.glb
+              convert_with_blender "$input" "$output"
             fi
-          fi
+          }
 
-          if [ -n "$TR" ]; then
-            ext="${TR##*.}"
-            if [ "${ext,,}" = "glb" ]; then
-              cp "$TR" /tmp/converted/trinetra.glb
-            else
-              convert_with_blender "$TR" /tmp/converted/trinetra.glb
-            fi
-          fi
-
-          if [ ! -f /tmp/converted/little-helper.glb ]; then
-            echo "No Blender-readable mesh was found in Little Helper archive."
-            exit 1
-          fi
-          if [ ! -f /tmp/converted/trinetra.glb ]; then
-            echo "No Blender-readable mesh was found in Trinetra archive."
-            exit 1
-          fi
+          convert_one "$LH" /tmp/converted/little-helper.glb
+          convert_one "$TR" /tmp/converted/trinetra.glb
 
       - name: Make Little Helper PDF preview
         run: |
+          set -e
           mkdir -p public/assets
           pdftoppm -png -f 1 -singlefile -r 120 littlehelper.pdf /tmp/converted/littlehelper-preview
           cp /tmp/converted/littlehelper-preview.png public/assets/littlehelper-preview.png
@@ -93,5 +148,3 @@ jobs:
           git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/littlehelper-preview.png
           git diff --cached --quiet || git commit -m "Add project GLB models and Little Helper preview"
           git push
-
-# rerun
