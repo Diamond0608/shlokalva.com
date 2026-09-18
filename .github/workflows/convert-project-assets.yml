@@ -1,12 +1,13 @@
-name: Convert project CAD assets
+name: Prepare project media
 
 on:
   push:
     paths:
-      - "Little Helper Main.rar"
-      - "Trinetra.rar"
+      - "untitled.glb"
+      - "untitled.rar"
       - "scene (1).rar"
       - "littlehelper.pdf"
+      - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
@@ -14,127 +15,82 @@ permissions:
   contents: write
 
 jobs:
-  convert:
+  media:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install conversion tools
+      - name: Install media tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full poppler-utils blender python3-venv python3-numpy ffmpeg
-          python3 -m venv /tmp/cq
-          /tmp/cq/bin/pip install cadquery
+          sudo apt-get install -y ffmpeg p7zip-full poppler-utils
 
-      - name: Extract archives and inspect the real project files
+      - name: Prepare uploaded GLB and project media
         shell: bash
         run: |
           set -e
-          rm -rf /tmp/little-helper /tmp/trinetra /tmp/trinetra-scene /tmp/converted
-          mkdir -p /tmp/little-helper /tmp/trinetra /tmp/trinetra-scene /tmp/converted
+          mkdir -p public/assets
+          rm -rf /tmp/project-assets
+          mkdir -p /tmp/project-assets
 
-          7z x "Little Helper Main.rar" -o/tmp/little-helper -y
-          7z x "Trinetra.rar" -o/tmp/trinetra -y
-          7z x "scene (1).rar" -o/tmp/trinetra-scene -y
-
-          for root in /tmp/little-helper /tmp/trinetra; do
-            while IFS= read -r -d '' archive; do
-              dest="${archive%.*}_extracted"
-              mkdir -p "$dest"
-              7z x "$archive" -o"$dest" -y || true
-            done < <(find "$root" -type f \( -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z' \) -print0)
-          done
-
-          echo "===== LITTLE HELPER: actual files inside archive ====="
-          find /tmp/little-helper -type f -printf '%p\n' | sort
-          echo "===== TRINETRA: actual files inside archive ====="
-          find /tmp/trinetra -type f -printf '%p\n' | sort
-          echo "===== TRINETRA SCENE: actual files inside archive ====="
-          find /tmp/trinetra-scene -type f -printf '%p\n' | sort
-
-      - name: Convert STEP/STP source files to STL
-        shell: bash
-        run: |
-          set -e
-          for root in /tmp/little-helper /tmp/trinetra; do
-            while IFS= read -r -d '' step; do
-              base="$(basename "$step")"
-              safe="$(echo "$base" | tr ' /' '__')"
-              /tmp/cq/bin/python -c 'import sys,cadquery as cq; model=cq.importers.importStep(sys.argv[1]); cq.exporters.export(model,sys.argv[2],cq.exporters.ExportTypes.STL)' "$step" "/tmp/converted/$safe.stl"
-            done < <(find "$root" -type f \( -iname '*.step' -o -iname '*.stp' \) -print0)
-          done
-          find /tmp/converted -type f -name '*.stl' -print | sort || true
-
-      - name: Convert the actual project model files to GLB
-        shell: bash
-        run: |
-          set -e
-          convert_with_blender() {
-            input="$1"
-            output="$2"
-            PYTHONPATH=/usr/lib/python3/dist-packages blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); total=sum(len(x.data.polygons) for x in bpy.context.scene.objects if x.type=='MESH'); ratio=min(1.0,500000/max(total,1)); exec('for obj in bpy.context.scene.objects:\\n    if obj.type == \'MESH\' and len(obj.data.polygons) > 500000:\\n        bpy.context.view_layer.objects.active = obj\\n        obj.select_set(True)\\n        mod = obj.modifiers.new(name=\'PortfolioSimplify\', type=\'DECIMATE\')\\n        mod.ratio = ratio\\n        bpy.ops.object.modifier_apply(modifier=mod.name)'); bpy.ops.object.select_all(action='SELECT'); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True); print('Imported polygons:',total,'Simplification ratio:',ratio,'GLB exported:',o)" -- "$input" "$output"
-          }
-          find_source() {
-            root="$1"
-            find "$root" -type f \( -iname '*.glb' -o -iname '*.gltf' -o -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' \) -print | head -n 1
-          }
-          LH="$(find_source /tmp/little-helper || true)"
-          TR="$(find_source /tmp/trinetra-scene || true)"
-          if [ -z "$TR" ]; then TR="$(find_source /tmp/trinetra || true)"; fi
-          if [ -z "$LH" ]; then LH="$(find /tmp/converted -type f -name '*.stl' | head -n 1 || true)"; fi
-          if [ -z "$TR" ]; then TR="$(find /tmp/converted -type f -name '*.stl' | tail -n 1 || true)"; fi
-          echo "Little Helper conversion source: $LH"
-          echo "Trinetra conversion source: $TR"
-          [ -n "$LH" ] || { echo "No Little Helper model source found."; exit 1; }
-          [ -n "$TR" ] || { echo "No Trinetra model source found."; exit 1; }
-          convert_one() {
-            input="$1"
-            output="$2"
-            ext="${input##*.}"
-            if [ "${ext,,}" = "glb" ]; then
-              cp "$input" "$output"
+          # Little Helper: use the final uploaded GLB directly. No CAD conversion.
+          if [ -f "untitled.glb" ]; then
+            cp "untitled.glb" public/assets/little-helper.glb
+          elif [ -f "untitled.rar" ]; then
+            7z x "untitled.rar" -o/tmp/project-assets/little-helper -y
+            LH="$(find /tmp/project-assets/little-helper -type f -iname '*.glb' | head -n 1 || true)"
+            if [ -n "$LH" ]; then
+              cp "$LH" public/assets/little-helper.glb
             else
-              convert_with_blender "$input" "$output"
+              echo "untitled.rar did not contain a GLB; leaving the existing Little Helper model untouched."
             fi
-          }
-          convert_one "$LH" /tmp/converted/little-helper.glb
-          convert_one "$TR" /tmp/converted/trinetra.glb
-          ls -lh /tmp/converted/*.glb
+          else
+            echo "No Little Helper GLB upload in this commit; leaving the existing model untouched."
+          fi
+
+          # Trinetra: accept an already-built GLB from the scene archive. No conversion.
+          if [ -f "scene (1).rar" ]; then
+            7z x "scene (1).rar" -o/tmp/project-assets/trinetra -y
+            TR="$(find /tmp/project-assets/trinetra -type f -iname '*.glb' | head -n 1 || true)"
+            if [ -n "$TR" ]; then
+              cp "$TR" public/assets/trinetra.glb
+            else
+              echo "scene (1).rar did not contain a GLB; no Trinetra conversion will be attempted."
+            fi
+          fi
+
+          if [ -f "littlehelper.pdf" ]; then
+            pdftoppm -png -f 1 -singlefile -r 120 "littlehelper.pdf" /tmp/project-assets/littlehelper-preview
+            cp /tmp/project-assets/littlehelper-preview.png public/assets/littlehelper-preview.png
+          fi
+
+          if [ -f "image_2026-09-18_132632793.png" ]; then
+            cp "image_2026-09-18_132632793.png" public/assets/image_2026-09-18_132632793.png
+          fi
 
       - name: Prepare uploaded project videos
         shell: bash
         run: |
           set -e
           mkdir -p public/assets
-          # The three WhatsApp uploads are: 1.00.44 (plane), 1.02.12 (Team Dinoco),
-          # and 1.03.08 (moving plane). The moving-plane clip is intentionally reversed.
+
           if [ -f "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" ]; then
             cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
           fi
+
           if [ -f "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" ]; then
-            ffmpeg -y -i "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" -vf reverse -af areverse -c:v libx264 -preset veryfast -c:a aac public/assets/rc-plane-moving-reversed.mp4
+            input="WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4"
+            output="public/assets/rc-plane-moving-reversed.mp4"
+            if ffprobe -v error -select_streams a:0 -show_entries stream=index -of csv=p=0 "$input" | grep -q .; then
+              ffmpeg -y -i "$input" -vf reverse -af areverse -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart "$output"
+            else
+              ffmpeg -y -i "$input" -vf reverse -an -c:v libx264 -preset veryfast -crf 23 -pix_fmt yuv420p -movflags +faststart "$output"
+            fi
           fi
+
           if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
             cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
           fi
-
-      - name: Make Little Helper PDF preview
-        shell: bash
-        run: |
-          mkdir -p public/assets
-          if [ -f "littlehelper.pdf" ]; then
-            if pdftoppm -png -f 1 -singlefile -r 120 "littlehelper.pdf" /tmp/converted/littlehelper-preview; then
-              cp /tmp/converted/littlehelper-preview.png public/assets/littlehelper-preview.png
-              echo "PDF preview created."
-            else
-              echo "PDF preview generation failed; continuing because the GLB assets are valid."
-            fi
-          else
-            echo "littlehelper.pdf not found; skipping preview."
-          fi
-
-          cp /tmp/converted/little-helper.glb public/assets/little-helper.glb
-          cp /tmp/converted/trinetra.glb public/assets/trinetra.glb
 
       - name: Commit generated assets
         shell: bash
@@ -142,21 +98,16 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/little-helper.glb public/assets/trinetra.glb
-          for asset in public/assets/rc-plane-detail.mp4 public/assets/rc-plane-moving-reversed.mp4 public/assets/team-dinoco-video.mp4 public/assets/littlehelper-preview.png public/assets/image_2026-09-18_132632793.png; do
+
+          for asset in             public/assets/little-helper.glb             public/assets/trinetra.glb             public/assets/littlehelper-preview.png             public/assets/image_2026-09-18_132632793.png             public/assets/rc-plane-detail.mp4             public/assets/rc-plane-moving-reversed.mp4             public/assets/team-dinoco-video.mp4; do
             if [ -f "$asset" ]; then git add "$asset"; fi
           done
-          if [ -f "image_2026-09-18_132632793.png" ]; then
-            cp "image_2026-09-18_132632793.png" public/assets/image_2026-09-18_132632793.png
-            git add public/assets/image_2026-09-18_132632793.png
-          fi
+
           if git diff --cached --quiet; then
             echo "No generated asset changes to commit."
-          else
-            git commit -m "Add project GLB models and Little Helper preview"
-            # Another workflow run can update main while conversion is running.
-            # Rebase the generated-assets commit before pushing so the workflow
-            # does not fail just because the site changed concurrently.
-            git pull --rebase origin main
-            git push
+            exit 0
           fi
+
+          git commit -m "Prepare project media"
+          git pull --rebase origin main
+          git push
