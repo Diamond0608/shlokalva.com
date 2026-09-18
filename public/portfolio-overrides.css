@@ -271,3 +271,92 @@ a,
     max-height: 13rem;
   }
 }
+
+
+/* Interactive turbofan viewer. The GLB is lazy-loaded only when this section approaches the viewport. */
+.engine-viewer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.engine-viewer canvas {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  touch-action: none;
+}
+
+.engine-loading,
+.engine-fallback {
+  position: absolute;
+  inset: 12%;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(137, 216, 255, 0.2);
+  border-radius: 50%;
+  padding: 2rem;
+  background: rgba(5, 7, 10, 0.52);
+  text-align: center;
+  backdrop-filter: blur(5px);
+}
+
+.engine-loading span,
+.engine-fallback span {
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.engine-loading strong,
+.engine-fallback strong {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+}
+
+.engine-loading p,
+.engine-fallback p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+.engine-fallback {
+  inset: 8%;
+}
+
+.engine-fallback strong {
+  color: var(--cream);
+}
+
+.engine-visual {
+  min-width: 0;
+}
+
+@media (max-width: 980px) {
+  .engine-viewer {
+    border-radius: 50%;
+  }
+}
+
+@media (max-width: 620px) {
+  .engine-panel {
+    padding: 1rem;
+  }
+
+  .engine-viewer {
+    border-radius: 50%;
+  }
+
+  .engine-loading,
+  .engine-fallback {
+    inset: 10%;
+    padding: 1.2rem;
+  }
+}
