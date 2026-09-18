@@ -26,6 +26,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y p7zip-full poppler-utils
+          npm install --global @gltf-transform/cli
 
       - name: Prepare uploaded GLB and project media
         shell: bash
@@ -42,7 +43,7 @@ jobs:
             7z x "untitled.rar" -o/tmp/project-assets/little-helper -y
             LH="$(find /tmp/project-assets/little-helper -type f -iname '*.glb' | head -n 1 || true)"
             if [ -n "$LH" ]; then
-              cp "$LH" public/assets/little-helper.glb
+              gltf-transform optimize "$LH" public/assets/little-helper.glb --compress draco
             else
               echo "untitled.rar did not contain a GLB; leaving the existing Little Helper model untouched."
             fi
@@ -53,7 +54,7 @@ jobs:
             7z x "scene (1).rar" -o/tmp/project-assets/trinetra -y
             TR="$(find /tmp/project-assets/trinetra -type f -iname '*.glb' | head -n 1 || true)"
             if [ -n "$TR" ]; then
-              cp "$TR" public/assets/trinetra.glb
+              gltf-transform optimize "$TR" public/assets/trinetra.glb --compress draco
             else
               echo "scene (1).rar did not contain a GLB; leaving the existing Trinetra model untouched."
             fi
