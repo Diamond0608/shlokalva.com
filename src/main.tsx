@@ -690,29 +690,23 @@ function App() {
 
       <section id="top" className="hero">
         <div className="hero-copy">
-          <div className="a350-approach" aria-hidden="true">
-            <div className="a350-runway">
-              <span />
-              <span />
-              <span />
-              <span />
-              <span />
+          <div className="aviation-compass" aria-hidden="true">
+            <div className="compass-ring compass-ring-outer" />
+            <div className="compass-ring compass-ring-inner" />
+            <div className="compass-crosshair" />
+            <div className="compass-cardinal compass-n">N</div>
+            <div className="compass-cardinal compass-e">E</div>
+            <div className="compass-cardinal compass-s">S</div>
+            <div className="compass-cardinal compass-w">W</div>
+            <div className="compass-aviation-label">AVIATION</div>
+            <div className="compass-needle">
+              <span className="compass-needle-tip" />
+              <span className="compass-needle-tail" />
             </div>
-            <div className="a350-approach-aircraft">
-              <video
-                className="a350-approach-video"
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-hidden="true"
-              >
-                <source src="https://pixabay.com/videos/download/x-265555_medium.mp4" type="video/mp4" />
-                <source src="https://pixabay.com/videos/download/x-41406_medium.mp4" type="video/mp4" />
-              </video>
-              <div className="a350-approach-glow" />
+            <div className="compass-plane-orbit">
+              <Plane size={22} strokeWidth={2.4} />
             </div>
+            <div className="compass-center">✦</div>
           </div>
           <p className="eyebrow">Boarding Pass / Engineering Portfolio</p>
           <h1>Shlok Alva</h1>
