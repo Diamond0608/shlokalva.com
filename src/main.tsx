@@ -738,6 +738,25 @@ function App() {
         </div>
       </section>
 
+      <section className="section engine-showcase">
+        <div className="section-head">
+          <p className="eyebrow">Propulsion System</p>
+          <h2>Engine Room</h2>
+          <p>A front view of my turbofan CAD model, rotating like a live systems display before final boarding.</p>
+        </div>
+        <div className="engine-panel">
+          <div className="engine-visual" aria-label="Rotating turbofan CAD model">
+            <div className="engine-glow" />
+            <img src={images.dwelloThree} alt="Front view of Shlok's turbofan CAD model" loading="lazy" />
+          </div>
+          <div className="engine-readout">
+            <span>DWELLO / TURBOFAN</span>
+            <strong>Propulsion Core</strong>
+            <p>CAD model • Aircraft propulsion • Simulation and animation</p>
+          </div>
+        </div>
+      </section>
+
       <section id="contact" className="section contact">
         <div>
           <p className="eyebrow">Contact</p>
