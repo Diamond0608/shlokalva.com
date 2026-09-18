@@ -5,7 +5,9 @@ on:
     paths:
       - "Little Helper Main.rar"
       - "Trinetra.rar"
+      - "scene (1).rar"
       - "littlehelper.pdf"
+      - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
@@ -29,11 +31,12 @@ jobs:
         shell: bash
         run: |
           set -e
-          rm -rf /tmp/little-helper /tmp/trinetra /tmp/converted
-          mkdir -p /tmp/little-helper /tmp/trinetra /tmp/converted
+          rm -rf /tmp/little-helper /tmp/trinetra /tmp/trinetra-scene /tmp/converted
+          mkdir -p /tmp/little-helper /tmp/trinetra /tmp/trinetra-scene /tmp/converted
 
           7z x "Little Helper Main.rar" -o/tmp/little-helper -y
           7z x "Trinetra.rar" -o/tmp/trinetra -y
+          7z x "scene (1).rar" -o/tmp/trinetra-scene -y
 
           for root in /tmp/little-helper /tmp/trinetra; do
             while IFS= read -r -d '' archive; do
@@ -47,6 +50,8 @@ jobs:
           find /tmp/little-helper -type f -printf '%p\n' | sort
           echo "===== TRINETRA: actual files inside archive ====="
           find /tmp/trinetra -type f -printf '%p\n' | sort
+          echo "===== TRINETRA SCENE: actual files inside archive ====="
+          find /tmp/trinetra-scene -type f -printf '%p\n' | sort
 
       - name: Convert STEP/STP source files to STL
         shell: bash
@@ -75,7 +80,8 @@ jobs:
             find "$root" -type f \( -iname '*.glb' -o -iname '*.gltf' -o -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' \) -print | head -n 1
           }
           LH="$(find_source /tmp/little-helper || true)"
-          TR="$(find_source /tmp/trinetra || true)"
+          TR="$(find_source /tmp/trinetra-scene || true)"
+          if [ -z "$TR" ]; then TR="$(find_source /tmp/trinetra || true)"; fi
           if [ -z "$LH" ]; then LH="$(find /tmp/converted -type f -name '*.stl' | head -n 1 || true)"; fi
           if [ -z "$TR" ]; then TR="$(find /tmp/converted -type f -name '*.stl' | tail -n 1 || true)"; fi
           echo "Little Helper conversion source: $LH"
@@ -124,6 +130,9 @@ jobs:
 
           cp /tmp/converted/little-helper.glb public/assets/little-helper.glb
           cp /tmp/converted/trinetra.glb public/assets/trinetra.glb
+          if [ -f "image_2026-09-18_132632793.png" ]; then
+            cp "image_2026-09-18_132632793.png" public/assets/littlehelper-preview.png
+          fi
 
       - name: Commit generated assets
         shell: bash
@@ -132,6 +141,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/rc-plane-detail.mp4 public/assets/rc-plane-moving-reversed.mp4 public/assets/team-dinoco-video.mp4
+          if [ -f public/assets/littlehelper-preview.png ]; then
+            git add public/assets/littlehelper-preview.png
+          fi
           if [ -f public/assets/littlehelper-preview.png ]; then
             git add public/assets/littlehelper-preview.png
           fi
