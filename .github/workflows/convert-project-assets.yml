@@ -34,13 +34,12 @@ jobs:
           7z x "Little Helper Main.rar" -o/tmp/little-helper -y
           7z x "Trinetra.rar" -o/tmp/trinetra -y
 
-          # Also unpack any archives nested inside the supplied RARs.
           for root in /tmp/little-helper /tmp/trinetra; do
-            for archive in $(find "$root" -type f \( -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z' \)); do
+            while IFS= read -r -d '' archive; do
               dest="${archive%.*}_extracted"
               mkdir -p "$dest"
               7z x "$archive" -o"$dest" -y || true
-            done
+            done < <(find "$root" -type f \( -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z' \) -print0)
           done
 
           echo "===== LITTLE HELPER: actual files inside archive ====="
@@ -53,12 +52,11 @@ jobs:
         run: |
           set -e
           for root in /tmp/little-helper /tmp/trinetra; do
-            find "$root" -type f \( -iname '*.step' -o -iname '*.stp' \) -print0 |
             while IFS= read -r -d '' step; do
               base="$(basename "$step")"
               safe="$(echo "$base" | tr ' /' '__')"
               /tmp/cq/bin/python -c 'import sys,cadquery as cq; model=cq.importers.importStep(sys.argv[1]); cq.exporters.export(model,sys.argv[2],cq.exporters.ExportTypes.STL)' "$step" "/tmp/converted/$safe.stl"
-            done
+            done < <(find "$root" -type f \( -iname '*.step' -o -iname '*.stp' \) -print0)
           done
           find /tmp/converted -type f -name '*.stl' -print | sort || true
 
@@ -73,7 +71,7 @@ jobs:
           }
           find_source() {
             root="$1"
-            find "$root" -type f \( -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' -o -iname '*.glb' -o -iname '*.gltf' \) -print | head -n 1
+            find "$root" -type f \( -iname '*.glb' -o -iname '*.gltf' -o -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' \) -print | head -n 1
           }
           LH="$(find_source /tmp/little-helper || true)"
           TR="$(find_source /tmp/trinetra || true)"
@@ -95,20 +93,39 @@ jobs:
           }
           convert_one "$LH" /tmp/converted/little-helper.glb
           convert_one "$TR" /tmp/converted/trinetra.glb
+          ls -lh /tmp/converted/*.glb
 
       - name: Make Little Helper PDF preview
+        shell: bash
         run: |
-          set -e
           mkdir -p public/assets
-          pdftoppm -png -f 1 -singlefile -r 120 littlehelper.pdf /tmp/converted/littlehelper-preview
-          cp /tmp/converted/littlehelper-preview.png public/assets/littlehelper-preview.png
+          if [ -f "littlehelper.pdf" ]; then
+            if pdftoppm -png -f 1 -singlefile -r 120 "littlehelper.pdf" /tmp/converted/littlehelper-preview; then
+              cp /tmp/converted/littlehelper-preview.png public/assets/littlehelper-preview.png
+              echo "PDF preview created."
+            else
+              echo "PDF preview generation failed; continuing because the GLB assets are valid."
+            fi
+          else
+            echo "littlehelper.pdf not found; skipping preview."
+          fi
+
           cp /tmp/converted/little-helper.glb public/assets/little-helper.glb
           cp /tmp/converted/trinetra.glb public/assets/trinetra.glb
 
       - name: Commit generated assets
+        shell: bash
         run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/littlehelper-preview.png
-          git diff --cached --quiet || git commit -m "Add project GLB models and Little Helper preview"
-          git push
+          git add public/assets/little-helper.glb public/assets/trinetra.glb
+          if [ -f public/assets/littlehelper-preview.png ]; then
+            git add public/assets/littlehelper-preview.png
+          fi
+          if git diff --cached --quiet; then
+            echo "No generated asset changes to commit."
+          else
+            git commit -m "Add project GLB models and Little Helper preview"
+            git push
+          fi
