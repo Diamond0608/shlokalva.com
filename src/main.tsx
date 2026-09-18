@@ -30,6 +30,7 @@ type GalleryImage = {
   alt: string;
   caption: string;
   type?: "image" | "video";
+  youtubeId?: string;
 };
 
 type Project = {
@@ -86,7 +87,8 @@ const images = {
   cyberRoboticsTwo: "/assets/cyber-robotics-2.jpg",
   cyberClipOne: "/assets/cyber-robotics-clip-1.mp4",
   cyberClipTwo: "/assets/cyber-robotics-clip-2.mp4",
-  rcPlane: "/assets/rc-plane.jpg"
+  rcPlane: "/assets/rc-plane.jpg",
+  turbofanAnimation: "https://raw.githubusercontent.com/Diamond0608/shlokalva.com/main/Turbofan%20Engine%20Animation.mp4"
 };
 
 const nav = [
@@ -120,7 +122,8 @@ const projects: Project[] = [
       { src: images.littleHelperReal, alt: "Little Helper physical robot with LEDs on", caption: "Physical Build" },
       { src: images.littleHelperCad, alt: "Little Helper CAD render with cargo box", caption: "CAD Assembly" },
       { src: images.littleHelperFront, alt: "Little Helper front CAD view", caption: "Front Plate And Tracks" },
-      { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" }
+      { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" },
+      { src: "https://img.youtube.com/vi/gsAc9kgTfto/hqdefault.jpg", alt: "Little Helper project video", caption: "Little Helper — Project Video", youtubeId: "gsAc9kgTfto" }
     ]
   },
   {
@@ -166,7 +169,8 @@ const projects: Project[] = [
     gallery: [
       { src: images.dwelloOne, alt: "Turbofan can type CAD render", caption: "Turbofan CAD Render" },
       { src: images.dwelloTwo, alt: "Turbofan side CAD render", caption: "Propulsion Assembly" },
-      { src: images.dwelloThree, alt: "Turbofan front CAD render", caption: "Fan Geometry" }
+      { src: images.dwelloThree, alt: "Turbofan front CAD render", caption: "Fan Geometry" },
+      { src: images.turbofanAnimation, alt: "Turbofan engine animation", caption: "Turbofan Engine Animation", type: "video" }
     ]
   },
   {
@@ -185,7 +189,8 @@ const projects: Project[] = [
     link: "https://github.com/Diamond0608/Trinetra",
     gallery: [
       { src: images.trinetraOne, alt: "Trinetra CAD exploded view", caption: "CAD View" },
-      { src: images.trinetraTwo, alt: "Trinetra enclosure CAD render", caption: "Enclosure Render" }
+      { src: images.trinetraTwo, alt: "Trinetra enclosure CAD render", caption: "Enclosure Render" },
+      { src: "https://img.youtube.com/vi/FA887wvikZQ/hqdefault.jpg", alt: "Trinetra project video", caption: "Trinetra — Project Video", youtubeId: "FA887wvikZQ" }
     ]
   },
   {
@@ -781,7 +786,14 @@ function App() {
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={activeImage.caption} onClick={() => setActiveImage(null)}>
           <button aria-label="Close Image Preview">Close</button>
           <figure onClick={(event) => event.stopPropagation()}>
-            {activeImage.type === "video" ? (
+            {activeImage.youtubeId ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${activeImage.youtubeId}?autoplay=1&rel=0`}
+                title={activeImage.alt}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+              />
+            ) : activeImage.type === "video" ? (
               <video src={activeImage.src} controls autoPlay muted loop playsInline />
             ) : (
               <img src={activeImage.src} alt={activeImage.alt} />
