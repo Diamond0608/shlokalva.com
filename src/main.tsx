@@ -14,7 +14,6 @@ import {
   Play,
   Pause,
   ChevronLeft,
-  ChevronRight,
   Rocket,
   Shield,
   type LucideIcon,
