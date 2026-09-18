@@ -475,11 +475,8 @@ h3 {
 }
 
 .flight-card {
-  display: grid;
-  grid-template-columns: minmax(10rem, 0.9fr) minmax(0, 1.35fr);
-  align-items: stretch;
-  gap: clamp(1rem, 2vw, 1.75rem);
-  min-height: 12rem;
+  display: block;
+  min-height: 0;
 }
 
 .flight-card-copy {
@@ -488,126 +485,216 @@ h3 {
   min-width: 0;
 }
 
-.runway-approach {
+.a350-approach {
   position: relative;
-  min-height: 10rem;
+  width: min(100%, 34rem);
+  height: clamp(9rem, 15vw, 13rem);
+  margin: 0 0 clamp(0.8rem, 2vw, 1.35rem);
   overflow: hidden;
   border: 1px solid rgba(137, 216, 255, 0.12);
-  border-radius: 6px;
+  border-radius: 8px;
   background:
-    radial-gradient(circle at 50% 58%, rgba(137, 216, 255, 0.13), transparent 42%),
-    linear-gradient(180deg, rgba(5, 9, 13, 0.2), rgba(5, 7, 10, 0.82));
-  perspective: 500px;
+    radial-gradient(circle at 50% 48%, rgba(137, 216, 255, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(5, 9, 13, 0.1), rgba(5, 7, 10, 0.72));
+  perspective: 900px;
 }
 
-.runway-approach::before {
+.a350-approach::before {
   content: "";
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(90deg, transparent 49.5%, rgba(137, 216, 255, 0.1) 50%, transparent 50.5%),
-    linear-gradient(180deg, rgba(137, 216, 255, 0.04), transparent 45%);
+    linear-gradient(90deg, transparent 49.7%, rgba(137, 216, 255, 0.08) 50%, transparent 50.3%),
+    linear-gradient(180deg, transparent 52%, rgba(255, 138, 42, 0.08), transparent 72%);
 }
 
-.runway-perspective {
+.a350-runway {
   position: absolute;
-  right: 12%;
-  bottom: -18%;
-  left: 12%;
-  height: 72%;
-  transform: perspective(180px) rotateX(58deg);
+  right: 20%;
+  bottom: -44%;
+  left: 20%;
+  height: 82%;
+  transform: perspective(260px) rotateX(62deg);
   transform-origin: bottom;
-  border-top: 1px solid rgba(255, 138, 42, 0.5);
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 22%,
-    rgba(255, 241, 223, 0.72) 22.5% 24%,
-    transparent 24.5% 46%
-  );
-  animation: runwayApproachMove 1.15s linear infinite;
+  border-left: 1px solid rgba(255, 241, 223, 0.2);
+  border-right: 1px solid rgba(255, 241, 223, 0.2);
+  animation: a350RunwayRush 1.1s linear infinite;
 }
 
-.runway-perspective i {
+.a350-runway::after {
+  content: "";
   position: absolute;
-  left: 50%;
-  width: 0.25rem;
-  height: 2rem;
-  background: rgba(255, 241, 223, 0.8);
-  transform: translateX(-50%);
-  box-shadow: 0 0 12px rgba(255, 241, 223, 0.25);
+  top: 0;
+  right: 49.5%;
+  bottom: 0;
+  left: 49.5%;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 241, 223, 0.82) 0 0.65rem,
+    transparent 0.65rem 2.3rem
+  );
 }
 
-.runway-perspective i:nth-child(1) { top: 8%; }
-.runway-perspective i:nth-child(2) { top: 31%; }
-.runway-perspective i:nth-child(3) { top: 56%; }
-.runway-perspective i:nth-child(4) { top: 82%; }
+.a350-runway i {
+  position: absolute;
+  bottom: 0;
+  width: 0.18rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  background: rgba(255, 241, 223, 0.72);
+}
 
-.approach-plane {
+.a350-runway i:nth-child(1) { left: 4%; }
+.a350-runway i:nth-child(2) { right: 4%; }
+.a350-runway i:nth-child(3) { left: 50%; transform: translateX(-50%); }
+
+.a350-aircraft {
   position: absolute;
   z-index: 3;
-  top: 54%;
+  top: 52%;
   left: 50%;
-  color: var(--cream);
-  filter: drop-shadow(0 0 10px rgba(137, 216, 255, 0.65));
-  transform: translate(-50%, -50%) scale(0.22);
-  animation: planeApproach 3.2s cubic-bezier(0.35, 0.02, 0.25, 1) infinite;
+  width: 5.6rem;
+  height: 3.6rem;
+  transform: translate(-50%, -50%) scale(0.18);
+  filter: drop-shadow(0 0 9px rgba(137, 216, 255, 0.58));
+  animation: a350Approach 4s cubic-bezier(0.28, 0.02, 0.2, 1) infinite;
 }
 
-.approach-glow {
+.a350-fuselage {
   position: absolute;
-  z-index: 2;
-  top: 54%;
+  top: 0.2rem;
   left: 50%;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  background: rgba(137, 216, 255, 0.28);
-  filter: blur(12px);
-  transform: translate(-50%, -50%);
-  animation: approachGlow 3.2s ease-in-out infinite;
+  width: 1.08rem;
+  height: 3.15rem;
+  border-radius: 52% 52% 42% 42%;
+  background: linear-gradient(90deg, #aab4bc, #f3f6f7 50%, #8e9aa3);
+  transform: translateX(-50%);
 }
 
-@keyframes planeApproach {
+.a350-fuselage::after {
+  content: "";
+  position: absolute;
+  right: 0.08rem;
+  bottom: 0.12rem;
+  left: 0.08rem;
+  height: 0.62rem;
+  border-radius: 50%;
+  background: #1c2328;
+}
+
+.a350-cockpit {
+  position: absolute;
+  z-index: 5;
+  top: 0.38rem;
+  left: 50%;
+  width: 0.82rem;
+  height: 0.66rem;
+  transform: translateX(-50%);
+}
+
+.a350-cockpit i {
+  position: absolute;
+  top: 0;
+  width: 0.34rem;
+  height: 0.48rem;
+  border-radius: 45% 45% 55% 55%;
+  background: #111b22;
+  box-shadow: inset 0 0 0 1px rgba(137, 216, 255, 0.22);
+}
+
+.a350-cockpit i:first-child { left: 0; transform: skewY(9deg); }
+.a350-cockpit i:last-child { right: 0; transform: skewY(-9deg); }
+
+.a350-wing {
+  position: absolute;
+  top: 1.15rem;
+  width: 3.1rem;
+  height: 1.18rem;
+  background: linear-gradient(180deg, #d9dfe2, #89959e);
+  clip-path: polygon(0 42%, 100% 0, 86% 100%, 20% 64%);
+}
+
+.a350-wing-left {
+  right: 50%;
+  transform-origin: right center;
+  transform: scaleX(-1);
+}
+
+.a350-wing-right {
+  left: 50%;
+}
+
+.a350-engine {
+  position: absolute;
+  z-index: 4;
+  top: 1.18rem;
+  width: 0.74rem;
+  height: 1.12rem;
+  border-radius: 45% 45% 50% 50%;
+  background: linear-gradient(90deg, #707c84, #d5dce0 48%, #6b777f);
+  box-shadow: inset 0 0 0 1px rgba(5, 7, 10, 0.25);
+}
+
+.a350-engine::after {
+  content: "";
+  position: absolute;
+  top: 0.17rem;
+  left: 50%;
+  width: 0.46rem;
+  height: 0.46rem;
+  border-radius: 50%;
+  background: #10161a;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 1px rgba(137, 216, 255, 0.18);
+}
+
+.a350-engine-left { right: 1.72rem; }
+.a350-engine-right { left: 1.72rem; }
+
+.a350-nose-light {
+  position: absolute;
+  z-index: 6;
+  top: 0.18rem;
+  left: 50%;
+  width: 0.2rem;
+  height: 0.2rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+  transform: translateX(-50%);
+}
+
+@keyframes a350Approach {
   0%, 100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.18);
+    transform: translate(-50%, -50%) scale(0.12);
   }
-  12% {
-    opacity: 0.9;
+  10% {
+    opacity: 0.7;
   }
-  52% {
+  45% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(0.72);
+    transform: translate(-50%, -50%) scale(0.55);
   }
-  78% {
+  74% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1.28);
+    transform: translate(-50%, -50%) scale(1.05);
   }
   86% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(1.62);
+    transform: translate(-50%, -50%) scale(1.48);
   }
 }
 
-@keyframes approachGlow {
-  0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); }
-  45% { opacity: 0.55; }
-  78% { opacity: 0.95; transform: translate(-50%, -50%) scale(2.2); }
-  88% { opacity: 0; transform: translate(-50%, -50%) scale(3.8); }
-}
-
-@keyframes runwayApproachMove {
-  from { transform: perspective(180px) rotateX(58deg) translateY(0); }
-  to { transform: perspective(180px) rotateX(58deg) translateY(18%); }
+@keyframes a350RunwayRush {
+  from { transform: perspective(260px) rotateX(62deg) translateY(0); }
+  to { transform: perspective(260px) rotateX(62deg) translateY(24%); }
 }
 
 @media (max-width: 620px) {
-  .flight-card {
-    grid-template-columns: 1fr;
-  }
-
-  .runway-approach {
-    min-height: 8rem;
+  .a350-approach {
+    width: min(100%, 30rem);
+    height: 9rem;
   }
 }
 
