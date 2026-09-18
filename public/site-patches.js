@@ -5,6 +5,7 @@
   let uiContext = null;
   let lastHoverTarget = null;
   let musicStarted = false;
+  let musicReady = false;
 
   const ensureUiContext = () => {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -14,10 +15,21 @@
     return uiContext;
   };
 
+  const duckMusic = (duration = 150) => {
+    if (!figaro || figaro.paused) return;
+    const original = figaro.volume;
+    figaro.volume = Math.min(original, 0.07);
+    window.setTimeout(() => {
+      if (figaro) figaro.volume = original;
+    }, duration);
+  };
+
   const playUiSound = (kind) => {
     if (!soundEnabled) return;
     const context = ensureUiContext();
     if (!context) return;
+
+    duckMusic(kind === "click" ? 190 : 130);
 
     const osc = context.createOscillator();
     const gain = context.createGain();
@@ -25,21 +37,22 @@
     const click = kind === "click";
 
     osc.type = click ? "square" : "triangle";
-    osc.frequency.setValueAtTime(click ? 760 : 430, now);
-    osc.frequency.exponentialRampToValueAtTime(click ? 1120 : 680, now + (click ? 0.055 : 0.045));
+    osc.frequency.setValueAtTime(click ? 680 : 390, now);
+    osc.frequency.exponentialRampToValueAtTime(click ? 1080 : 760, now + (click ? 0.07 : 0.055));
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(click ? 0.05 : 0.026, now + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + (click ? 0.09 : 0.065));
-    osc.connect(gain);
-    gain.connect(context.destination);
+    gain.gain.exponentialRampToValueAtTime(click ? 0.12 : 0.065, now + 0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + (click ? 0.13 : 0.09));
+    osc.connect(gain).connect(context.destination);
     osc.start(now);
-    osc.stop(now + 0.1);
+    osc.stop(now + 0.14);
   };
 
   const startMusic = () => {
     if (!figaro || !soundEnabled || musicStarted) return;
     musicStarted = true;
-    figaro.play().catch(() => {
+    figaro.play().then(() => {
+      musicReady = true;
+    }).catch(() => {
       musicStarted = false;
     });
   };
@@ -53,19 +66,18 @@
   const setupAudio = () => {
     const button = document.querySelector('.flight-nav button[aria-label="Toggle Interface Sound"]');
     if (!button || button.dataset.audioPatchBound === "true") return;
-
     button.dataset.audioPatchBound = "true";
 
     figaro = document.createElement("audio");
     figaro.src = FIGARO_URL;
     figaro.preload = "auto";
     figaro.loop = true;
-    figaro.volume = 0.2;
+    figaro.volume = 0.22;
     figaro.setAttribute("aria-hidden", "true");
     figaro.style.display = "none";
     document.body.appendChild(figaro);
 
-    const unlockAudio = () => {
+    const triggerMusic = () => {
       if (!soundEnabled) return;
       ensureUiContext();
       startMusic();
@@ -73,12 +85,8 @@
 
     button.addEventListener("click", () => {
       soundEnabled = !soundEnabled;
-      if (soundEnabled) {
-        ensureUiContext();
-        startMusic();
-      } else {
-        pauseMusic();
-      }
+      if (soundEnabled) triggerMusic();
+      else pauseMusic();
     });
 
     figaro.addEventListener("ended", () => {
@@ -86,10 +94,13 @@
       startMusic();
     });
 
-    window.addEventListener("portfolio:synth-finished", startMusic);
-    window.addEventListener("pointerdown", unlockAudio, { passive: true });
-    window.addEventListener("keydown", unlockAudio);
-    window.addEventListener("touchstart", unlockAudio, { passive: true });
+    window.addEventListener("portfolio:synth-finished", triggerMusic);
+    window.addEventListener("pointerdown", triggerMusic, { passive: true });
+    window.addEventListener("keydown", triggerMusic);
+    window.addEventListener("touchstart", triggerMusic, { passive: true });
+    window.addEventListener("wheel", triggerMusic, { passive: true });
+    window.addEventListener("scroll", triggerMusic, { passive: true });
+    window.addEventListener("touchmove", triggerMusic, { passive: true });
 
     document.addEventListener("pointerover", (event) => {
       const target = event.target;
@@ -112,11 +123,10 @@
       if (!(target instanceof Element)) return;
       if (target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) {
         playUiSound("click");
-        unlockAudio();
+        triggerMusic();
       }
     }, true);
 
-    // Try to start immediately; browsers may require the first user gesture.
     startMusic();
   };
 
