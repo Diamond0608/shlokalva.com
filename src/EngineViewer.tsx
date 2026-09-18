@@ -31,11 +31,19 @@ function TurbofanModel() {
   const motionRootRef = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, modelRef);
 
-  // The first two top-level Fusion bodies are treated as the outer shell/cowl.
-  // They temporarily disappear during the inspection phase so the internal
-  // compressor/turbine geometry can be seen.
-  const shellParts = useMemo(() => {
-    return scene.children.filter(containsMesh).slice(0, 2);
+  // Only hide the three specific Fusion bodies requested for the exploded inspection.
+  // Match exact body numbers anywhere in the imported Fusion hierarchy; never hide
+  // their parent assemblies, which was causing the whole engine to disappear.
+  const inspectionBodies = useMemo(() => {
+    const targets = new Set(["640", "576", "577"]);
+    const matches: THREE.Object3D[] = [];
+    scene.traverse((object) => {
+      const name = object.name.trim();
+      if (targets.has(name) || /^(body|component)[ _-]?(640|576|577)$/i.test(name)) {
+        matches.push(object);
+      }
+    });
+    return matches;
   }, [scene]);
 
   const parts = useMemo<MotionPart[]>(() => {
@@ -107,16 +115,16 @@ function TurbofanModel() {
     // Otherwise reproduce the intended motion-study feel procedurally:
     // closed -> progressively opened/exploded -> held -> reassembled.
     if (animations.length === 0) {
-      const cycle = 18;
+      const cycle = 24;
       const phase = elapsed % cycle;
       let explode = 0;
 
-      if (phase < 5) {
-        explode = phase / 5;
-      } else if (phase < 10) {
+      if (phase < 6) {
+        explode = phase / 6;
+      } else if (phase < 16) {
         explode = 1;
-      } else if (phase < 15) {
-        explode = 1 - (phase - 10) / 5;
+      } else if (phase < 22) {
+        explode = 1 - (phase - 16) / 6;
       }
 
       parts.forEach(({ object, position, axisOffset, radialOffset, weight }) => {
