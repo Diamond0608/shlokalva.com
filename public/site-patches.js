@@ -18,7 +18,7 @@
   const duckMusic = (duration = 180) => {
     if (!figaro || figaro.paused) return;
     const original = figaro.volume;
-    figaro.volume = 0.015;
+    figaro.volume = 0.01;
     window.setTimeout(() => {
       if (figaro) figaro.volume = original;
     }, duration);
@@ -29,7 +29,7 @@
     const context = ensureUiContext();
     if (!context) return;
 
-    // Interface/game sounds deliberately sit above the background music.
+    // Interface/game sounds deliberately sit clearly above the soundtrack.
     duckMusic(kind === "click" ? 220 : 150);
 
     const osc = context.createOscillator();
@@ -38,14 +38,25 @@
     const click = kind === "click";
 
     osc.type = click ? "square" : "triangle";
-    osc.frequency.setValueAtTime(click ? 700 : 400, now);
-    osc.frequency.exponentialRampToValueAtTime(click ? 1180 : 820, now + (click ? 0.075 : 0.06));
+    osc.frequency.setValueAtTime(click ? 720 : 520, now);
+    osc.frequency.exponentialRampToValueAtTime(
+      click ? 1250 : 980,
+      now + (click ? 0.075 : 0.07)
+    );
+
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(click ? 0.18 : 0.095, now + 0.008);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + (click ? 0.15 : 0.105));
+    gain.gain.exponentialRampToValueAtTime(
+      click ? 0.28 : 0.22,
+      now + 0.008
+    );
+    gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      now + (click ? 0.16 : 0.13)
+    );
+
     osc.connect(gain).connect(context.destination);
     osc.start(now);
-    osc.stop(now + 0.16);
+    osc.stop(now + 0.18);
   };
 
   const startMusic = () => {
@@ -71,7 +82,7 @@
       figaro.src = FIGARO_URL;
       figaro.preload = "auto";
       figaro.loop = true;
-      figaro.volume = 0.22;
+      figaro.volume = 0.16;
       figaro.setAttribute("aria-hidden", "true");
       figaro.style.display = "none";
       document.body.appendChild(figaro);
@@ -107,13 +118,14 @@
       window.addEventListener("touchstart", triggerMusicFromUserAction, { passive: true });
       window.addEventListener("pointerdown", triggerMusicFromUserAction, { passive: true });
       window.addEventListener("keydown", triggerMusicFromUserAction);
-
       window.addEventListener("portfolio:synth-finished", triggerMusicFromUserAction);
 
       document.addEventListener("pointerover", (event) => {
         const target = event.target;
         if (!(target instanceof Element)) return;
-        const interactive = target.closest("a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
+        const interactive = target.closest(
+          "a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
+        );
         if (!interactive || interactive === lastHoverTarget) return;
         lastHoverTarget = interactive;
         playUiSound("hover");
@@ -122,7 +134,9 @@
       document.addEventListener("pointerout", (event) => {
         const target = event.target;
         if (!(target instanceof Element)) return;
-        const interactive = target.closest("a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel");
+        const interactive = target.closest(
+          "a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
+        );
         if (interactive === lastHoverTarget) lastHoverTarget = null;
       }, true);
 
