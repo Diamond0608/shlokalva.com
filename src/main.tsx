@@ -135,6 +135,7 @@ const projects: Project[] = [
       { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" },
       { src: images.littleHelperCad, alt: "Little Helper interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/little-helper.glb" },
       { src: "/assets/littlehelper-preview.png", alt: "Little Helper project PDF preview", caption: "Project PDF Preview" },
+      { src: "/assets/little-helper-video.mp4", alt: "Little Helper project video", caption: "Little Helper — Build Video", type: "video" },
       { src: "https://img.youtube.com/vi/gsAc9kgTfto/hqdefault.jpg", alt: "Little Helper project video", caption: "Little Helper — Project Video", youtubeId: "gsAc9kgTfto" }
     ]
   },
@@ -160,7 +161,8 @@ const projects: Project[] = [
       { src: images.dinocoGroup, alt: "Team Dinoco group photo", caption: "Team Photo" },
       { src: images.captainBadge, alt: "Team Dinoco custom captain badge", caption: "Custom Name Badge" },
       { src: images.dinocoLogo, alt: "Team Dinoco logo", caption: "Team Identity" },
-      { src: images.dinocoJourney, alt: "Team Dinoco journey document cover", caption: "Journey Document" }
+      { src: images.dinocoJourney, alt: "Team Dinoco journey document cover", caption: "Journey Document" },
+      { src: "/assets/team-dinoco-video.mp4", alt: "Team Dinoco video", caption: "Team Dinoco — Competition Video", type: "video" }
     ],
     caution: "Team Result: Second In Playoffs Bracket; Quarter-Final Elimination.",
     stats: [
@@ -245,7 +247,9 @@ const projects: Project[] = [
       { label: "Controls", value: "Ailerons" }
     ],
     gallery: [
-      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" }
+      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" },
+      { src: "/assets/rc-plane-detail.mp4", alt: "RC plane detail video", caption: "Plane Detail Video", type: "video" },
+      { src: "/assets/rc-plane-moving-reversed.mp4", alt: "RC plane moving video, reversed", caption: "Plane Flight Video — Reversed", type: "video" }
     ]
   }
 ];
