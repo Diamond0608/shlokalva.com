@@ -10,8 +10,7 @@ on:
       - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
       - "Video Project 2.mp4"
-      - "rc-plane-moving-reversed.mp4"
-      - ".github/workflows/convert-project-assets.yml"
+            - ".github/workflows/convert-project-assets.yml"
 
 permissions:
   contents: write
@@ -76,15 +75,15 @@ jobs:
           mkdir -p public/assets
 
           if [ -f "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" ]; then
-            cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
+            cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/team-dinoco-video.mp4
           fi
 
           # User supplies the already-reversed Project 2 video. Copy it unchanged; do not process it.
           test -f "Video Project 2.mp4"
-          cp "Video Project 2.mp4" public/assets/rc-plane-moving-reversed.mp4
+          cp "Video Project 2.mp4" public/assets/plane-video.mp4
 
           if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
-            cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
+            cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/rc-plane-detail.mp4
           fi
 
       - name: Commit generated assets
@@ -94,7 +93,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          for asset in             public/assets/little-helper.glb             public/assets/trinetra.glb             public/assets/littlehelper-preview.png             public/assets/image_2026-09-18_132632793.png             public/assets/rc-plane-detail.mp4             public/assets/rc-plane-moving-reversed.mp4             public/assets/team-dinoco-video.mp4; do
+          for asset in             public/assets/little-helper.glb             public/assets/trinetra.glb             public/assets/littlehelper-preview.png             public/assets/image_2026-09-18_132632793.png             public/assets/rc-plane-detail.mp4             public/assets/plane-video.mp4             public/assets/team-dinoco-video.mp4; do
             if [ -f "$asset" ]; then git add "$asset"; fi
           done
 
