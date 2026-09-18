@@ -694,8 +694,7 @@ function App() {
             <div className="compass-ring compass-ring-outer" />
             <div className="compass-ring compass-ring-inner" />
             <div className="compass-crosshair" />
-            <div className="compass-cardinal compass-n">N</div>
-            <div className="compass-cardinal compass-e">E</div>
+                    <div className="compass-cardinal compass-e">E</div>
             <div className="compass-cardinal compass-s">S</div>
             <div className="compass-cardinal compass-w">W</div>
             <div className="compass-aviation-label">AVIATION</div>
