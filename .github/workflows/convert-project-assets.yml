@@ -7,7 +7,6 @@ on:
       - "Trinetra.rar"
       - "scene (1).rar"
       - "littlehelper.pdf"
-      - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
@@ -109,9 +108,15 @@ jobs:
           mkdir -p public/assets
           # The three WhatsApp uploads are: 1.00.44 (plane), 1.02.12 (Team Dinoco),
           # and 1.03.08 (moving plane). The moving-plane clip is intentionally reversed.
-          cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
-          ffmpeg -y -i "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" -vf reverse -af areverse public/assets/rc-plane-moving-reversed.mp4
-          cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
+          if [ -f "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" ]; then
+            cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
+          fi
+          if [ -f "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" ]; then
+            ffmpeg -y -i "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" -vf reverse -af areverse -c:v libx264 -preset veryfast -c:a aac public/assets/rc-plane-moving-reversed.mp4
+          fi
+          if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
+            cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
+          fi
 
       - name: Make Little Helper PDF preview
         shell: bash
@@ -130,9 +135,6 @@ jobs:
 
           cp /tmp/converted/little-helper.glb public/assets/little-helper.glb
           cp /tmp/converted/trinetra.glb public/assets/trinetra.glb
-          if [ -f "image_2026-09-18_132632793.png" ]; then
-            cp "image_2026-09-18_132632793.png" public/assets/littlehelper-preview.png
-          fi
 
       - name: Commit generated assets
         shell: bash
@@ -140,12 +142,13 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/rc-plane-detail.mp4 public/assets/rc-plane-moving-reversed.mp4 public/assets/team-dinoco-video.mp4
-          if [ -f public/assets/littlehelper-preview.png ]; then
-            git add public/assets/littlehelper-preview.png
-          fi
-          if [ -f public/assets/littlehelper-preview.png ]; then
-            git add public/assets/littlehelper-preview.png
+          git add public/assets/little-helper.glb public/assets/trinetra.glb
+          for asset in public/assets/rc-plane-detail.mp4 public/assets/rc-plane-moving-reversed.mp4 public/assets/team-dinoco-video.mp4 public/assets/littlehelper-preview.png public/assets/image_2026-09-18_132632793.png; do
+            if [ -f "$asset" ]; then git add "$asset"; fi
+          done
+          if [ -f "image_2026-09-18_132632793.png" ]; then
+            cp "image_2026-09-18_132632793.png" public/assets/image_2026-09-18_132632793.png
+            git add public/assets/image_2026-09-18_132632793.png
           fi
           if git diff --cached --quiet; then
             echo "No generated asset changes to commit."
