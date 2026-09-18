@@ -9,6 +9,7 @@ on:
       - "littlehelper.pdf"
       - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
+      - "rc-plane-moving-reversed.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
 permissions:
@@ -78,7 +79,11 @@ jobs:
             cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
           fi
 
-          if [ -f "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" ]; then
+          # The moving RC-plane clip is the only one that needs reversing.
+          # If the already-reversed MP4 is uploaded, use it directly.
+          if [ -f "rc-plane-moving-reversed.mp4" ]; then
+            cp "rc-plane-moving-reversed.mp4" public/assets/rc-plane-moving-reversed.mp4
+          elif [ -f "WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4" ]; then
             input="WhatsApp Video 2026-09-18 at 1.03.08 PM.mp4"
             output="public/assets/rc-plane-moving-reversed.mp4"
             if ffprobe -v error -select_streams a:0 -show_entries stream=index -of csv=p=0 "$input" | grep -q .; then
