@@ -743,17 +743,19 @@ function App() {
         <div className="section-head">
           <p className="eyebrow">Propulsion System</p>
           <h2>Engine Room</h2>
-          <p>An interactive front view of my turbofan CAD model. Rotate it, inspect the assembly, and explore the propulsion core.</p>
+          <p>The turbofan from my Dwello Aerospace internship, brought into the portfolio as a live engineering display.</p>
         </div>
-        <div className="engine-panel">
-          <div className="engine-visual" aria-label="Interactive 3D turbofan CAD model">
-            <div className="engine-glow" />
-            <EngineViewer />
-          </div>
-          <div className="engine-readout">
+        <div className="engine-stage" aria-label="Interactive 3D turbofan CAD model">
+          <div className="engine-stage-glow engine-stage-glow-one" />
+          <div className="engine-stage-glow engine-stage-glow-two" />
+          <EngineViewer />
+          <div className="engine-overlay engine-overlay-top">
             <span>DWELLO / TURBOFAN</span>
-            <strong>Propulsion Core</strong>
-            <p>Interactive CAD model • Aircraft propulsion • Drag to orbit • Scroll to zoom</p>
+            <strong>PROPULSION CORE</strong>
+          </div>
+          <div className="engine-overlay engine-overlay-bottom">
+            <span>MOTION STUDY</span>
+            <p>Drag to inspect • Scroll or pinch to zoom • Assembly cycles continuously</p>
           </div>
         </div>
       </section>
