@@ -22,7 +22,6 @@ function TurbofanModel() {
   const modelRef = useRef<THREE.Group>(null);
   const motionRootRef = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, modelRef);
-  const [time, setTime] = useState(0);
 
   const parts = useMemo<MotionPart[]>(() => {
     const box = new THREE.Box3().setFromObject(scene);
@@ -94,8 +93,6 @@ function TurbofanModel() {
     if (!root) return;
 
     const elapsed = state.clock.elapsedTime;
-    setTime(elapsed);
-
     // Slow whole-engine presentation rotation. Dragging with OrbitControls remains available.
     root.rotation.y += delta * 0.16;
     root.rotation.x = Math.sin(elapsed * 0.42) * 0.025;
@@ -139,10 +136,6 @@ function TurbofanModel() {
 
     // Very subtle breathing motion keeps the presentation alive without distorting the CAD.
     root.scale.setScalar(1 + Math.sin(elapsed * 0.7) * 0.006);
-
-    if (time === elapsed) {
-      // keep React state intentionally inert; it only prevents stale animation closures
-    }
   });
 
   return (
@@ -233,7 +226,6 @@ export default function EngineViewer() {
               gl.toneMappingExposure = 1.12;
             }}
           >
-            <color attach="background" args={["#05070a"]} />
             <hemisphereLight intensity={1.5} color="#e8f5ff" groundColor="#1a1110" />
             <directionalLight
               position={[5, 6, 7]}
