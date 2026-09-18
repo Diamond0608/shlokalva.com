@@ -1,9 +1,6 @@
-import React, { Suspense, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useReducedMotion } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
-import * as THREE from "three";
 import {
   BadgeInfo,
   Boxes,
@@ -365,239 +362,62 @@ And by being the chaos we are infact God's Magnum Opus.`
   }
 ];
 
-function useInterfaceSynth(enabled: boolean) {
+function useMozartLoop(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
-  const timersRef = useRef<number[]>([]);
-  const finishedRef = useRef(false);
+  const intervalRef = useRef<number | null>(null);
+  const timeoutRefs = useRef<number[]>([]);
 
   useEffect(() => {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass || !enabled) return;
+    const clearTimers = () => {
+      if (intervalRef.current) window.clearInterval(intervalRef.current);
+      timeoutRefs.current.forEach((timeout) => window.clearTimeout(timeout));
+      intervalRef.current = null;
+      timeoutRefs.current = [];
+    };
 
+    if (!enabled) {
+      clearTimers();
+      return;
+    }
+
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
-    finishedRef.current = false;
 
-    const clearTimers = () => {
-      timersRef.current.forEach((timer) => window.clearTimeout(timer));
-      timersRef.current = [];
-    };
-
-    const melody = [392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440];
-    const step = 185;
-
-    const playNote = (frequency: number, index: number) => {
-      const timer = window.setTimeout(() => {
-        if (!enabled) return;
-        const osc = context.createOscillator();
-        const gain = context.createGain();
-        const now = context.currentTime;
-        osc.type = "sawtooth";
-        osc.frequency.setValueAtTime(frequency, now);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.028, now + 0.018);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.16);
-        osc.connect(gain).connect(context.destination);
-        osc.start(now);
-        osc.stop(now + 0.18);
-      }, index * step);
-      timersRef.current.push(timer);
-    };
-
-    const start = () => {
-      context.resume().catch(() => {});
-      clearTimers();
-      melody.forEach(playNote);
-      melody.forEach((frequency, index) => playNote(frequency, index + melody.length));
-      const finishTimer = window.setTimeout(() => {
-        if (finishedRef.current) return;
-        finishedRef.current = true;
-        window.dispatchEvent(new Event("portfolio:synth-finished"));
-      }, melody.length * step * 2 + 250);
-      timersRef.current.push(finishTimer);
-    };
-
-    start();
-    const unlock = () => context.resume().catch(() => {});
-    window.addEventListener("pointerdown", unlock, { passive: true });
-    window.addEventListener("keydown", unlock);
-
-    return () => {
-      clearTimers();
-      window.removeEventListener("pointerdown", unlock);
-      window.removeEventListener("keydown", unlock);
-    };
-  }, [enabled]);
-}
-
-class EngineErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { failed: boolean }
-> {
-  state = { failed: false };
-
-  static getDerivedStateFromError() {
-    return { failed: true };
-  }
-
-  componentDidCatch(error: unknown) {
-    console.error("Engine viewer failed to load:", error);
-  }
-
-  render() {
-    if (this.state.failed) {
-      return (
-        <div className="engine-fallback">
-          <span>PROPULSION SYSTEM</span>
-          <strong>3D VIEWER TEMPORARILY UNAVAILABLE</strong>
-          <p>The rest of the portfolio remains fully available.</p>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-function EngineModel() {
-  const { scene } = useGLTF("/scene.glb");
-  const rootRef = useRef<THREE.Group>(null);
-  const partsRef = useRef<Array<{
-    object: THREE.Object3D;
-    basePosition: THREE.Vector3;
-    baseRotation: THREE.Euler;
-    direction: THREE.Vector3;
-    phase: number;
-  }>>([]);
-
-  useEffect(() => {
-    const parts: Array<{
-      object: THREE.Object3D;
-      basePosition: THREE.Vector3;
-      baseRotation: THREE.Euler;
-      direction: THREE.Vector3;
-      phase: number;
-    }> = [];
-
-    const box = new THREE.Box3().setFromObject(scene);
-    const center = box.getCenter(new THREE.Vector3());
-
-    scene.traverse((object) => {
-      if (!(object instanceof THREE.Mesh)) return;
-      object.castShadow = true;
-      object.receiveShadow = true;
-
-      const worldPosition = new THREE.Vector3();
-      object.getWorldPosition(worldPosition);
-      const direction = worldPosition.sub(center);
-      if (direction.lengthSq() < 0.001) direction.set(0, 0, 1);
-      direction.normalize();
-
-      parts.push({
-        object,
-        basePosition: object.position.clone(),
-        baseRotation: object.rotation.clone(),
-        direction,
-        phase: parts.length * 0.17
+    let loopCount = 0;
+    const shortMelody = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
+    const figaroLike = [
+      392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440,
+      392, 494, 587, 659, 698, 659, 587, 523, 494, 587, 659, 784, 880, 784, 659, 587,
+      523, 659, 784, 988, 880, 784, 698, 659, 587, 659, 698, 784, 659, 587, 523, 494
+    ];
+    const playMelody = () => {
+      context.resume();
+      const melody = loopCount < 2 ? shortMelody : figaroLike;
+      const step = loopCount < 2 ? 185 : 155;
+      loopCount += 1;
+      melody.forEach((frequency, index) => {
+        const timeout = window.setTimeout(() => {
+          const osc = context.createOscillator();
+          const gain = context.createGain();
+          osc.type = "sine";
+          osc.frequency.value = frequency;
+          gain.gain.setValueAtTime(0.0001, context.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.22);
+          osc.connect(gain).connect(context.destination);
+          osc.start();
+          osc.stop(context.currentTime + 0.24);
+        }, index * step);
+        timeoutRefs.current.push(timeout);
       });
-    });
+    };
 
-    partsRef.current = parts;
-  }, [scene]);
-
-  useFrame((state) => {
-    const root = rootRef.current;
-    if (!root) return;
-
-    const t = state.clock.getElapsedTime();
-    root.rotation.y = 0.2 + t * 0.11;
-
-    // A long, gentle open -> hold -> close cycle so the engine feels like an
-    // inspection assembly rather than a constantly jittering exploded view.
-    const cycle = (t % 24) / 24;
-    let opening = 0;
-    if (cycle < 0.42) {
-      opening = cycle / 0.42;
-    } else if (cycle < 0.58) {
-      opening = 1;
-    } else {
-      opening = 1 - (cycle - 0.58) / 0.42;
-    }
-    const eased = opening * opening * (3 - 2 * opening);
-
-    partsRef.current.forEach(({ object, basePosition, baseRotation, direction, phase }) => {
-      const amount = eased * 0.28;
-      object.position.set(
-        basePosition.x + direction.x * amount,
-        basePosition.y + direction.y * amount,
-        basePosition.z + direction.z * amount
-      );
-      object.rotation.copy(baseRotation);
-      object.rotation.y += Math.sin(t * 0.7 + phase) * 0.008 * eased;
-    });
-  });
-
-  return (
-    <group ref={rootRef}>
-      <primitive object={scene} />
-    </group>
-  );
-}
-
-useGLTF.preload("/scene.glb");
-
-function EngineRoom() {
-  return (
-    <section className="section engine-showcase">
-      <div className="section-head">
-        <p className="eyebrow">Propulsion System</p>
-        <h2>Engine Room</h2>
-        <p>My Dwello turbofan, rendered directly from the uploaded CAD export. Drag to inspect it, then watch the assembly slowly open and re-form.</p>
-      </div>
-      <div className="engine-panel">
-        <div className="engine-visual engine-canvas-wrap">
-          <EngineErrorBoundary>
-            <Canvas
-            camera={{ position: [0, 0, 6], fov: 38 }}
-            dpr={[1, 1.35]}
-            gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-          >
-            <color attach="background" args={["#05070a"]} />
-            <ambientLight intensity={1.6} />
-            <directionalLight position={[4, 5, 6]} intensity={3.2} />
-            <directionalLight position={[-4, 2, -4]} intensity={1.8} color="#89d8ff" />
-            <pointLight position={[0, 0, 3]} intensity={2.2} color="#ff8a2a" />
-            <Suspense fallback={null}>
-              <EngineModel />
-            </Suspense>
-            <OrbitControls
-              enablePan={false}
-              enableZoom
-              minDistance={3.5}
-              maxDistance={9}
-              autoRotate={false}
-              enableDamping
-              dampingFactor={0.08}
-              touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
-            />
-          </Canvas>
-          </EngineErrorBoundary>
-          <div className="engine-hud">
-            <span>THREE.JS / LIVE CAD</span>
-            <small>DRAG TO ROTATE • PINCH TO ZOOM</small>
-          </div>
-        </div>
-        <div className="engine-readout">
-          <span>DWELLO / TURBOFAN</span>
-          <strong>Propulsion Core</strong>
-          <p>Fusion 360 → GLB → Three.js. The model rotates continuously while the assembly gently moves through an exploded/open state.</p>
-          <div className="engine-status">
-            <span>MODEL</span>
-            <strong>SCENE.GLB LOADED</strong>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+    playMelody();
+    intervalRef.current = window.setInterval(playMelody, 8200);
+    return clearTimers;
+  }, [enabled]);
 }
 
 function FlightLoader() {
@@ -704,7 +524,7 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const reducedMotion = useReducedMotion();
-  useInterfaceSynth(soundEnabled);
+  useMozartLoop(soundEnabled);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 5000);
@@ -918,7 +738,24 @@ function App() {
         </div>
       </section>
 
-      <EngineRoom />
+      <section className="section engine-showcase">
+        <div className="section-head">
+          <p className="eyebrow">Propulsion System</p>
+          <h2>Engine Room</h2>
+          <p>A front view of my turbofan CAD model, rotating like a live systems display before final boarding.</p>
+        </div>
+        <div className="engine-panel">
+          <div className="engine-visual" aria-label="Rotating turbofan CAD model">
+            <div className="engine-glow" />
+            <img src={images.dwelloThree} alt="Front view of Shlok's turbofan CAD model" loading="lazy" />
+          </div>
+          <div className="engine-readout">
+            <span>DWELLO / TURBOFAN</span>
+            <strong>Propulsion Core</strong>
+            <p>CAD model • Aircraft propulsion • Simulation and animation</p>
+          </div>
+        </div>
+      </section>
 
       <section id="contact" className="section contact">
         <div>
