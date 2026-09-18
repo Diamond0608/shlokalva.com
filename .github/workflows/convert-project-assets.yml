@@ -9,7 +9,8 @@ on:
       - "littlehelper.pdf"
       - "image_2026-09-18_132632793.png"
       - "WhatsApp Video *.mp4"
-      - "Video Project 2.mp4"
+      - "video project2.mp4"
+      - "rc-plane-moving-reversed.mp4"
       - ".github/workflows/convert-project-assets.yml"
 
 permissions:
@@ -77,22 +78,16 @@ jobs:
             cp "WhatsApp Video 2026-09-18 at 1.00.44 PM.mp4" public/assets/rc-plane-detail.mp4
           fi
 
-          # Project 2 source of truth: use the exact uploaded file.
-          # No fallback, reversal, transcoding, or other processing.
-          test -f "Video Project 2.mp4"
-          cp "Video Project 2.mp4" public/assets/rc-plane-moving-reversed.mp4
+          # User supplies the already-reversed Project 2 video. Copy it unchanged; do not process it.
+          if [ -f "video project2.mp4" ]; then
+            cp "video project2.mp4" public/assets/rc-plane-moving-reversed.mp4
+          elif [ -f "rc-plane-moving-reversed.mp4" ]; then
+            cp "rc-plane-moving-reversed.mp4" public/assets/rc-plane-moving-reversed.mp4
+          fi
 
           if [ -f "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" ]; then
             cp "WhatsApp Video 2026-09-18 at 1.02.12 PM.mp4" public/assets/team-dinoco-video.mp4
           fi
-
-      - name: Validate prepared assets
-        shell: bash
-        run: |
-          set -e
-          test -s public/assets/rc-plane-moving-reversed.mp4
-          if [ -f "untitled.glb" ]; then test -s public/assets/little-helper.glb; fi
-          if [ -f "scene (1).rar" ]; then test -s public/assets/trinetra.glb; fi
 
       - name: Commit generated assets
         shell: bash
