@@ -360,3 +360,195 @@ a,
     padding: 1.2rem;
   }
 }
+
+
+/* Central, seamless turbofan presentation. */
+.engine-showcase {
+  position: relative;
+  isolation: isolate;
+}
+
+.engine-stage {
+  position: relative;
+  width: 100%;
+  min-height: clamp(31rem, 68vw, 46rem);
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(137, 216, 255, 0.13), transparent 23%),
+    radial-gradient(circle at 50% 50%, rgba(255, 138, 42, 0.07), transparent 45%),
+    transparent;
+}
+
+.engine-stage::before {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border: 1px solid rgba(137, 216, 255, 0.12);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow:
+    0 0 80px rgba(137, 216, 255, 0.08),
+    inset 0 0 80px rgba(255, 138, 42, 0.035);
+}
+
+.engine-stage::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(72vw, 48rem);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(255, 138, 42, 0.09);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.engine-stage-glow {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(20px);
+}
+
+.engine-stage-glow-one {
+  top: 18%;
+  left: 18%;
+  width: 14rem;
+  height: 14rem;
+  background: rgba(137, 216, 255, 0.07);
+}
+
+.engine-stage-glow-two {
+  right: 14%;
+  bottom: 14%;
+  width: 18rem;
+  height: 18rem;
+  background: rgba(255, 138, 42, 0.06);
+}
+
+.engine-stage .engine-viewer {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.engine-stage .engine-viewer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+  touch-action: none;
+}
+
+.engine-overlay {
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid rgba(137, 216, 255, 0.16);
+  background: rgba(5, 7, 10, 0.58);
+  backdrop-filter: blur(8px);
+}
+
+.engine-overlay-top {
+  top: 1.1rem;
+  left: 1.1rem;
+  display: grid;
+  gap: 0.25rem;
+  border-radius: 7px;
+  padding: 0.7rem 0.85rem;
+}
+
+.engine-overlay-top span,
+.engine-overlay-bottom span {
+  color: var(--sky);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.engine-overlay-top strong {
+  font-size: 0.86rem;
+  letter-spacing: 0.05em;
+}
+
+.engine-overlay-bottom {
+  right: 1.1rem;
+  bottom: 1.1rem;
+  max-width: 23rem;
+  border-radius: 7px;
+  padding: 0.65rem 0.8rem;
+}
+
+.engine-overlay-bottom p {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+}
+
+.engine-stage .engine-loading,
+.engine-stage .engine-fallback {
+  inset: 12%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+@media (max-width: 980px) {
+  .engine-stage {
+    min-height: 34rem;
+  }
+
+  .engine-stage::before {
+    inset: 12%;
+  }
+
+  .engine-overlay-bottom {
+    max-width: 18rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .engine-stage {
+    min-height: 28rem;
+    margin-inline: -0.5rem;
+  }
+
+  .engine-stage::before {
+    inset: 14%;
+  }
+
+  .engine-stage::after {
+    width: 88vw;
+  }
+
+  .engine-overlay-top {
+    top: 0.7rem;
+    left: 0.7rem;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .engine-overlay-top strong {
+    font-size: 0.72rem;
+  }
+
+  .engine-overlay-bottom {
+    right: 0.7rem;
+    bottom: 0.7rem;
+    left: 0.7rem;
+    max-width: none;
+    padding: 0.55rem 0.65rem;
+  }
+
+  .engine-overlay-bottom p {
+    font-size: 0.61rem;
+  }
+}
