@@ -1,32 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Airbus A350 approaching head-on">
-<defs>
-<linearGradient id="f" x1="0" x2="1"><stop stop-color="#7d8790"/><stop offset=".18" stop-color="#eef2f4"/><stop offset=".5" stop-color="#fff"/><stop offset=".82" stop-color="#dce2e6"/><stop offset="1" stop-color="#737e87"/></linearGradient>
-<linearGradient id="w" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f9fbfc"/><stop offset=".55" stop-color="#cbd3d8"/><stop offset="1" stop-color="#77838c"/></linearGradient>
-<linearGradient id="e" x1="0" x2="1"><stop stop-color="#59656e"/><stop offset=".3" stop-color="#e8edf0"/><stop offset=".7" stop-color="#b9c2c8"/><stop offset="1" stop-color="#56626b"/></linearGradient>
-<radialGradient id="i"><stop stop-color="#34434d"/><stop offset=".52" stop-color="#080d12"/><stop offset=".82" stop-color="#020407"/><stop offset="1" stop-color="#8c979e"/></radialGradient>
-<linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#466678"/><stop offset=".42" stop-color="#162a36"/><stop offset="1" stop-color="#05090d"/></linearGradient>
-<filter id="s"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-</defs>
-<g filter="url(#s)">
-<path d="M515 365 L272 391 L94 474 Q78 483 98 492 L150 498 L528 424 Z" fill="url(#w)"/>
-<path d="M685 365 L928 391 L1106 474 Q1122 483 1102 492 L1050 498 L672 424 Z" fill="url(#w)"/>
-<path d="M515 389 L245 438 L143 480 L516 414 Z" fill="#9ba6ae" opacity=".62"/>
-<path d="M685 389 L955 438 L1057 480 L684 414 Z" fill="#9ba6ae" opacity=".62"/>
-<g><ellipse cx="315" cy="480" rx="91" ry="67" fill="url(#e)"/><ellipse cx="315" cy="480" rx="70" ry="53" fill="#151d23"/><ellipse cx="315" cy="480" rx="57" ry="43" fill="url(#i)"/><ellipse cx="315" cy="480" rx="28" ry="21" fill="#05080b"/></g>
-<g><ellipse cx="885" cy="480" rx="91" ry="67" fill="url(#e)"/><ellipse cx="885" cy="480" rx="70" ry="53" fill="#151d23"/><ellipse cx="885" cy="480" rx="57" ry="43" fill="url(#i)"/><ellipse cx="885" cy="480" rx="28" ry="21" fill="#05080b"/></g>
-<path d="M600 82 C565 83 542 115 532 163 L505 343 L515 595 C520 672 551 727 600 770 C649 727 680 672 685 595 L695 343 L668 163 C658 115 635 83 600 82 Z" fill="url(#f)"/>
-<path d="M539 185 Q553 121 600 112 Q647 121 661 185 L648 244 Q625 220 600 218 Q575 220 552 244 Z" fill="url(#g)"/>
-<path d="M600 116 L600 218" stroke="#7e99a8" stroke-opacity=".5" stroke-width="3"/>
-<path d="M550 247 Q600 226 650 247 L645 270 Q600 255 555 270 Z" fill="#f4f6f7" opacity=".82"/>
-<path d="M530 342 Q600 316 670 342 L661 397 Q600 378 539 397 Z" fill="#f8fafb" opacity=".86"/>
-<path d="M530 410 Q600 438 670 410 L680 592 Q672 677 600 755 Q528 677 520 592 Z" fill="#cdd5da" opacity=".72"/>
-<path d="M545 441 Q600 461 655 441 L649 616 Q638 676 600 719 Q562 676 551 616 Z" fill="#f4f6f7" opacity=".48"/>
-<path d="M525 360 L285 444 L205 487 L526 405 Z" fill="#7f8b94" opacity=".48"/>
-<path d="M675 360 L915 444 L995 487 L674 405 Z" fill="#7f8b94" opacity=".48"/>
-<path d="M575 705 L600 675 L625 705 L616 759 L600 778 L584 759 Z" fill="#b9c2c8"/>
-<path d="M584 759 L570 790 L588 805 L600 782 L612 805 L630 790 L616 759 Z" fill="#6d7981"/>
-<circle cx="582" cy="798" r="13" fill="#171d22"/><circle cx="618" cy="798" r="13" fill="#171d22"/>
-<circle cx="582" cy="798" r="5" fill="#aeb8be"/><circle cx="618" cy="798" r="5" fill="#aeb8be"/>
-<circle cx="187" cy="484" r="5" fill="#f8fbff"/><circle cx="1013" cy="484" r="5" fill="#f8fbff"/>
-<ellipse cx="600" cy="718" rx="8" ry="13" fill="#fff" opacity=".9"/>
-</g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 576" role="img" aria-label="Realistic front-view passenger aircraft">
+  <!-- Aircraft artwork: Vecteezy free PNG, resource 50232474, attribution required. -->
+  <image
+    href="https://static.vecteezy.com/system/resources/previews/050/232/474/non_2x/airplane-front-view-isolated-transparent-background-free-png.png"
+    x="0"
+    y="0"
+    width="1024"
+    height="576"
+    preserveAspectRatio="xMidYMid meet"
+  />
+</svg>
