@@ -512,12 +512,7 @@ h3 {
 }
 
 .a350-approach::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 6;
-  background: radial-gradient(circle at 50% 50%, transparent 24%, rgba(3, 6, 10, 0.18) 58%, rgba(3, 6, 10, 0.82) 100%);
-  pointer-events: none;
+  content: none;
 }
 
 .a350-runway {
@@ -587,58 +582,11 @@ h3 {
 }
 
 .a350-approach-glow {
-  position: absolute;
-  left: 50%;
-  bottom: -8%;
-  width: 38%;
-  height: 14%;
-  border-radius: 50%;
-  background: rgba(137, 216, 255, 0.24);
-  filter: blur(14px);
-  transform: translateX(-50%);
-  animation: a350GlowPulse 4.2s ease-in-out infinite;
-  pointer-events: none;
+  display: none;
 }
 
 @keyframes a350AircraftApproach {
-  0%, 100% {
-    opacity: 0;
-    transform: translateY(18%);
-  }
-  9% { opacity: 1; }
-  44% { opacity: 1; }
-  68% { opacity: 1; }
-  82% { opacity: 0; }
-}
-
-@keyframes a350VideoApproach {
-  0%, 100% {
-    opacity: 0;
-    transform: translate(-50%, 18%) scale(0.42);
-  }
-  8% {
-    opacity: 0.95;
-    transform: translate(-50%, 11%) scale(0.5);
-  }
-  38% {
-    opacity: 1;
-    transform: translate(-50%, 3%) scale(0.68);
-  }
-  62% {
-    opacity: 1;
-    transform: translate(-50%, -1%) scale(0.9);
-  }
-  80% {
-    opacity: 0;
-    transform: translate(-50%, -8%) scale(1.16);
-  }
-}
-
-@keyframes a350GlowPulse {
-  0%, 100% { opacity: 0; transform: translateX(-50%) scale(0.4); }
-  45% { opacity: 0.65; transform: translateX(-50%) scale(1); }
-  76% { opacity: 0.9; transform: translateX(-50%) scale(1.4); }
-  84% { opacity: 0; transform: translateX(-50%) scale(1.8); }
+  from, to { opacity: 1; transform: none; }
 }
 
 @keyframes a350EdgeLights {
