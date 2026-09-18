@@ -2274,3 +2274,136 @@ h3 {
     height: 25rem !important;
   }
 }
+
+
+/* A350 approach — centered, contained, and runway always visible */
+.a350-approach {
+  position: relative;
+  display: block;
+  width: min(100%, 36rem);
+  height: clamp(12rem, 18vw, 15rem);
+  margin: 0 0 clamp(0.8rem, 2vw, 1.35rem);
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgba(137, 216, 255, 0.16);
+  border-radius: 10px;
+  perspective: none;
+  background:
+    radial-gradient(circle at 50% 48%, rgba(137, 216, 255, 0.13), transparent 34%),
+    linear-gradient(180deg, rgba(8, 15, 22, 0.3), rgba(3, 6, 10, 0.96));
+}
+
+.a350-runway {
+  position: absolute;
+  z-index: 1;
+  right: 7%;
+  bottom: -30%;
+  left: 7%;
+  height: 105%;
+  transform: perspective(520px) rotateX(62deg);
+  transform-origin: bottom center;
+  border-left: 1px solid rgba(255, 241, 223, 0.22);
+  border-right: 1px solid rgba(255, 241, 223, 0.22);
+  background:
+    linear-gradient(90deg, transparent 49.6%, rgba(255, 241, 223, 0.28) 50%, transparent 50.4%),
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 1.25rem,
+      rgba(255, 241, 223, 0.95) 1.25rem 1.7rem,
+      transparent 1.7rem 4rem
+    ),
+    linear-gradient(180deg, rgba(55, 64, 72, 0.08), rgba(20, 24, 29, 0.9));
+  box-shadow: 0 -14px 45px rgba(137, 216, 255, 0.09);
+  animation: a350RunwayRush 1.15s linear infinite;
+}
+
+.a350-runway span {
+  position: absolute;
+  top: 18%;
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 50%;
+  background: rgba(255, 241, 223, 0.9);
+  box-shadow: 0 0 9px rgba(255, 241, 223, 0.75);
+  animation: a350RunwayLight 1.15s ease-in-out infinite;
+}
+.a350-runway span:nth-child(1) { left: 3%; }
+.a350-runway span:nth-child(2) { left: 23%; animation-delay: .12s; }
+.a350-runway span:nth-child(3) { left: 49%; animation-delay: .24s; }
+.a350-runway span:nth-child(4) { right: 23%; animation-delay: .36s; }
+.a350-runway span:nth-child(5) { right: 3%; animation-delay: .48s; }
+
+.a350-approach-aircraft {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  animation: a350AircraftApproachFixed 4.2s cubic-bezier(0.18, 0.03, 0.16, 1) infinite;
+  transform-origin: center center;
+}
+
+.a350-approach-image {
+  display: block;
+  width: min(88%, 34rem);
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.55)) drop-shadow(0 0 22px rgba(137, 216, 255, 0.3));
+}
+
+.a350-approach-glow {
+  position: absolute;
+  z-index: -1;
+  width: 48%;
+  height: 55%;
+  border-radius: 50%;
+  background: rgba(137, 216, 255, 0.18);
+  filter: blur(24px);
+  pointer-events: none;
+}
+
+@keyframes a350AircraftApproachFixed {
+  0%, 100% {
+    opacity: 0;
+    transform: translateY(1.4rem) scale(0.58);
+  }
+  10% {
+    opacity: 0.85;
+  }
+  42% {
+    opacity: 1;
+    transform: translateY(0.4rem) scale(0.72);
+  }
+  66% {
+    opacity: 1;
+    transform: translateY(0) scale(0.9);
+  }
+  84% {
+    opacity: 0;
+    transform: translateY(-0.25rem) scale(1);
+  }
+}
+
+@keyframes a350RunwayRush {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 0 0, 0 5.2rem, 0 0; }
+}
+
+@keyframes a350RunwayLight {
+  0%, 100% { opacity: 0.35; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+@media (max-width: 620px) {
+  .a350-approach {
+    width: 100%;
+    height: clamp(10rem, 42vw, 13rem);
+  }
+
+  .a350-approach-image {
+    width: 92%;
+  }
+}
