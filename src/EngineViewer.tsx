@@ -23,6 +23,18 @@ function TurbofanModel() {
   const motionRootRef = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, modelRef);
 
+  const modelAxis = useMemo(() => {
+    const box = new THREE.Box3().setFromObject(scene);
+    const size = box.getSize(new THREE.Vector3());
+
+    // The engine's longitudinal axis is the longest dimension of the imported CAD model.
+    return size.x >= size.y && size.x >= size.z
+      ? new THREE.Vector3(1, 0, 0)
+      : size.y >= size.z
+        ? new THREE.Vector3(0, 1, 0)
+        : new THREE.Vector3(0, 0, 1);
+  }, [scene]);
+
   const parts = useMemo<MotionPart[]>(() => {
     const box = new THREE.Box3().setFromObject(scene);
     const size = box.getSize(new THREE.Vector3());
@@ -93,22 +105,13 @@ function TurbofanModel() {
     if (!root) return;
 
     const elapsed = state.clock.elapsedTime;
-    // Slow whole-engine presentation rotation. Dragging with OrbitControls remains available.
-    root.rotation.y += delta * 0.16;
-    root.rotation.x = Math.sin(elapsed * 0.42) * 0.025;
+    // Rotate around the engine's own longitudinal axis, not the viewer/world Y axis.
+    root.rotateOnAxis(modelAxis, delta * 0.16);
 
     // If Fusion's animation was exported into the GLB, let the actual clips drive it.
     // Otherwise reproduce the intended motion-study feel procedurally:
     // closed -> progressively opened/exploded -> held -> reassembled.
     if (animations.length === 0) {
-      const box = new THREE.Box3().setFromObject(scene);
-      const size = box.getSize(new THREE.Vector3());
-      const axis = size.x >= size.y && size.x >= size.z
-        ? new THREE.Vector3(1, 0, 0)
-        : size.y >= size.z
-          ? new THREE.Vector3(0, 1, 0)
-          : new THREE.Vector3(0, 0, 1);
-
       const cycle = 18;
       const phase = elapsed % cycle;
       let explode = 0;
@@ -126,9 +129,9 @@ function TurbofanModel() {
         const radial = radialOffset.multiplyScalar(explode * 0.08 * weight);
         object.position.copy(position).add(
           new THREE.Vector3(
-            axis.x * axial,
-            axis.y * axial,
-            axis.z * axial
+            modelAxis.x * axial,
+            modelAxis.y * axial,
+            modelAxis.z * axial
           )
         ).add(radial);
       });
@@ -142,8 +145,6 @@ function TurbofanModel() {
       object.rotation.z += delta * 2.8;
     });
 
-    // Very subtle breathing motion keeps the presentation alive without distorting the CAD.
-    root.scale.setScalar(1 + Math.sin(elapsed * 0.7) * 0.006);
   });
 
   return (
@@ -245,7 +246,7 @@ export default function EngineViewer() {
             <directionalLight position={[2, -2, -6]} intensity={2.4} color="#ffb078" />
 
             <Suspense fallback={null}>
-              <Bounds fit clip observe margin={1.18}>
+              <Bounds fit clip margin={1.18}>
                 <TurbofanModel />
               </Bounds>
             </Suspense>
