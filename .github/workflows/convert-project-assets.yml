@@ -1,0 +1,95 @@
+name: Convert project CAD assets
+
+on:
+  push:
+    paths:
+      - "Little Helper Main.rar"
+      - "Trinetra.rar"
+      - "littlehelper.pdf"
+      - ".github/workflows/convert-project-assets.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install conversion tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y p7zip-full poppler-utils blender
+          sudo apt-get install -y freecad || true
+
+      - name: Extract project archives
+        run: |
+          mkdir -p /tmp/little-helper /tmp/trinetra /tmp/converted
+          7z x "Little Helper Main.rar" -o/tmp/little-helper -y
+          7z x "Trinetra.rar" -o/tmp/trinetra -y
+          echo "Little Helper files:"
+          find /tmp/little-helper -type f | sort
+          echo "Trinetra files:"
+          find /tmp/trinetra -type f | sort
+
+      - name: Convert supported CAD meshes to GLB
+        shell: bash
+        run: |
+          set -e
+          convert_with_blender() {
+            input="$1"
+            output="$2"
+            blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True)" -- "$input" "$output"
+          }
+
+          find_mesh() {
+            root="$1"
+            find "$root" -type f \( -iname '*.stl' -o -iname '*.obj' -o -iname '*.fbx' -o -iname '*.dae' -o -iname '*.glb' -o -iname '*.gltf' \) | head -n 1
+          }
+
+          LH="$(find_mesh /tmp/little-helper || true)"
+          TR="$(find_mesh /tmp/trinetra || true)"
+
+          if [ -n "$LH" ]; then
+            ext="${LH##*.}"
+            if [ "${ext,,}" = "glb" ]; then
+              cp "$LH" /tmp/converted/little-helper.glb
+            else
+              convert_with_blender "$LH" /tmp/converted/little-helper.glb
+            fi
+          fi
+
+          if [ -n "$TR" ]; then
+            ext="${TR##*.}"
+            if [ "${ext,,}" = "glb" ]; then
+              cp "$TR" /tmp/converted/trinetra.glb
+            else
+              convert_with_blender "$TR" /tmp/converted/trinetra.glb
+            fi
+          fi
+
+          if [ ! -f /tmp/converted/little-helper.glb ]; then
+            echo "No Blender-readable mesh was found in Little Helper archive."
+            exit 1
+          fi
+          if [ ! -f /tmp/converted/trinetra.glb ]; then
+            echo "No Blender-readable mesh was found in Trinetra archive."
+            exit 1
+          fi
+
+      - name: Make Little Helper PDF preview
+        run: |
+          mkdir -p public/assets
+          pdftoppm -png -f 1 -singlefile -r 120 littlehelper.pdf /tmp/converted/littlehelper-preview
+          cp /tmp/converted/littlehelper-preview.png public/assets/littlehelper-preview.png
+          cp /tmp/converted/little-helper.glb public/assets/little-helper.glb
+          cp /tmp/converted/trinetra.glb public/assets/trinetra.glb
+
+      - name: Commit generated assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/littlehelper-preview.png
+          git diff --cached --quiet || git commit -m "Add project GLB models and Little Helper preview"
+          git push
