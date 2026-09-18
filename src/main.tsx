@@ -692,18 +692,13 @@ function App() {
       <section id="top" className="hero">
         <div className="hero-copy">
           <div className="a350-approach" aria-hidden="true">
-            <div className="a350-runway">
-              <i /><i /><i />
-            </div>
-            <div className="a350-aircraft">
-              <div className="a350-cockpit"><i /><i /></div>
-              <div className="a350-fuselage" />
-              <div className="a350-wing a350-wing-left" />
-              <div className="a350-wing a350-wing-right" />
-              <div className="a350-engine a350-engine-left" />
-              <div className="a350-engine a350-engine-right" />
-              <div className="a350-nose-light" />
-            </div>
+            <div className="a350-runway" />
+            <img
+              className="a350-approach-image"
+              src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Airbus_A350_Front_View.jpg"
+              alt=""
+            />
+            <span className="a350-approach-credit">A350 image: AlexanderCraker / Wikimedia Commons</span>
           </div>
           <p className="eyebrow">Boarding Pass / Engineering Portfolio</p>
           <h1>Shlok Alva</h1>
@@ -933,6 +928,14 @@ function App() {
       <section id="contact" className="section contact">
         <div>
           <p className="eyebrow">Contact</p>
+          <div className="final-boarding-image">
+            <img
+              src="https://www.aircraft.airbus.com/sites/g/files/jlcbta126/files/styles/w375/public/2021-10/A350%20MSN3%20COCKPIT%20WHILE%20DUSK.jpg?itok=E0Gyauy5"
+              alt="Airbus A350 cockpit"
+              loading="lazy"
+            />
+            <span>A350 cockpit — Airbus</span>
+          </div>
           <h2>Ready For Final Boarding</h2>
           <p>Email: alvashlok@gmail.com</p>
           <p>Phone: +91 9845394885</p>
