@@ -93,3 +93,5 @@ jobs:
           git add public/assets/little-helper.glb public/assets/trinetra.glb public/assets/littlehelper-preview.png
           git diff --cached --quiet || git commit -m "Add project GLB models and Little Helper preview"
           git push
+
+# rerun
