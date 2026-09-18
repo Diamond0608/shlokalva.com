@@ -364,58 +364,53 @@ And by being the chaos we are infact God's Magnum Opus.`
 
 function useMozartLoop(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
-  const intervalRef = useRef<number | null>(null);
   const timeoutRefs = useRef<number[]>([]);
 
   useEffect(() => {
     const clearTimers = () => {
-      if (intervalRef.current) window.clearInterval(intervalRef.current);
       timeoutRefs.current.forEach((timeout) => window.clearTimeout(timeout));
-      intervalRef.current = null;
       timeoutRefs.current = [];
     };
 
-    if (!enabled) {
-      clearTimers();
-      return;
-    }
+    clearTimers();
+
+    if (!enabled) return;
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
+
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
 
-    let loopCount = 0;
-    const shortMelody = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
-    const figaroLike = [
-      392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440,
-      392, 494, 587, 659, 698, 659, 587, 523, 494, 587, 659, 784, 880, 784, 659, 587,
-      523, 659, 784, 988, 880, 784, 698, 659, 587, 659, 698, 784, 659, 587, 523, 494
-    ];
-    const playMelody = () => {
-      context.resume();
-      const melody = loopCount < 2 ? shortMelody : figaroLike;
-      const step = loopCount < 2 ? 185 : 155;
-      loopCount += 1;
-      melody.forEach((frequency, index) => {
-        const timeout = window.setTimeout(() => {
-          const osc = context.createOscillator();
-          const gain = context.createGain();
-          osc.type = "sine";
-          osc.frequency.value = frequency;
-          gain.gain.setValueAtTime(0.0001, context.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 0.025);
-          gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.22);
-          osc.connect(gain).connect(context.destination);
-          osc.start();
-          osc.stop(context.currentTime + 0.24);
-        }, index * step);
-        timeoutRefs.current.push(timeout);
-      });
-    };
+    // This is the opening synth cue. It plays exactly once.
+    const synth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
+    const step = 185;
+    const totalDuration = synth.length * step + 260;
 
-    playMelody();
-    intervalRef.current = window.setInterval(playMelody, 8200);
+    context.resume().catch(() => {});
+
+    synth.forEach((frequency, index) => {
+      const timeout = window.setTimeout(() => {
+        const osc = context.createOscillator();
+        const gain = context.createGain();
+        osc.type = "sine";
+        osc.frequency.value = frequency;
+        gain.gain.setValueAtTime(0.0001, context.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.035, context.currentTime + 0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.22);
+        osc.connect(gain).connect(context.destination);
+        osc.start();
+        osc.stop(context.currentTime + 0.24);
+      }, index * step);
+      timeoutRefs.current.push(timeout);
+    });
+
+    // Tell the external soundtrack patch only after the synth has completely finished.
+    const finishedTimeout = window.setTimeout(() => {
+      window.dispatchEvent(new Event("portfolio:synth-finished"));
+    }, totalDuration);
+    timeoutRefs.current.push(finishedTimeout);
+
     return clearTimers;
   }, [enabled]);
 }
