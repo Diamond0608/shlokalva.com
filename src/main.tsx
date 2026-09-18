@@ -433,12 +433,23 @@ function useInterfaceSynth(enabled: boolean) {
 function EngineModel() {
   const { scene } = useGLTF("/scene.glb");
   const rootRef = useRef<THREE.Group>(null);
-  const partsRef = useRef<Array<{ object: THREE.Object3D; base: THREE.Vector3; direction: THREE.Vector3; phase: number }>>([]);
+  const partsRef = useRef<Array<{
+    object: THREE.Object3D;
+    basePosition: THREE.Vector3;
+    baseRotation: THREE.Euler;
+    direction: THREE.Vector3;
+    phase: number;
+  }>>([]);
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
-    const parts: Array<{ object: THREE.Object3D; base: THREE.Vector3; direction: THREE.Vector3; phase: number }> = [];
+    const parts: Array<{
+      object: THREE.Object3D;
+      basePosition: THREE.Vector3;
+      baseRotation: THREE.Euler;
+      direction: THREE.Vector3;
+      phase: number;
+    }> = [];
+
     const box = new THREE.Box3().setFromObject(scene);
     const center = box.getCenter(new THREE.Vector3());
 
@@ -446,37 +457,59 @@ function EngineModel() {
       if (!(object instanceof THREE.Mesh)) return;
       object.castShadow = true;
       object.receiveShadow = true;
+
       const worldPosition = new THREE.Vector3();
       object.getWorldPosition(worldPosition);
       const direction = worldPosition.sub(center);
       if (direction.lengthSq() < 0.001) direction.set(0, 0, 1);
       direction.normalize();
-      parts.push({ object, base: object.position.clone(), direction, phase: parts.length * 0.17 });
+
+      parts.push({
+        object,
+        basePosition: object.position.clone(),
+        baseRotation: object.rotation.clone(),
+        direction,
+        phase: parts.length * 0.17
+      });
     });
+
     partsRef.current = parts;
   }, [scene]);
 
   useFrame((state) => {
     const root = rootRef.current;
     if (!root) return;
+
     const t = state.clock.getElapsedTime();
-    root.rotation.y = t * 0.16;
-    const opening = (Math.sin(t * 0.42) + 1) / 2;
+    root.rotation.y = 0.2 + t * 0.11;
+
+    // A long, gentle open -> hold -> close cycle so the engine feels like an
+    // inspection assembly rather than a constantly jittering exploded view.
+    const cycle = (t % 24) / 24;
+    let opening = 0;
+    if (cycle < 0.42) {
+      opening = cycle / 0.42;
+    } else if (cycle < 0.58) {
+      opening = 1;
+    } else {
+      opening = 1 - (cycle - 0.58) / 0.42;
+    }
     const eased = opening * opening * (3 - 2 * opening);
 
-    partsRef.current.forEach(({ object, base, direction, phase }) => {
-      const amount = eased * 0.22;
+    partsRef.current.forEach(({ object, basePosition, baseRotation, direction, phase }) => {
+      const amount = eased * 0.28;
       object.position.set(
-        base.x + direction.x * amount,
-        base.y + direction.y * amount,
-        base.z + direction.z * amount
+        basePosition.x + direction.x * amount,
+        basePosition.y + direction.y * amount,
+        basePosition.z + direction.z * amount
       );
-      object.rotation.y += Math.sin(t * 0.55 + phase) * 0.0008;
+      object.rotation.copy(baseRotation);
+      object.rotation.y += Math.sin(t * 0.7 + phase) * 0.008 * eased;
     });
   });
 
   return (
-    <group ref={rootRef} scale={2.15} rotation={[0, 0.2, 0]}>
+    <group ref={rootRef}>
       <primitive object={scene} />
     </group>
   );
@@ -496,9 +529,8 @@ function EngineRoom() {
         <div className="engine-visual engine-canvas-wrap">
           <Canvas
             camera={{ position: [0, 0, 6], fov: 38 }}
-            dpr={[1, 1.7]}
+            dpr={[1, 1.35]}
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-            shadows
           >
             <color attach="background" args={["#05070a"]} />
             <ambientLight intensity={1.6} />
@@ -514,6 +546,8 @@ function EngineRoom() {
               minDistance={3.5}
               maxDistance={9}
               autoRotate={false}
+              enableDamping
+              dampingFactor={0.08}
               touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN }}
             />
           </Canvas>
