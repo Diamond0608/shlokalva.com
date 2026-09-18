@@ -1286,3 +1286,57 @@ h3 {
     display: none;
   }
 }
+
+
+.project-model-viewer {
+  position: relative;
+  width: 100%;
+  height: min(72vh, 720px);
+  min-height: 28rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(255, 255, 255, 0.08), transparent 42%),
+    #080a0f;
+}
+
+.project-model-viewer canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.project-model-hint {
+  position: absolute;
+  right: 0.8rem;
+  bottom: 0.8rem;
+  pointer-events: none;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--cream);
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.lightbox .project-model-viewer {
+  width: 100%;
+  height: min(78vh, 760px);
+  min-height: 24rem;
+}
+
+@media (max-width: 620px) {
+  .project-model-viewer {
+    min-height: 22rem;
+    height: 58vh;
+  }
+
+  .lightbox .project-model-viewer {
+    min-height: 20rem;
+    height: 62vh;
+  }
+}
