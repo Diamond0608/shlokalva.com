@@ -122,6 +122,12 @@ const projects: Project[] = [
     ],
     stack: ["Fusion 360", "ESP32", "ESP8266", "Arduino IDE", "RFID", "LCD", "Motor Control"],
     link: "https://github.com/Diamond0608/Little-Helper",
+    stats: [
+      { label: "Build Time", value: "~70 hrs" },
+      { label: "Controllers", value: "ESP32 + ESP8266" },
+      { label: "Drive", value: "4WD Tracks" },
+      { label: "Auth", value: "RFID + PIN" }
+    ],
     gallery: [
       { src: images.littleHelperReal, alt: "Little Helper physical robot with LEDs on", caption: "Physical Build" },
       { src: images.littleHelperCad, alt: "Little Helper CAD render with cargo box", caption: "CAD Assembly" },
@@ -156,7 +162,13 @@ const projects: Project[] = [
       { src: images.dinocoLogo, alt: "Team Dinoco logo", caption: "Team Identity" },
       { src: images.dinocoJourney, alt: "Team Dinoco journey document cover", caption: "Journey Document" }
     ],
-    caution: "Team Result: Second In Playoffs Bracket; Quarter-Final Elimination."
+    caution: "Team Result: Second In Playoffs Bracket; Quarter-Final Elimination.",
+    stats: [
+      { label: "Role", value: "Team Captain" },
+      { label: "Bracket", value: "2nd Place" },
+      { label: "Event", value: "National Finals" },
+      { label: "Focus", value: "Strategy + Build" }
+    ]
   },
   {
     id: "dwello",
