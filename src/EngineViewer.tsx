@@ -101,6 +101,14 @@ function TurbofanModel() {
     // Otherwise reproduce the intended motion-study feel procedurally:
     // closed -> progressively opened/exploded -> held -> reassembled.
     if (animations.length === 0) {
+      const box = new THREE.Box3().setFromObject(scene);
+      const size = box.getSize(new THREE.Vector3());
+      const axis = size.x >= size.y && size.x >= size.z
+        ? new THREE.Vector3(1, 0, 0)
+        : size.y >= size.z
+          ? new THREE.Vector3(0, 1, 0)
+          : new THREE.Vector3(0, 0, 1);
+
       const cycle = 18;
       const phase = elapsed % cycle;
       let explode = 0;
