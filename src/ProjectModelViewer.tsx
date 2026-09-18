@@ -13,15 +13,6 @@ function ProjectModel({ src }: { src: string }) {
   );
 }
 
-function Loading() {
-  return (
-    <div className="project-model-loading">
-      <span>3D MODEL</span>
-      <strong>LOADING PROJECT MODEL</strong>
-    </div>
-  );
-}
-
 export default function ProjectModelViewer({ src }: { src: string }) {
   return (
     <div className="project-model-viewer">
@@ -53,7 +44,6 @@ export default function ProjectModelViewer({ src }: { src: string }) {
         />
       </Canvas>
       <div className="project-model-hint">Drag To Inspect</div>
-      <div className="project-model-loading-fallback"><Loading /></div>
     </div>
   );
 }
