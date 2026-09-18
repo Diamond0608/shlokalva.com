@@ -20,7 +20,7 @@ jobs:
       - name: Install conversion tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full poppler-utils blender python3-venv
+          sudo apt-get install -y p7zip-full poppler-utils blender python3-venv python3-numpy
           python3 -m venv /tmp/cq
           /tmp/cq/bin/pip install cadquery
 
@@ -67,7 +67,7 @@ jobs:
           convert_with_blender() {
             input="$1"
             output="$2"
-            blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); bpy.ops.object.select_all(action='SELECT'); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True)" -- "$input" "$output"
+            PYTHONPATH=/usr/lib/python3/dist-packages blender -b --python-expr "import bpy,sys; p=sys.argv[-2]; o=sys.argv[-1]; bpy.ops.wm.read_factory_settings(use_empty=True); ext=p.lower().rsplit('.',1)[-1]; fn={'stl':bpy.ops.import_mesh.stl,'obj':bpy.ops.wm.obj_import,'fbx':bpy.ops.import_scene.fbx,'dae':bpy.ops.wm.collada_import}[ext]; fn(filepath=p); bpy.ops.object.select_all(action='SELECT'); bpy.ops.export_scene.gltf(filepath=o, export_format='GLB', export_yup=True)" -- "$input" "$output"
           }
           find_source() {
             root="$1"
