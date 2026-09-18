@@ -4,6 +4,7 @@
   let figaro = null;
   let uiContext = null;
   let musicStarted = false;
+  let synthFinished = false;
   let lastHoverTarget = null;
   let buttonBound = false;
 
@@ -15,22 +16,10 @@
     return uiContext;
   };
 
-  const duckMusic = (duration = 180) => {
-    if (!figaro || figaro.paused) return;
-    const original = figaro.volume;
-    figaro.volume = 0.01;
-    window.setTimeout(() => {
-      if (figaro) figaro.volume = original;
-    }, duration);
-  };
-
   const playUiSound = (kind) => {
     if (!soundEnabled) return;
     const context = ensureUiContext();
     if (!context) return;
-
-    // Interface/game sounds deliberately sit clearly above the soundtrack.
-    duckMusic(kind === "click" ? 220 : 150);
 
     const osc = context.createOscillator();
     const gain = context.createGain();
@@ -54,13 +43,14 @@
       now + (click ? 0.16 : 0.13)
     );
 
+    // UI sounds play independently and do not duck Mozart.
     osc.connect(gain).connect(context.destination);
     osc.start(now);
     osc.stop(now + 0.18);
   };
 
-  const startMusic = () => {
-    if (!figaro || !soundEnabled || musicStarted) return;
+  const startFigaro = () => {
+    if (!figaro || !soundEnabled || !synthFinished || musicStarted) return;
     const attempt = figaro.play();
     if (!attempt) return;
     attempt.then(() => {
@@ -95,7 +85,7 @@
         soundEnabled = !soundEnabled;
         if (soundEnabled) {
           ensureUiContext();
-          startMusic();
+          startFigaro();
         } else {
           pauseMusic();
         }
@@ -105,20 +95,25 @@
     if (!window.__portfolioAudioEventsBound) {
       window.__portfolioAudioEventsBound = true;
 
-      const triggerMusicFromUserAction = () => {
+      // The synth track must finish first. Only then is Mozart allowed to start.
+      window.addEventListener("portfolio:synth-finished", () => {
+        synthFinished = true;
+        startFigaro();
+      });
+
+      // These gestures only unlock audio; they do NOT start Mozart before the synth.
+      const unlockAudio = () => {
         if (!soundEnabled) return;
         ensureUiContext();
-        startMusic();
+        if (synthFinished) startFigaro();
       };
 
-      // Scroll/wheel/touch scrolling can unlock the soundtrack if autoplay was blocked.
-      window.addEventListener("wheel", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("scroll", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("touchmove", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("touchstart", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("pointerdown", triggerMusicFromUserAction, { passive: true });
-      window.addEventListener("keydown", triggerMusicFromUserAction);
-      window.addEventListener("portfolio:synth-finished", triggerMusicFromUserAction);
+      window.addEventListener("wheel", unlockAudio, { passive: true });
+      window.addEventListener("scroll", unlockAudio, { passive: true });
+      window.addEventListener("touchmove", unlockAudio, { passive: true });
+      window.addEventListener("touchstart", unlockAudio, { passive: true });
+      window.addEventListener("pointerdown", unlockAudio, { passive: true });
+      window.addEventListener("keydown", unlockAudio);
 
       document.addEventListener("pointerover", (event) => {
         const target = event.target;
@@ -149,9 +144,8 @@
       }, true);
     }
 
-    // Try immediately. Browsers may reject this until a user gesture, so the
-    // wheel/scroll/touch/pointer listeners above provide the fallback.
-    startMusic();
+    ensureUiContext();
+    // Deliberately do not call startFigaro() here.
   };
 
   const patchResponsiveSignals = () => {
