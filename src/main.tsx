@@ -904,6 +904,14 @@ function App() {
           </div>
           <ProjectModelViewer src="/assets/little-helper.glb" />
         </div>
+        <div className="engine-project-model">
+          <div className="section-head">
+            <p className="eyebrow">Engineering Model</p>
+            <h3>Trinetra — Interactive CAD Model</h3>
+            <p>Inspect the uploaded Trinetra model directly here as part of the Engine Room.</p>
+          </div>
+          <ProjectModelViewer src="/assets/trinetra.glb" />
+        </div>
       </section>
 
       <section id="contact" className="section contact">
