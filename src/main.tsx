@@ -135,7 +135,6 @@ const projects: Project[] = [
       { src: images.littleHelperWiring, alt: "Little Helper electronics layout in CAD", caption: "Electronics Layout" },
       { src: images.littleHelperCad, alt: "Little Helper interactive 3D model", caption: "Interactive 3D Model", type: "model", modelPath: "/assets/little-helper.glb" },
       { src: "/assets/littlehelper-preview.png", alt: "Little Helper project PDF preview", caption: "Project PDF Preview" },
-      { src: "/assets/little-helper-video.mp4", alt: "Little Helper project video", caption: "Little Helper — Build Video", type: "video" },
       { src: "https://img.youtube.com/vi/gsAc9kgTfto/hqdefault.jpg", alt: "Little Helper project video", caption: "Little Helper — Project Video", youtubeId: "gsAc9kgTfto" }
     ]
   },
