@@ -162,10 +162,10 @@ const projects: Project[] = [
       { src: images.dinocoJourney, alt: "Team Dinoco journey document cover", caption: "Journey Document" },
       { src: "/assets/team-dinoco-video.mp4", alt: "Team Dinoco bot moving", caption: "The Bot Moving", type: "video" }
     ],
-    caution: "Team Result: Second In Playoffs; Quarter-Final Elimination.",
+    caution: "Team Result: Second Place In Playoffs; Quarter-Final Elimination.",
     stats: [
       { label: "Role", value: "Team Captain" },
-      { label: "Playoffs", value: "Second Place" },
+      { label: "Playoffs", value: "Second Place In Playoffs" },
       { label: "Event", value: "National Finals" },
       { label: "Focus", value: "Strategy + Build" }
     ]
