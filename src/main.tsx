@@ -147,7 +147,7 @@ const projects: Project[] = [
     facts: [
       "I was team captain, which in practice meant coordination, travel planning, documentation, social media help, mechanical build work, development, and driving the bot.",
       "We reached a day late after our match had already started because our flight got cancelled, then paid for another flight because giving up was not really on the menu.",
-      "A lot of us were sick, but we still grinded through the day and climbed from 92nd to second in our playoffs bracket.",
+      "A lot of us were sick, but we still grinded through the day and climbed from 92nd to second in the playoffs.",
       "We became a captain team, reached the quarter finals, and were eliminated after an error by our partner team.",
       "We also made custom name badges and a full team identity around the bot, because apparently we cope with stress by branding things."
     ],
@@ -160,12 +160,12 @@ const projects: Project[] = [
       { src: images.captainBadge, alt: "Team Dinoco custom captain badge", caption: "Custom Name Badge" },
       { src: images.dinocoLogo, alt: "Team Dinoco logo", caption: "Team Identity" },
       { src: images.dinocoJourney, alt: "Team Dinoco journey document cover", caption: "Journey Document" },
-      { src: "/assets/team-dinoco-video.mp4", alt: "Team Dinoco video", caption: "Team Dinoco — Competition Video", type: "video" }
+      { src: "/assets/team-dinoco-video.mp4", alt: "Team Dinoco bot moving", caption: "The Bot Moving", type: "video" }
     ],
-    caution: "Team Result: Second In Playoffs Bracket; Quarter-Final Elimination.",
+    caution: "Team Result: Second In Playoffs; Quarter-Final Elimination.",
     stats: [
       { label: "Role", value: "Team Captain" },
-      { label: "Bracket", value: "2nd Place" },
+      { label: "Playoffs", value: "Second Place" },
       { label: "Event", value: "National Finals" },
       { label: "Focus", value: "Strategy + Build" }
     ]
