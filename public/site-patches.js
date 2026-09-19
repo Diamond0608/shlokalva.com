@@ -78,12 +78,12 @@
       document.body.appendChild(figaro);
     }
 
-    const button = document.querySelector('.flight-nav button[aria-label="Toggle Interface Sound"]');
-    if (button && !buttonBound) {
+    if (!buttonBound) {
       buttonBound = true;
-      button.addEventListener("click", () => {
-        soundEnabled = !soundEnabled;
-        if (soundEnabled) {
+      window.addEventListener("portfolio:sound-toggle", (event) => {
+        const enabled = Boolean(event.detail?.enabled);
+        soundEnabled = enabled;
+        if (enabled) {
           ensureUiContext();
           startFigaro();
         } else {
