@@ -89,13 +89,13 @@ function TurbofanModel() {
 
       materials.forEach((material) => {
         if ("metalness" in material && typeof material.metalness === "number") {
-          material.metalness = 0.95;
+          material.metalness = 0.82;
         }
         if ("roughness" in material && typeof material.roughness === "number") {
-          material.roughness = 0.22;
+          material.roughness = 0.32;
         }
         if ("color" in material && material.color instanceof THREE.Color) {
-          material.color.lerp(new THREE.Color("#aeb5bc"), 0.72);
+          material.color.lerp(new THREE.Color("#d2d7dc"), 0.9);
         }
       });
     });
@@ -205,29 +205,10 @@ class EngineErrorBoundary extends React.Component<
 }
 
 export default function EngineViewer() {
-  const [visible, setVisible] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const element = containerRef.current;
-    if (!element) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "500px 0px" }
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+  const [visible] = useState(true);
 
   return (
-    <div ref={containerRef} className="engine-viewer">
+    <div className="engine-viewer">
       {!visible ? (
         <EngineLoading />
       ) : (
@@ -239,18 +220,18 @@ export default function EngineViewer() {
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
             onCreated={({ gl }) => {
               gl.toneMapping = THREE.ACESFilmicToneMapping;
-              gl.toneMappingExposure = 1.0;
+              gl.toneMappingExposure = 1.18;
             }}
           >
-            <hemisphereLight intensity={1.8} color="#ffffff" groundColor="#202020" />
+            <hemisphereLight intensity={2.35} color="#ffffff" groundColor="#202020" />
             <directionalLight
               position={[5, 6, 7]}
-              intensity={5.2}
+              intensity={3.8}
               castShadow
               shadow-mapSize={[2048, 2048]}
             />
-            <directionalLight position={[-5, 2, 2]} intensity={2.4} color="#ffffff" />
-            <directionalLight position={[2, -2, -6]} intensity={2.0} color="#ffffff" />
+            <directionalLight position={[-5, 2, 2]} intensity={1.7} color="#ffffff" />
+            <directionalLight position={[2, -2, -6]} intensity={1.4} color="#ffffff" />
 
             <Suspense fallback={null}>
               <Bounds fit clip margin={1.18}>
