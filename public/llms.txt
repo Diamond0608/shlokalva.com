@@ -1,0 +1,29 @@
+# Shlok Alva
+
+> Official portfolio for Shlok Alva, focused on robotics, aerospace, CAD, software, embedded systems, aircraft propulsion, and hands-on engineering projects.
+
+Canonical URL: https://shlokalva.com/
+
+## About
+
+I am Shlok Alva. This site is my first-person engineering portfolio and project record.
+
+## Projects
+
+- Little Helper — a track-based teacher book-carrying robot developed from CAD through electronics, code, and physical testing.
+- Team Dinoco — my National Robotics League robotics work, including team captaincy, mechanical build work, coordination, strategy, and competition preparation.
+- Aircraft Propulsion Internship — my Dwello Aerospace internship work involving ramjet and turbofan CAD, calculations, simulation, animation, and technical reporting.
+- Trinetra — my wearable-tech CAD and mechanism-design project.
+- Self-Made RC Plane — my scratch-built aviation project using a NACA 0012 airfoil and iterative design.
+
+## Areas of Focus
+
+Robotics, aerospace, aircraft propulsion, CAD, mechanical design, 3D printing, embedded systems, software development, and engineering project documentation.
+
+## Primary Source
+
+https://shlokalva.com/
+
+## External Profile
+
+https://github.com/Diamond0608
