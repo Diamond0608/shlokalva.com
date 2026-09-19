@@ -92,7 +92,7 @@ const images = {
   cyberClipOne: "/assets/cyber-robotics-clip-1.mp4",
   cyberClipTwo: "/assets/cyber-robotics-clip-2.mp4",
   rcPlane: "/assets/rc-plane.jpg",
-  turbofanAnimation: "https://raw.githubusercontent.com/Diamond0608/shlokalva.com/main/Turbofan%20Engine%20Animation.mp4"
+  turbofanAnimation: "/assets/turbofan-engine-animation.mp4"
 };
 
 const nav = [
@@ -269,7 +269,7 @@ const experiences = [
   },
   {
     title: "Cyber Club Leadership",
-    subtitle: "Vice-President And President",
+    subtitle: "President And Vice President",
     image: images.pcBuilding,
     body:
       "I helped run events, guide juniors through hands-on tech work, and make the cyber side of school life feel active instead of just theoretical."
@@ -331,7 +331,7 @@ const signals = [
   },
   {
     title: "Hack Club BEEST",
-    body: "Selected for Hack Club BEEST and worked through the project track. I could not make the Netherlands travel piece work out, but the build-and-ship mindset stuck hard.",
+    body: "Selected as one of the 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of travel-related issues and received approximately ₹40,000 INR instead.",
     image: images.hackClubLogo
   },
   {
@@ -341,7 +341,7 @@ const signals = [
   },
   {
     title: "Helios And Iris",
-    body: "Volunteered at Helios Interschool Robotics Fest and served as Deputy Event Head for Robo-FC at Iris.",
+    body: "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris.",
     image: images.blackShirtCohorts
   }
 ];
@@ -353,7 +353,7 @@ const interests = [
   },
   {
     title: "Badminton",
-    body: "Played casually. Not everything needs a medal table; sometimes it is just fun to hit things very fast."
+    body: "Played casually. Not everything needs a medal table; sometimes it's just fun to hit things very fast."
   }
 ];
 
@@ -481,7 +481,7 @@ function FlightLoader() {
 function FlightMascot() {
   return (
     <div className="mascot-card" aria-label="Animated Concorde Flight Board">
-      <p className="concorde-line">Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Winning Too.</p>
+      <p className="concorde-line">Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Hoping To Win Too.</p>
       <div className="concorde-photo-wrap">
         <img src={images.concordePhoto} alt="Air France Concorde taking off" />
       </div>
@@ -652,6 +652,9 @@ function CockpitPanel() {
   );
 }
 
+const contactEmail = atob("YWx2YXNob2tAZ21haWwuY29t");
+const contactPhone = atob("KzkxIDk4NDUzOTQ4ODU=");
+
 function App() {
   const [booted, setBooted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -747,7 +750,7 @@ function App() {
           <h2>Mostly Robots, Planes, And Questionable Sleep Schedules</h2>
         </div>
         <div className="mission-copy">
-          <p>I like building things that can actually be tested, argued with, broken, fixed, and photographed looking slightly dramatic.</p>
+          <p>I like building things that can actually be tested, argued with, broken, fixed, and looked back upon with pride.</p>
           <p>Most of my favorite projects started with a sketch, a CAD file, or a very optimistic “yeah, this should work.”</p>
           <div className="mission-status">
             <span>Current Mission</span>
@@ -945,8 +948,8 @@ function App() {
             />
           </div>
           <h2>Ready For Final Boarding</h2>
-          <p>Email: alvashlok@gmail.com</p>
-          <p>Phone: +91 9845394885</p>
+          <p>Email: <a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>
+          <p>Phone: <a href={`tel:${contactPhone}`}>{contactPhone}</a></p>
         </div>
         <div className="contact-actions">
           <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer">
@@ -957,6 +960,8 @@ function App() {
           </a>
         </div>
       </section>
+
+      <footer className="flight-log-footer">FLIGHT LOG // LAST UPDATED 19 SEP 2026</footer>
 
       {activeImage && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={activeImage.caption} onClick={() => setActiveImage(null)}>
