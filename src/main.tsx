@@ -231,7 +231,7 @@ const projects: Project[] = [
     summary:
       "My self-made RC plane is a scratch-built aviation project that started from dimensions and sketches, with lessons from both the successful and unsuccessful parts of the build.",
     facts: [
-      "Used a NACA 0012 airfoil and MotoCalc while working through the sizing and setup.",
+      "I used a NACA 0012 airfoil and MotoCalc while working through the sizing and setup. The finished RC plane never managed to take flight, so the project remained a ground-tested build rather than a successful flight.",
       "Started with dimensions, electronics sketches, and a plan for how the plane should come together.",
       "Cut the body out of foamboard and 3D printed the wings, horizontal stabiliser, and vertical stabiliser.",
       "Used servo motors to control the ailerons, plus a transmitter, receiver, and 2600KV motors."
@@ -239,14 +239,15 @@ const projects: Project[] = [
     stack: ["Aviation", "Scratch Build", "Iteration", "Failure Analysis"],
     stats: [
       { label: "Airfoil", value: "NACA 0012" },
+      { label: "Flight Status", value: "Never Flew" },
       { label: "Motor", value: "2600KV" },
       { label: "Body", value: "Foamboard" },
       { label: "Controls", value: "Ailerons" }
     ],
     gallery: [
-      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" },
+      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane — Never Flew" },
       { src: "/assets/rc-plane-detail.mp4", alt: "RC plane detail video", caption: "Plane Detail Video", type: "video" },
-      { src: "/assets/plane-video.mp4", alt: "RC plane moving video", caption: "Plane Moving", type: "video" }
+      { src: "/assets/plane-video.mp4", alt: "Scratch-built RC plane ground video", caption: "Ground Test — Never Flew", type: "video" }
     ]
   }
 ];
