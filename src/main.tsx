@@ -415,49 +415,80 @@ function useOpeningSynth(enabled: boolean) {
     timersRef.current.forEach((timer) => window.clearTimeout(timer));
     timersRef.current = [];
 
-    if (!enabled || startedRef.current) return;
+    if (!enabled) return;
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
 
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
-    startedRef.current = true;
 
-    // Opening synth cue: deliberately one-shot. There is NO interval or loop.
-    const synth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
-    const step = 185;
+    const startSynth = () => {
+      if (startedRef.current) return;
 
-    context.resume().catch(() => {});
+      const begin = () => {
+        if (startedRef.current) return;
+        startedRef.current = true;
 
-    synth.forEach((frequency, index) => {
-      const timer = window.setTimeout(() => {
-        const now = context.currentTime;
-        const osc = context.createOscillator();
-        const gain = context.createGain();
+        // Opening synth cue: deliberately one-shot. There is NO interval or loop.
+        const synth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
+        const step = 185;
 
-        osc.type = "sine";
-        osc.frequency.value = frequency;
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.035, now + 0.025);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+        synth.forEach((frequency, index) => {
+          const timer = window.setTimeout(() => {
+            const now = context.currentTime;
+            const osc = context.createOscillator();
+            const gain = context.createGain();
 
-        osc.connect(gain).connect(context.destination);
-        osc.start(now);
-        osc.stop(now + 0.24);
-      }, index * step);
+            osc.type = "sine";
+            osc.frequency.value = frequency;
+            gain.gain.setValueAtTime(0.0001, now);
+            gain.gain.exponentialRampToValueAtTime(0.035, now + 0.025);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
 
-      timersRef.current.push(timer);
-    });
+            osc.connect(gain).connect(context.destination);
+            osc.start(now);
+            osc.stop(now + 0.24);
+          }, index * step);
 
-    // Mozart is allowed only after the final synth note has finished.
-    const finishedTimer = window.setTimeout(() => {
-      window.dispatchEvent(new Event("portfolio:synth-finished"));
-    }, (synth.length - 1) * step + 300);
+          timersRef.current.push(timer);
+        });
 
-    timersRef.current.push(finishedTimer);
+        // This event starts the one-shot Figaro synth bridge.
+        // It does not start Mozart directly.
+        const finishedTimer = window.setTimeout(() => {
+          window.dispatchEvent(new Event("portfolio:synth-finished"));
+        }, (synth.length - 1) * step + 300);
+
+        timersRef.current.push(finishedTimer);
+      };
+
+      context.resume().then(begin).catch(() => {
+        // A later user gesture (scroll/click/touch/keypress) can retry.
+      });
+    };
+
+    startSynth();
+
+    const unlockAndStart = () => {
+      if (startedRef.current) return;
+      startSynth();
+    };
+
+    window.addEventListener("wheel", unlockAndStart, { passive: true });
+    window.addEventListener("scroll", unlockAndStart, { passive: true });
+    window.addEventListener("touchmove", unlockAndStart, { passive: true });
+    window.addEventListener("touchstart", unlockAndStart, { passive: true });
+    window.addEventListener("pointerdown", unlockAndStart, { passive: true });
+    window.addEventListener("keydown", unlockAndStart);
 
     return () => {
+      window.removeEventListener("wheel", unlockAndStart);
+      window.removeEventListener("scroll", unlockAndStart);
+      window.removeEventListener("touchmove", unlockAndStart);
+      window.removeEventListener("touchstart", unlockAndStart);
+      window.removeEventListener("pointerdown", unlockAndStart);
+      window.removeEventListener("keydown", unlockAndStart);
       timersRef.current.forEach((timer) => window.clearTimeout(timer));
       timersRef.current = [];
     };
