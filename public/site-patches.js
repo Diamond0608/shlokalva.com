@@ -5,7 +5,6 @@
   let uiContext = null;
   let musicStarted = false;
   let synthFinished = false;
-  let figaroSynthPlaying = false;
   let lastHoverTarget = null;
   let buttonBound = false;
 
@@ -50,55 +49,8 @@
     osc.stop(now + 0.18);
   };
 
-  const playFigaroSynth = () => {
-    if (!soundEnabled || figaroSynthPlaying) return;
-
-    const context = ensureUiContext();
-    if (!context) return;
-
-    figaroSynthPlaying = true;
-
-    // A one-shot electronic rendition of the Figaro overture motif.
-    // It deliberately does not loop; Mozart starts only after this sequence ends.
-    const notes = [
-      [784, 120], [784, 120], [784, 120], [784, 120],
-      [740, 120], [698, 120], [659, 120], [622, 120],
-      [659, 120], [698, 120], [740, 120], [784, 180],
-      [698, 120], [740, 120], [784, 120], [880, 180],
-      [784, 120], [740, 120], [698, 120], [659, 180],
-      [622, 120], [659, 120], [698, 120], [740, 180]
-    ];
-
-    let elapsed = 0;
-    notes.forEach(([frequency, duration]) => {
-      window.setTimeout(() => {
-        if (!soundEnabled) return;
-
-        const now = context.currentTime;
-        const osc = context.createOscillator();
-        const gain = context.createGain();
-
-        osc.type = "square";
-        osc.frequency.setValueAtTime(frequency, now);
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.055, now + 0.012);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + Math.max(0.08, duration / 1000 - 0.018));
-
-        osc.connect(gain).connect(context.destination);
-        osc.start(now);
-        osc.stop(now + Math.max(0.1, duration / 1000));
-      }, elapsed);
-      elapsed += duration;
-    });
-
-    window.setTimeout(() => {
-      figaroSynthPlaying = false;
-      startFigaro();
-    }, elapsed + 80);
-  };
-
   const startFigaro = () => {
-    if (!figaro || !soundEnabled || !synthFinished || figaroSynthPlaying || musicStarted) return;
+    if (!figaro || !soundEnabled || !synthFinished || musicStarted) return;
     const attempt = figaro.play();
     if (!attempt) return;
     attempt.then(() => {
@@ -146,14 +98,14 @@
       // The synth track must finish first. Only then is Mozart allowed to start.
       window.addEventListener("portfolio:synth-finished", () => {
         synthFinished = true;
-        playFigaroSynth();
+        startFigaro();
       });
 
       // These gestures only unlock audio; they do NOT start Mozart before the synth.
       const unlockAudio = () => {
         if (!soundEnabled) return;
         ensureUiContext();
-        if (synthFinished) playFigaroSynth();
+        if (synthFinished) startFigaro();
       };
 
       window.addEventListener("wheel", unlockAudio, { passive: true });
@@ -163,14 +115,22 @@
       window.addEventListener("pointerdown", unlockAudio, { passive: true });
       window.addEventListener("keydown", unlockAudio);
 
+      let lastUiSoundAt = 0;
+      let lastClickAt = 0;
+
       document.addEventListener("pointerover", (event) => {
         const target = event.target;
         if (!(target instanceof Element)) return;
+
         const interactive = target.closest(
-          "a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
+          "a, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
         );
         if (!interactive || interactive === lastHoverTarget) return;
+
         lastHoverTarget = interactive;
+        const now = performance.now();
+        if (now - lastUiSoundAt < 180) return;
+        lastUiSoundAt = now;
         playUiSound("hover");
       }, true);
 
@@ -178,7 +138,7 @@
         const target = event.target;
         if (!(target instanceof Element)) return;
         const interactive = target.closest(
-          "a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
+          "a, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
         );
         if (interactive === lastHoverTarget) lastHoverTarget = null;
       }, true);
@@ -186,10 +146,15 @@
       document.addEventListener("click", (event) => {
         const target = event.target;
         if (!(target instanceof Element)) return;
-        if (target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) {
-          playUiSound("click");
-        }
+        if (!target.closest("a, button, summary, .photo-tile, .project-card, .engine-panel")) return;
+
+        const now = performance.now();
+        if (now - lastClickAt < 220) return;
+        lastClickAt = now;
+        lastUiSoundAt = now;
+        playUiSound("click");
       }, true);
+
     }
 
     ensureUiContext();
