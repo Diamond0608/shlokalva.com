@@ -107,48 +107,5 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script src="/site-patches.js"></script>
-    <script>
-      (() => {
-        const replacements = new Map([
-          ["Vice-President And President", "President And Vice President"],
-          ["Volunteered at Helios Interschool Robotics Fest and served as Deputy Event Head for Robo-FC at Iris.", "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris."],
-          ["Selected for Hack Club BEEST and worked through the project track. I could not make the Netherlands travel piece work out, but the build-and-ship mindset stuck hard.", "Selected as one of the 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of travel-related issues and received approximately ₹40,000 INR instead."],
-          ["I like building things that can actually be tested, argued with, broken, fixed, and photographed looking slightly dramatic.", "I like building things that can actually be tested, argued with, broken, fixed, and looked back upon with pride."],
-          ["Played casually. Not everything needs a medal table; sometimes it is just fun to hit things very fast.", "Played casually. Not everything needs a medal table; sometimes it's just fun to hit things very fast."],
-          ["Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Winning Too.", "Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Hoping To Win Too."]
-        ]);
-
-        function walkText(root) {
-          const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-          const nodes = [];
-          let node;
-          while ((node = walker.nextNode())) nodes.push(node);
-          nodes.forEach((textNode) => {
-            let value = textNode.nodeValue || "";
-            for (const [from, to] of replacements) value = value.split(from).join(to);
-            if (value !== textNode.nodeValue) textNode.nodeValue = value;
-          });
-        }
-
-        function patchImages() {
-          document.querySelectorAll("article").forEach((article) => {
-            const heading = article.querySelector("h3")?.textContent?.trim() || "";
-            const img = article.querySelector("img");
-            if (!img) return;
-            if (heading === "IIT Madras Aerospace Course") img.src = "/assets/iitm.png";
-            if (heading === "My Flying Academy Workshop") img.src = "/assets/outline.svg";
-          });
-        }
-
-        function patchPage() {
-          walkText(document.body);
-          patchImages();
-        }
-
-        const observer = new MutationObserver(patchPage);
-        observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-        window.addEventListener("load", patchPage, { once: true });
-      })();
-    </script>
   </body>
 </html>
