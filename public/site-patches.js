@@ -148,5 +148,24 @@
     // Deliberately do not call startFigaro() here.
   };
 
+  const patchResponsiveSignals = () => {
+    document.querySelectorAll(".signal-grid img").forEach((img) => {
+      img.style.height = "auto";
+      img.style.width = "100%";
+      img.style.maxHeight = "18rem";
+      img.style.objectFit = "contain";
+      img.style.objectPosition = "center";
+      img.style.display = "block";
+    });
+  };
+
+  const setup = () => {
+    setupAudio();
+    patchResponsiveSignals();
+  };
+
+  const observer = new MutationObserver(setup);
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  window.addEventListener("load", setup, { once: true });
   setup();
 })();
