@@ -13,6 +13,7 @@
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#0c1017" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <link rel="canonical" href="https://shlokalva.com/" />
 
@@ -24,6 +25,8 @@
       content="Robotics, aerospace, CAD, software, embedded systems, and engineering projects by Shlok Alva."
     />
     <meta property="og:url" content="https://shlokalva.com/" />
+    <meta property="og:image" content="https://shlokalva.com/assets/rc-plane.jpg" />
+    <meta property="og:image:alt" content="Shlok Alva engineering portfolio project image" />
 
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Shlok Alva | Robotics, Aerospace & Engineering Portfolio" />
@@ -44,7 +47,9 @@
           "@id": "https://shlokalva.com/#shlok-alva",
           "name": "Shlok Alva",
           "url": "https://shlokalva.com/",
-          "description": "Engineering portfolio of Shlok Alva, focused on robotics, aerospace, CAD, software, embedded systems, and hands-on projects.",
+          "description": "My engineering portfolio covering robotics, aerospace, CAD, software, embedded systems, aircraft propulsion, and hands-on builds.",
+          "image": "https://shlokalva.com/assets/rc-plane.jpg",
+          "jobTitle": "Student Engineer",
           "knowsAbout": [
             "Robotics",
             "Aerospace engineering",
@@ -57,7 +62,10 @@
           ],
           "sameAs": [
             "https://github.com/Diamond0608"
-          ]
+          ],
+          "mainEntityOfPage": {
+            "@id": "https://shlokalva.com/#profile"
+          }
         },
         "isPartOf": {
           "@id": "https://shlokalva.com/#website"
@@ -82,6 +90,23 @@
     <link rel="stylesheet" href="/portfolio-overrides.css" />
   </head>
   <body>
+    <noscript>
+      <main>
+        <h1>Shlok Alva — Robotics, Aerospace &amp; Engineering Portfolio</h1>
+        <p>I am Shlok Alva. This is my engineering portfolio covering robotics, aerospace, CAD, software, embedded systems, aircraft propulsion, and hands-on builds.</p>
+        <h2>Projects</h2>
+        <ul>
+          <li><strong>Little Helper</strong> — a track-based teacher book-carrying robot built from CAD through electronics, code, and physical testing.</li>
+          <li><strong>Team Dinoco</strong> — my National Robotics League competition work as team captain, including mechanical build work, coordination, strategy, and competition preparation.</li>
+          <li><strong>Aircraft Propulsion Internship</strong> — my Dwello Aerospace work on ramjet and turbofan CAD, calculations, simulation, animation, and technical reporting.</li>
+          <li><strong>Trinetra</strong> — my wearable-tech CAD and mechanism-design project.</li>
+          <li><strong>Self-Made RC Plane</strong> — my scratch-built aviation project using a NACA 0012 airfoil and iterative design.</li>
+        </ul>
+        <h2>Focus</h2>
+        <p>My main interests are robotics, aerospace, aircraft propulsion, mechanical design, CAD, embedded systems, and software.</p>
+        <p>GitHub: <a href="https://github.com/Diamond0608">github.com/Diamond0608</a></p>
+      </main>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script src="/site-patches.js"></script>
