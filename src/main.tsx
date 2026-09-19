@@ -423,18 +423,27 @@ function useOpeningSynth(enabled: boolean) {
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
 
-    const startSynth = () => {
+    const start = () => {
       if (startedRef.current) return;
+      startedRef.current = true;
 
-      const begin = () => {
-        if (startedRef.current) return;
-        startedRef.current = true;
+      // This is the original opening synth sequence.
+      const firstSynth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
 
-        // Opening synth cue: deliberately one-shot. There is NO interval or loop.
-        const synth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
-        const step = 185;
+      // This is the original second, Figaro-like synth sequence from the
+      // earlier version of the site. It plays once immediately after the first.
+      const secondSynth = [
+        392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440,
+        392, 494, 587, 659, 698, 659, 587, 523, 494, 587, 659, 784, 880, 784, 659, 587,
+        523, 659, 784, 988, 880, 784, 698, 659, 587, 659, 698, 784, 659, 587, 523, 494
+      ];
 
-        synth.forEach((frequency, index) => {
+      const stepOne = 185;
+      const stepTwo = 155;
+      let elapsed = 0;
+
+      const scheduleMelody = (melody: number[], step: number) => {
+        melody.forEach((frequency, index) => {
           const timer = window.setTimeout(() => {
             const now = context.currentTime;
             const osc = context.createOscillator();
@@ -449,30 +458,37 @@ function useOpeningSynth(enabled: boolean) {
             osc.connect(gain).connect(context.destination);
             osc.start(now);
             osc.stop(now + 0.24);
-          }, index * step);
+          }, elapsed + index * step);
 
           timersRef.current.push(timer);
         });
 
-        // This event starts the one-shot Figaro synth bridge.
-        // It does not start Mozart directly.
+        elapsed += melody.length * step;
+      };
+
+      const begin = () => {
+        scheduleMelody(firstSynth, stepOne);
+        scheduleMelody(secondSynth, stepTwo);
+
+        // Only after BOTH synth phrases have finished does the external
+        // Mozart recording get permission to start.
         const finishedTimer = window.setTimeout(() => {
           window.dispatchEvent(new Event("portfolio:synth-finished"));
-        }, (synth.length - 1) * step + 300);
-
+        }, elapsed + 300);
         timersRef.current.push(finishedTimer);
       };
 
       context.resume().then(begin).catch(() => {
-        // A later user gesture (scroll/click/touch/keypress) can retry.
+        // The next user gesture retries the complete sequence if autoplay
+        // was blocked. It is still started only once after successful resume.
+        startedRef.current = false;
       });
     };
 
-    startSynth();
+    start();
 
     const unlockAndStart = () => {
-      if (startedRef.current) return;
-      startSynth();
+      if (!startedRef.current) start();
     };
 
     window.addEventListener("wheel", unlockAndStart, { passive: true });
@@ -494,7 +510,6 @@ function useOpeningSynth(enabled: boolean) {
     };
   }, [enabled]);
 }
-
 function FlightLoader() {
   return (
     <div className="flight-loader" aria-live="polite">
@@ -649,7 +664,7 @@ function CockpitPanel() {
       <div className="cockpit-panel-header">
         <span>FLIGHT DECK / VT-PLN</span>
         <strong>CONFIG / VT-PLN</strong>
-        <span className="cockpit-log">FLIGHT LOG / <b>19 SEP 2026</b></span>
+        <span className="cockpit-log">LAST UPDATED ON <b>19 SEP 2026</b></span>
       </div>
       <div className="cockpit-instruments">
         <div className="pfd-mini">
