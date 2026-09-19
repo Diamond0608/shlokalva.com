@@ -73,8 +73,8 @@ const images = {
   cyberPodium: "/assets/cyber-podium.jpg",
   teachingOne: "/assets/teaching-screenshot.jpg",
   captainBadge: "/assets/teaching-screenshot-2.jpg",
-  iitmLogo: "/assets/iitm-logo.svg",
-  planeOutline: "/assets/plane-outline.svg",
+  iitmLogo: "/assets/iitm.png",
+  planeOutline: "/assets/outline.svg",
   hackClubLogo: "/assets/hackclub-2026.png",
   hkuAiChallenge: "/assets/hku-ai-challenge.jpg",
   blackShirtCohorts: "/assets/black-shirt-cohorts.png",
@@ -162,10 +162,10 @@ const projects: Project[] = [
       { src: images.dinocoJourney, alt: "Team Dinoco journey document cover", caption: "Journey Document" },
       { src: "/assets/team-dinoco-video.mp4", alt: "Team Dinoco bot moving", caption: "The Bot Moving", type: "video" }
     ],
-    caution: "Team Result: Second Place In Playoffs; Quarter-Final Elimination.",
+    caution: "Team Result: Second In Bracket For Playoffs; Quarter-Final Elimination.",
     stats: [
       { label: "Role", value: "Team Captain" },
-      { label: "Playoffs", value: "Second Place In Playoffs" },
+      { label: "Playoffs", value: "Second In Bracket For Playoffs" },
       { label: "Event", value: "National Finals" },
       { label: "Focus", value: "Strategy + Build" }
     ]
@@ -617,7 +617,7 @@ function CockpitPanel() {
     <div className="cockpit-panel" aria-label="A350-inspired flight deck instrumentation">
       <div className="cockpit-panel-header">
         <span>FLIGHT DECK / VT-PLN</span>
-        <strong>CRZ PROFILE</strong>
+        <strong>CONFIG / VT-PLN</strong>
       </div>
       <div className="cockpit-instruments">
         <div className="pfd-mini">
@@ -961,7 +961,6 @@ function App() {
         </div>
       </section>
 
-      <footer className="flight-log-footer">FLIGHT LOG // LAST UPDATED 19 SEP 2026</footer>
 
       {activeImage && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={activeImage.caption} onClick={() => setActiveImage(null)}>
