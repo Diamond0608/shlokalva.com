@@ -5,3 +5,11 @@ dist/
 !.env.example
 .vite/
 .pnpm-store/
+
+# Local working files / source exports
+*.rar
+*.step
+*.f3d
+*.zip
+*.glb
+*.mp4
