@@ -709,6 +709,14 @@ function App() {
   const reducedMotion = useReducedMotion();
   useOpeningSynth(soundEnabled);
 
+  const handleSoundToggle = () => {
+    setSoundEnabled((value) => {
+      const next = !value;
+      window.dispatchEvent(new CustomEvent("portfolio:sound-toggle", { detail: { enabled: next } }));
+      return next;
+    });
+  };
+
   useEffect(() => {
     const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 5000);
     return () => window.clearTimeout(timeout);
@@ -734,7 +742,7 @@ function App() {
             <strong>{label}</strong>
           </a>
         ))}
-        <button className="audio-control" onClick={() => setSoundEnabled((value) => !value)} aria-label="Toggle Interface Sound">
+        <button className="audio-control" onClick={handleSoundToggle} aria-label="Toggle Interface Sound">
           {soundEnabled ? <Volume2 size={18} /> : <VolumeX size={18} />}
           <span>AUDIO</span>
         </button>
