@@ -452,7 +452,7 @@ function useOpeningSynth(enabled: boolean) {
             osc.type = "sine";
             osc.frequency.value = frequency;
             gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.exponentialRampToValueAtTime(0.035, now + 0.025);
+            gain.gain.exponentialRampToValueAtTime(0.042, now + 0.025);
             gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
 
             osc.connect(gain).connect(context.destination);
