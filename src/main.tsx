@@ -426,6 +426,7 @@ function useMozartLoop(enabled: boolean) {
     music.loop = true;
     music.preload = "auto";
     music.volume = 0.42;
+    music.muted = true;
 
     const playOpeningSynth = () => {
       if (openingRef.current) return;
@@ -454,9 +455,13 @@ function useMozartLoop(enabled: boolean) {
       const openingDuration = (openingNotes.length - 1) * step + 260;
       window.setTimeout(() => {
         openingRef.current = false;
-        music.play().catch(() => {
-          startedRef.current = false;
-        });
+        if (navigator.userActivation?.hasBeenActive) {
+          music.currentTime = 0;
+          music.muted = false;
+          music.play().catch(() => {
+            startedRef.current = false;
+          });
+        }
       }, openingDuration);
     };
 
@@ -473,6 +478,11 @@ function useMozartLoop(enabled: boolean) {
 
     const unlockMusic = () => {
       startMusic();
+      if (!openingRef.current && music.muted && navigator.userActivation?.hasBeenActive) {
+        music.currentTime = 0;
+        music.muted = false;
+        music.play().catch(() => {});
+      }
     };
 
     if (enabled) {
