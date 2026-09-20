@@ -406,16 +406,25 @@ And by being the chaos we are infact God's Magnum Opus.`
   }
 ];
 
-function useOpeningSynth(enabled: boolean) {
+function useMozartLoop(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
-  const timersRef = useRef<number[]>([]);
+  const intervalRef = useRef<number | null>(null);
+  const timeoutRefs = useRef<number[]>([]);
   const startedRef = useRef(false);
 
   useEffect(() => {
-    timersRef.current.forEach((timer) => window.clearTimeout(timer));
-    timersRef.current = [];
+    const clearTimers = () => {
+      if (intervalRef.current !== null) window.clearInterval(intervalRef.current);
+      timeoutRefs.current.forEach((timeout) => window.clearTimeout(timeout));
+      intervalRef.current = null;
+      timeoutRefs.current = [];
+    };
 
-    if (!enabled) return;
+    if (!enabled) {
+      clearTimers();
+      startedRef.current = false;
+      return;
+    }
 
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
@@ -423,116 +432,78 @@ function useOpeningSynth(enabled: boolean) {
     const context = contextRef.current ?? new AudioContextClass();
     contextRef.current = context;
 
-    const start = () => {
-      if (startedRef.current) return;
-      startedRef.current = true;
+    let loopCount = 0;
+    const shortMelody = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
+    const figaroLike = [
+      392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440,
+      392, 494, 587, 659, 698, 659, 587, 523, 494, 587, 659, 784, 880, 784, 659, 587,
+      523, 659, 784, 988, 880, 784, 698, 659, 587, 659, 698, 784, 659, 587, 523, 494
+    ];
 
-      // This is the original opening synth sequence.
-      const firstSynth = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
+    const playMelody = () => {
+      context.resume().catch(() => {});
+      const melody = loopCount < 2 ? shortMelody : figaroLike;
+      const step = loopCount < 2 ? 185 : 155;
+      loopCount += 1;
 
-      // This is the original second, Figaro-like synth sequence from the
-      // earlier version of the site. It plays once immediately after the first.
-      const secondSynth = [
-        392, 494, 587, 659, 587, 494, 440, 494, 523, 659, 784, 659, 587, 523, 494, 440,
-        392, 494, 587, 659, 698, 659, 587, 523, 494, 587, 659, 784, 880, 784, 659, 587,
-        523, 659, 784, 988, 880, 784, 698, 659, 587, 659, 698, 784, 659, 587, 523, 494
-      ];
-
-      const stepOne = 185;
-      const stepTwo = 155;
-      let elapsed = 0;
-
-      const scheduleMelody = (melody: number[], step: number) => {
-        melody.forEach((frequency, index) => {
-          const timer = window.setTimeout(() => {
-            const now = context.currentTime;
-            const osc = context.createOscillator();
-            const gain = context.createGain();
-
-            osc.type = "sine";
-            osc.frequency.value = frequency;
-            gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.exponentialRampToValueAtTime(0.065, now + 0.025);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-
-            osc.connect(gain).connect(context.destination);
-            osc.start(now);
-            osc.stop(now + 0.24);
-          }, elapsed + index * step);
-
-          timersRef.current.push(timer);
-        });
-
-        elapsed += melody.length * step;
-      };
-
-      const begin = () => {
-        scheduleMelody(firstSynth, stepOne);
-        scheduleMelody(secondSynth, stepTwo);
-
-        // Keep the music self-contained: the repo currently has no external
-        // background audio asset, so the site should not depend on a missing
-        // Mozart file or an event listener that may not exist.
-        const backgroundNotes = [
-          392, 440, 494, 523, 587, 659, 587, 523,
-          494, 523, 587, 659, 698, 659, 587, 523,
-          494, 440, 392, 440, 494, 587, 523, 494
-        ];
-        let backgroundIndex = 0;
-        const playBackgroundNote = () => {
+      melody.forEach((frequency, index) => {
+        const timeout = window.setTimeout(() => {
           if (context.state !== "running") return;
           const now = context.currentTime;
           const osc = context.createOscillator();
           const gain = context.createGain();
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(backgroundNotes[backgroundIndex], now);
+
+          osc.type = "sine";
+          osc.frequency.value = frequency;
           gain.gain.setValueAtTime(0.0001, now);
-          gain.gain.exponentialRampToValueAtTime(0.035, now + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+          gain.gain.exponentialRampToValueAtTime(0.065, now + 0.025);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
           osc.connect(gain).connect(context.destination);
           osc.start(now);
-          osc.stop(now + 0.5);
-          backgroundIndex = (backgroundIndex + 1) % backgroundNotes.length;
-        };
+          osc.stop(now + 0.24);
+        }, index * step);
+        timeoutRefs.current.push(timeout);
+      });
+    };
 
-        const backgroundTimer = window.setInterval(playBackgroundNote, 520);
-        timersRef.current.push(backgroundTimer as unknown as number);
-        const firstBackgroundTimer = window.setTimeout(playBackgroundNote, elapsed + 300);
-        timersRef.current.push(firstBackgroundTimer);
-      };
-
-      context.resume().then(begin).catch(() => {
-        // The next user gesture retries the complete sequence if autoplay
-        // was blocked. It is still started only once after successful resume.
+    const startMusic = () => {
+      if (startedRef.current) return;
+      startedRef.current = true;
+      context.resume().then(() => {
+        playMelody();
+        intervalRef.current = window.setInterval(playMelody, 8200);
+      }).catch(() => {
         startedRef.current = false;
       });
     };
 
-    start();
+    startMusic();
 
-    const unlockAndStart = () => {
-      if (!startedRef.current) start();
+    const unlockMusic = () => {
+      if (!startedRef.current) startMusic();
     };
 
-    window.addEventListener("wheel", unlockAndStart, { passive: true });
-    window.addEventListener("scroll", unlockAndStart, { passive: true });
-    window.addEventListener("touchmove", unlockAndStart, { passive: true });
-    window.addEventListener("touchstart", unlockAndStart, { passive: true });
-    window.addEventListener("pointerdown", unlockAndStart, { passive: true });
-    window.addEventListener("keydown", unlockAndStart);
+    window.addEventListener("wheel", unlockMusic, { passive: true });
+    window.addEventListener("scroll", unlockMusic, { passive: true });
+    window.addEventListener("touchmove", unlockMusic, { passive: true });
+    window.addEventListener("touchstart", unlockMusic, { passive: true });
+    window.addEventListener("pointerdown", unlockMusic, { passive: true });
+    window.addEventListener("keydown", unlockMusic);
 
     return () => {
-      window.removeEventListener("wheel", unlockAndStart);
-      window.removeEventListener("scroll", unlockAndStart);
-      window.removeEventListener("touchmove", unlockAndStart);
-      window.removeEventListener("touchstart", unlockAndStart);
-      window.removeEventListener("pointerdown", unlockAndStart);
-      window.removeEventListener("keydown", unlockAndStart);
-      timersRef.current.forEach((timer) => window.clearTimeout(timer));
-      timersRef.current = [];
+      window.removeEventListener("wheel", unlockMusic);
+      window.removeEventListener("scroll", unlockMusic);
+      window.removeEventListener("touchmove", unlockMusic);
+      window.removeEventListener("touchstart", unlockMusic);
+      window.removeEventListener("pointerdown", unlockMusic);
+      window.removeEventListener("keydown", unlockMusic);
+      clearTimers();
+      startedRef.current = false;
     };
   }, [enabled]);
 }
+
 function FlightLoader() {
   return (
     <div className="flight-loader" aria-live="polite">
@@ -730,7 +701,7 @@ function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const reducedMotion = useReducedMotion();
-  useOpeningSynth(soundEnabled);
+  useMozartLoop(soundEnabled);
 
   const handleSoundToggle = () => {
     setSoundEnabled((value) => {
