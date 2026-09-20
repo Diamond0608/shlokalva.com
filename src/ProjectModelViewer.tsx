@@ -46,13 +46,13 @@ export default function ProjectModelViewer({ src }: { src: string }) {
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 0.62;
+          gl.toneMappingExposure = 0.52;
         }}
       >
-        <hemisphereLight intensity={1.0} color="#ffffff" groundColor="#202020" />
-        <directionalLight position={[5, 6, 7]} intensity={2.25} />
-        <directionalLight position={[-4, 2, 3]} intensity={1.0} />
-        <directionalLight position={[2, -2, -5]} intensity={0.8} />
+        <hemisphereLight intensity={0.82} color="#ffffff" groundColor="#202020" />
+        <directionalLight position={[5, 6, 7]} intensity={1.85} />
+        <directionalLight position={[-4, 2, 3]} intensity={0.82} />
+        <directionalLight position={[2, -2, -5]} intensity={0.65} />
 
         <Suspense fallback={null}>
           <Bounds fit clip margin={1.25}>
