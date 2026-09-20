@@ -411,6 +411,9 @@ function useMozartLoop(enabled: boolean) {
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const startedRef = useRef(false);
   const openingRef = useRef(false);
+  const melodyIndexRef = useRef(0);
+  const melodyTimerRef = useRef<number | null>(null);
+  const handoffTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -428,16 +431,40 @@ function useMozartLoop(enabled: boolean) {
     music.volume = 0.42;
     music.muted = true;
 
-    const playOpeningSynth = () => {
-      if (openingRef.current) return;
+    const secondSynth = [
+      392, 494, 587, 659, 587, 494, 440, 494,
+      523, 659, 784, 659, 587, 523, 494, 440,
+      392, 494, 587, 659, 698, 659, 587, 523,
+      494, 587, 659, 784, 880, 784, 659, 587,
+      523, 659, 784, 988, 880, 784, 698, 659,
+      587, 659, 698, 784, 659, 587, 523, 494
+    ];
+
+    const stopSecondSynth = () => {
+      if (melodyTimerRef.current !== null) {
+        window.clearTimeout(melodyTimerRef.current);
+        melodyTimerRef.current = null;
+      }
+      melodyIndexRef.current = secondSynth.length;
+    };
+
+    const playSecondSynth = () => {
+      if (openingRef.current || melodyIndexRef.current >= secondSynth.length) return;
       openingRef.current = true;
 
-      const openingNotes = [392, 587, 784, 587, 392, 587, 784, 587, 494, 587, 784, 587, 523, 659, 784, 659];
-      const step = 185;
-      const startTime = context.currentTime;
+      const playNext = () => {
+        if (melodyIndexRef.current >= secondSynth.length) {
+          openingRef.current = false;
+          music.currentTime = 0;
+          music.muted = false;
+          music.play().catch(() => {
+            startedRef.current = false;
+          });
+          return;
+        }
 
-      openingNotes.forEach((frequency, index) => {
-        const now = startTime + index * (step / 1000);
+        const frequency = secondSynth[melodyIndexRef.current++];
+        const now = context.currentTime;
         const osc = context.createOscillator();
         const gain = context.createGain();
 
@@ -450,19 +477,11 @@ function useMozartLoop(enabled: boolean) {
         osc.connect(gain).connect(context.destination);
         osc.start(now);
         osc.stop(now + 0.24);
-      });
 
-      const openingDuration = (openingNotes.length - 1) * step + 260;
-      window.setTimeout(() => {
-        openingRef.current = false;
-        if (navigator.userActivation?.hasBeenActive) {
-          music.currentTime = 0;
-          music.muted = false;
-          music.play().catch(() => {
-            startedRef.current = false;
-          });
-        }
-      }, openingDuration);
+        melodyTimerRef.current = window.setTimeout(playNext, 155);
+      };
+
+      playNext();
     };
 
     const startMusic = () => {
@@ -470,7 +489,9 @@ function useMozartLoop(enabled: boolean) {
       startedRef.current = true;
 
       context.resume().then(() => {
-        playOpeningSynth();
+        if (navigator.userActivation?.hasBeenActive) {
+          playSecondSynth();
+        }
       }).catch(() => {
         startedRef.current = false;
       });
@@ -478,11 +499,6 @@ function useMozartLoop(enabled: boolean) {
 
     const unlockMusic = () => {
       startMusic();
-      if (!openingRef.current && music.muted && navigator.userActivation?.hasBeenActive) {
-        music.currentTime = 0;
-        music.muted = false;
-        music.play().catch(() => {});
-      }
     };
 
     if (enabled) {
@@ -503,8 +519,14 @@ function useMozartLoop(enabled: boolean) {
       window.removeEventListener("pointerdown", unlockMusic);
       window.removeEventListener("keydown", unlockMusic);
 
+      if (melodyTimerRef.current !== null) window.clearTimeout(melodyTimerRef.current);
+      if (handoffTimerRef.current !== null) window.clearTimeout(handoffTimerRef.current);
       music.pause();
       music.currentTime = 0;
+      music.muted = true;
+      melodyTimerRef.current = null;
+      handoffTimerRef.current = null;
+      melodyIndexRef.current = 0;
       startedRef.current = false;
       openingRef.current = false;
     };
