@@ -470,12 +470,35 @@ function useOpeningSynth(enabled: boolean) {
         scheduleMelody(firstSynth, stepOne);
         scheduleMelody(secondSynth, stepTwo);
 
-        // Only after BOTH synth phrases have finished does the external
-        // Mozart recording get permission to start.
-        const finishedTimer = window.setTimeout(() => {
-          window.dispatchEvent(new Event("portfolio:synth-finished"));
-        }, elapsed + 300);
-        timersRef.current.push(finishedTimer);
+        // Keep the music self-contained: the repo currently has no external
+        // background audio asset, so the site should not depend on a missing
+        // Mozart file or an event listener that may not exist.
+        const backgroundNotes = [
+          392, 440, 494, 523, 587, 659, 587, 523,
+          494, 523, 587, 659, 698, 659, 587, 523,
+          494, 440, 392, 440, 494, 587, 523, 494
+        ];
+        let backgroundIndex = 0;
+        const playBackgroundNote = () => {
+          if (context.state !== "running") return;
+          const now = context.currentTime;
+          const osc = context.createOscillator();
+          const gain = context.createGain();
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(backgroundNotes[backgroundIndex], now);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.018, now + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.48);
+          osc.connect(gain).connect(context.destination);
+          osc.start(now);
+          osc.stop(now + 0.5);
+          backgroundIndex = (backgroundIndex + 1) % backgroundNotes.length;
+        };
+
+        const backgroundTimer = window.setInterval(playBackgroundNote, 520);
+        timersRef.current.push(backgroundTimer as unknown as number);
+        const firstBackgroundTimer = window.setTimeout(playBackgroundNote, elapsed + 300);
+        timersRef.current.push(firstBackgroundTimer);
       };
 
       context.resume().then(begin).catch(() => {
