@@ -410,12 +410,11 @@ function useMozartLoop(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const startedRef = useRef(false);
-  const openingRef = useRef(false);
-  const melodyIndexRef = useRef(0);
   const melodyTimerRef = useRef<number | null>(null);
-  const handoffTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!enabled) return;
+
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     if (!AudioContextClass) return;
 
@@ -431,6 +430,11 @@ function useMozartLoop(enabled: boolean) {
     music.volume = 0.42;
     music.muted = true;
 
+    const firstSynth = [
+      392, 587, 784, 587, 392, 587, 784, 587,
+      494, 587, 784, 587, 523, 659, 784, 659
+    ];
+
     const secondSynth = [
       392, 494, 587, 659, 587, 494, 440, 494,
       523, 659, 784, 659, 587, 523, 494, 440,
@@ -440,36 +444,29 @@ function useMozartLoop(enabled: boolean) {
       587, 659, 698, 784, 659, 587, 523, 494
     ];
 
-    const stopSecondSynth = () => {
+    const stopSynth = () => {
       if (melodyTimerRef.current !== null) {
         window.clearTimeout(melodyTimerRef.current);
         melodyTimerRef.current = null;
       }
-      melodyIndexRef.current = secondSynth.length;
     };
 
-    const playSecondSynth = () => {
-      if (openingRef.current || melodyIndexRef.current >= secondSynth.length) return;
-      openingRef.current = true;
+    const playSequence = (melody: number[], step: number, onDone: () => void) => {
+      let index = 0;
 
       const playNext = () => {
-        if (melodyIndexRef.current >= secondSynth.length) {
-          openingRef.current = false;
-          music.currentTime = 0;
-          music.muted = false;
-          music.play().catch(() => {
-            startedRef.current = false;
-          });
+        if (index >= melody.length) {
+          melodyTimerRef.current = null;
+          onDone();
           return;
         }
 
-        const frequency = secondSynth[melodyIndexRef.current++];
         const now = context.currentTime;
         const osc = context.createOscillator();
         const gain = context.createGain();
 
         osc.type = "sine";
-        osc.frequency.value = frequency;
+        osc.frequency.value = melody[index++];
         gain.gain.setValueAtTime(0.0001, now);
         gain.gain.exponentialRampToValueAtTime(0.065, now + 0.025);
         gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
@@ -478,20 +475,37 @@ function useMozartLoop(enabled: boolean) {
         osc.start(now);
         osc.stop(now + 0.24);
 
-        melodyTimerRef.current = window.setTimeout(playNext, 155);
+        melodyTimerRef.current = window.setTimeout(playNext, step);
       };
 
       playNext();
     };
 
+    const handoffToMozart = () => {
+      music.currentTime = 0;
+      music.muted = false;
+      music.play().catch(() => {
+        startedRef.current = false;
+      });
+    };
+
     const startMusic = () => {
       if (startedRef.current) return;
-      startedRef.current = true;
 
       context.resume().then(() => {
-        if (navigator.userActivation?.hasBeenActive) {
-          playSecondSynth();
-        }
+        // The audio element is primed during the user gesture while muted.
+        // This avoids the later Mozart handoff being blocked by autoplay policy.
+        music.muted = true;
+        music.currentTime = 0;
+        music.play().then(() => {
+          startedRef.current = true;
+          stopSynth();
+          playSequence(firstSynth, 185, () => {
+            playSequence(secondSynth, 155, handoffToMozart);
+          });
+        }).catch(() => {
+          startedRef.current = false;
+        });
       }).catch(() => {
         startedRef.current = false;
       });
@@ -501,15 +515,14 @@ function useMozartLoop(enabled: boolean) {
       startMusic();
     };
 
-    if (enabled) {
-      startMusic();
-      window.addEventListener("wheel", unlockMusic, { passive: true });
-      window.addEventListener("scroll", unlockMusic, { passive: true });
-      window.addEventListener("touchmove", unlockMusic, { passive: true });
-      window.addEventListener("touchstart", unlockMusic, { passive: true });
-      window.addEventListener("pointerdown", unlockMusic, { passive: true });
-      window.addEventListener("keydown", unlockMusic);
-    }
+    // Do not attempt to mark audio as started on page load: browsers can keep
+    // the AudioContext suspended until an actual user gesture.
+    window.addEventListener("wheel", unlockMusic, { passive: true });
+    window.addEventListener("scroll", unlockMusic, { passive: true });
+    window.addEventListener("touchmove", unlockMusic, { passive: true });
+    window.addEventListener("touchstart", unlockMusic, { passive: true });
+    window.addEventListener("pointerdown", unlockMusic, { passive: true });
+    window.addEventListener("keydown", unlockMusic);
 
     return () => {
       window.removeEventListener("wheel", unlockMusic);
@@ -519,19 +532,15 @@ function useMozartLoop(enabled: boolean) {
       window.removeEventListener("pointerdown", unlockMusic);
       window.removeEventListener("keydown", unlockMusic);
 
-      if (melodyTimerRef.current !== null) window.clearTimeout(melodyTimerRef.current);
-      if (handoffTimerRef.current !== null) window.clearTimeout(handoffTimerRef.current);
+      stopSynth();
       music.pause();
       music.currentTime = 0;
       music.muted = true;
-      melodyTimerRef.current = null;
-      handoffTimerRef.current = null;
-      melodyIndexRef.current = 0;
       startedRef.current = false;
-      openingRef.current = false;
     };
   }, [enabled]);
 }
+
 function FlightLoader() {
   return (
     <div className="flight-loader" aria-live="polite">
