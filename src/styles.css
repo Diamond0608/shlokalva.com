@@ -4977,3 +4977,51 @@ h3 {
   -webkit-line-clamp: 3;
   line-height: 1.28;
 }
+
+/* Turbofan zoom buttons */
+.engine-zoom {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.engine-zoom button {
+  display: grid;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--cream);
+  cursor: pointer;
+}
+
+.engine-zoom button:hover {
+  border-color: var(--line-strong);
+  background: rgba(255, 138, 42, 0.16);
+}
+
+/* Skills cards: lift, glow and a spinning badge on hover (restored) */
+.skills-grid article {
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.skills-grid article:hover {
+  border-color: var(--line-strong);
+  background: rgba(255, 138, 42, 0.07);
+  box-shadow: inset 0 0 26px rgba(255, 138, 42, 0.1), 0 18px 46px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 138, 42, 0.16);
+  transform: translateY(-5px);
+}
+
+.skills-grid article svg {
+  transition: transform 500ms ease, filter 220ms ease;
+}
+
+.skills-grid article:hover svg {
+  filter: drop-shadow(0 0 8px currentColor);
+  transform: rotate(360deg) scale(1.15);
+}

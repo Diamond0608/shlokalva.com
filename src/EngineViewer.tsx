@@ -9,6 +9,7 @@ import {
   useGLTF
 } from "@react-three/drei";
 import * as THREE from "three";
+import { RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 // scene.glb is a single merged mesh (one node, no named bodies), so a true exploded view of separate
@@ -164,6 +165,31 @@ class EngineErrorBoundary extends React.Component<
 
 export default function EngineViewer() {
   const [visible] = useState(true);
+  const controlsRef = useRef<any>(null);
+  const stateRef = useRef<{ camera: THREE.Camera } | null>(null);
+  const startPos = useRef<THREE.Vector3 | null>(null);
+  const level = useRef(0);
+
+  // Buttons rather than scroll-wheel zoom, so the engine never hijacks page scrolling.
+  const zoom = (step: number) => {
+    const controls = controlsRef.current;
+    const camera = stateRef.current?.camera;
+    if (!controls || !camera) return;
+    const next = Math.max(-3, Math.min(5, level.current + step));
+    if (next === level.current) return;
+    level.current = next;
+    const factor = step > 0 ? 1 / 1.28 : 1.28;
+    camera.position.sub(controls.target).multiplyScalar(factor).add(controls.target);
+    controls.update();
+  };
+
+  const reset = () => {
+    const controls = controlsRef.current;
+    const camera = stateRef.current?.camera;
+    if (!controls || !camera) return;
+    controls.reset();
+    level.current = 0;
+  };
 
   return (
     <div className="engine-viewer">
@@ -176,7 +202,9 @@ export default function EngineViewer() {
             camera={{ position: [4.8, 2.6, 6.2], fov: 34 }}
             dpr={[1, 1.5]}
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-            onCreated={({ gl }) => {
+            onCreated={(state) => {
+              const { gl } = state;
+              stateRef.current = state;
               gl.toneMapping = THREE.ACESFilmicToneMapping;
               gl.toneMappingExposure = 1.05;
               gl.localClippingEnabled = true;
@@ -201,6 +229,7 @@ export default function EngineViewer() {
             </Suspense>
 
             <OrbitControls
+              ref={controlsRef}
               enablePan={false}
               enableZoom={false}
               enableDamping
@@ -208,6 +237,17 @@ export default function EngineViewer() {
               rotateSpeed={0.65}
             />
           </Canvas>
+          <div className="engine-zoom" role="group" aria-label="Turbofan zoom controls">
+            <button onClick={() => zoom(1)} aria-label="Zoom in">
+              <ZoomIn size={17} />
+            </button>
+            <button onClick={() => zoom(-1)} aria-label="Zoom out">
+              <ZoomOut size={17} />
+            </button>
+            <button onClick={reset} aria-label="Reset view">
+              <RotateCcw size={16} />
+            </button>
+          </div>
         </EngineErrorBoundary>
       )}
     </div>

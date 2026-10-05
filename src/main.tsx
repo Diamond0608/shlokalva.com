@@ -1127,7 +1127,7 @@ function App() {
             <h3>Little Helper — Interactive CAD Model</h3>
             <p>Rotate and zoom the full CAD assembly.</p>
           </div>
-          <LazyMount><ProjectModelViewer src="/assets/little-helper.glb" /></LazyMount>
+          <LazyMount><ProjectModelViewer src="/assets/little-helper.glb" cutaway /></LazyMount>
         </div>
         <div className="engine-project-model">
           <div className="section-head">
@@ -1144,8 +1144,8 @@ function App() {
           <p className="eyebrow">Contact</p>
           <div className="final-boarding-image">
             <Img
-              src="/assets/dwello-turbofan-1.jpg"
-              alt="Turbofan CAD render from the Dwello Aerospace internship"
+              src="https://www.aircraft.airbus.com/sites/g/files/jlcbta126/files/2021-10/A350%20MSN3%20COCKPIT%20WHILE%20DUSK.jpg"
+              alt="Airbus A350 cockpit"
               loading="lazy"
             />
           </div>
