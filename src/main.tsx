@@ -774,7 +774,7 @@ function CockpitPanel() {
       <div className="cockpit-panel-header">
         <span>FLIGHT DECK / VT-PLN</span>
         <strong>CONFIG / VT-PLN</strong>
-        <span className="cockpit-log">LAST UPDATED ON <b>5 OCT 2026</b></span>
+        <span className="cockpit-log">LAST UPDATED ON <b>6 OCT 2026</b></span>
       </div>
       <div className="cockpit-instruments">
         <div className="pfd-mini">
