@@ -941,6 +941,12 @@ function App() {
             <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer" className="secondary">
               GitHub <Github size={18} />
             </a>
+            <a href="https://www.linkedin.com/in/shlok-alva-031041351" target="_blank" rel="noreferrer" className="secondary">
+              LinkedIn <ExternalLink size={18} />
+            </a>
+            <a href="https://www.instagram.com/teamdinoco_nrl?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="secondary">
+              Team Dinoco Instagram <ExternalLink size={18} />
+            </a>
           </div>
           <p className="hero-ai-note">This site was built with AI assistance. The projects it shows are my own work.</p>
         </div>
