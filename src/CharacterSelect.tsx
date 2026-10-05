@@ -268,7 +268,7 @@ function MainSelect({ index, setIndex, fire }: { index: number; setIndex: (value
   };
 
   return (
-    <div className="cs" onKeyDown={onKey}>
+    <div className="cs" onKeyDown={onKey} style={{ "--cc": pal.accent } as CSSProperties}>
       <div className="cs-stage" ref={stageRef}>
         <Canvas
           frameloop={inView ? "always" : "never"}
@@ -390,6 +390,7 @@ type SideCharacter = {
   signature: string;
   weakness: string;
   ring: string;
+  box: string;
   card?: CardSource;
 };
 
@@ -403,6 +404,7 @@ const sideCharacters: SideCharacter[] = [
     signature: "Looks adorable",
     weakness: "Treats.",
     ring: "#c79bff",
+    box: "#c79bff",
     card: { id: "trixie", cutout: "/assets/cut-trixie.webp", cutoutSize: [640, 1495], cardHeight: 2.25 }
   },
   {
@@ -413,7 +415,8 @@ const sideCharacters: SideCharacter[] = [
     ultimate: { name: "Emergency Stop", text: "The ultrasonic sensor halts everything before the wall does." },
     signature: "RFID and PIN lock",
     weakness: "Needs its PS3 controller.",
-    ring: "#ff8a2a"
+    ring: "#ff8a2a",
+    box: "#ff8a2a"
   },
   {
     id: "goldfish",
@@ -423,7 +426,8 @@ const sideCharacters: SideCharacter[] = [
     ultimate: { name: "Final Splash", text: "One dramatic bubble, right on cue." },
     signature: "Glowing",
     weakness: "About three seconds of memory.",
-    ring: "#ffb15a"
+    ring: "#ffb15a",
+    box: "#4fd1c5"
   }
 ];
 
@@ -633,7 +637,7 @@ function SideSelect({ index, setIndex, fire }: { index: number; setIndex: (value
   };
 
   return (
-    <div className="cs-side" onKeyDown={onKey}>
+    <div className="cs-side" onKeyDown={onKey} style={{ "--cc": current.box } as CSSProperties}>
       <div className="cs-side-stage" ref={stageRef}>
         <Canvas
           frameloop={inView ? "always" : "never"}
