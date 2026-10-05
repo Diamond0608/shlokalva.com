@@ -315,3 +315,37 @@ h2.small {
     grid-column: 2;
   }
 }
+
+.videos {
+  margin: 1.4rem 0 0;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(255, 138, 42, 0.08);
+  color: var(--cream);
+}
+
+.videos strong {
+  color: var(--amber);
+}
+
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+
+.shots a {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0a0d12;
+}
+
+.shots img {
+  display: block;
+  width: 100%;
+  height: auto;
+}

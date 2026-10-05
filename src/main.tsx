@@ -925,7 +925,10 @@ function App() {
               go because of travel-related issues, and instead received grants, which I used to buy a drill, a monitor, 3D
               printing filament, a Bambu Lab A1 3D printer and a mouse to work on my projects better.
             </p>
-            <p className="beest-note">Trinetra was devlogged the same way, but those logs are not published here.</p>
+            <p className="beest-note">
+              The hourly recordings and timelapses exist too. The devlog page has the written logs and the photos from each
+              one. Trinetra was devlogged the same way, but those logs are not published here.
+            </p>
             <a className="primary" href="/beest/">
               Read The Full Devlog <ChevronRight size={17} />
             </a>

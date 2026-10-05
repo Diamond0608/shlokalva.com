@@ -45,7 +45,7 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 
 ## BEEST devlog page
 
-`/beest/` is a separate static page (Vite multi-page input in `vite.config.ts`), not part of the React app. Source: `beest/devlogs.json` (70 entries: 34 early journal entries with original dates and tracked time, 36 August build logs) + `beest/template.html` + `beest/beest.css`. Regenerate `beest/index.html` with `python tools/build_beest_page.py` after editing the JSON or template. The main-page BEEST card (`#beest` in `main.tsx`) links to it. Trinetra was also devlogged but those logs are deliberately NOT published. Only publish text Shlok wrote; the Sep 15 reviewer comment is unconfirmed and not used.
+`/beest/` is a separate static page (Vite multi-page input in `vite.config.ts`), not part of the React app. Source: `beest/devlogs.json` (70 entries: 34 early journal entries with original dates and tracked time, 36 August build logs) + `beest/template.html` + `beest/beest.css`. Regenerate `beest/index.html` with `python tools/build_beest_page.py` after editing the JSON or template. Each entry can carry `images` (216 WebP files in `public/assets/beest/`, about 9 MB, lazy loaded, only used on this page). The hourly recordings and timelapses are deliberately NOT hosted here; the page states that they exist. The main-page BEEST card (`#beest` in `main.tsx`) links to it. Trinetra was also devlogged but those logs are deliberately NOT published. Only publish text Shlok wrote; the Sep 15 reviewer comment is unconfirmed and not used.
 
 ## Character Select
 

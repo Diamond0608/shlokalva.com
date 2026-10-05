@@ -28,6 +28,19 @@ def paragraphs(text: str) -> str:
     return "\n".join(f"<p>{esc(b).replace(chr(10), '<br>')}</p>" for b in blocks)
 
 
+def shots(e: dict) -> str:
+    images = e.get("images") or []
+    if not images:
+        return ""
+    tiles = "".join(
+        f'<a href="{esc(im["src"])}" target="_blank" rel="noreferrer">'
+        f'<img src="{esc(im["src"])}" width="{im["w"]}" height="{im["h"]}" loading="lazy" decoding="async" '
+        f'alt="Image {i} from devlog #{e["n"]}: {esc(e["title"])}"></a>'
+        for i, im in enumerate(images, 1)
+    )
+    return f'<div class="shots">{tiles}</div>'
+
+
 def entry_html(e: dict) -> str:
     meta = [e["date"]]
     if e.get("tracked"):
@@ -40,7 +53,7 @@ def entry_html(e: dict) -> str:
         f'<summary><span class="num">#{e["n"]}</span>'
         f'<span class="etitle">{esc(e["title"])}</span>{tag}'
         f'<span class="meta">{" · ".join(meta)}</span></summary>'
-        f'<div class="body">{paragraphs(e["content"])}</div></details>'
+        f'<div class="body">{paragraphs(e["content"])}{shots(e)}</div></details>'
     )
 
 
