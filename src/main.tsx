@@ -733,6 +733,27 @@ function CockpitPanel() {
 const contactEmail = atob("YWx2YXNob2tAZ21haWwuY29t");
 const contactPhone = atob("KzkxIDk4NDUzOTQ4ODU=");
 
+function LazyMount({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || visible) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "300px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [visible]);
+  return <div ref={ref} className="lazy-mount">{visible ? children : null}</div>;
+}
+
 function App() {
   const [booted, setBooted] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -749,7 +770,7 @@ function App() {
   };
 
   useEffect(() => {
-    const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 5000);
+    const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 1200);
     return () => window.clearTimeout(timeout);
   }, [reducedMotion]);
 
@@ -995,7 +1016,7 @@ function App() {
         <div className="engine-stage" aria-label="Interactive 3D turbofan CAD model">
           <div className="engine-stage-glow engine-stage-glow-one" />
           <div className="engine-stage-glow engine-stage-glow-two" />
-          <EngineViewer />
+          <LazyMount><EngineViewer /></LazyMount>
           <div className="engine-overlay engine-overlay-top">
             <span>DWELLO / TURBOFAN</span>
             <strong>PROPULSION CORE</strong>
@@ -1011,7 +1032,7 @@ function App() {
             <h3>Little Helper — Interactive CAD Model</h3>
             <p>Inspect the uploaded Little Helper model directly here instead of opening it from the project image gallery.</p>
           </div>
-          <ProjectModelViewer src="/assets/little-helper.glb" />
+          <LazyMount><ProjectModelViewer src="/assets/little-helper.glb" /></LazyMount>
         </div>
         <div className="engine-project-model">
           <div className="section-head">
@@ -1019,7 +1040,7 @@ function App() {
             <h3>Trinetra — Interactive CAD Model</h3>
             <p>Inspect the uploaded Trinetra model directly here as part of the Engine Room.</p>
           </div>
-          <ProjectModelViewer src="/assets/trinetra.glb" />
+          <LazyMount><ProjectModelViewer src="/assets/trinetra.glb" /></LazyMount>
         </div>
       </section>
 
