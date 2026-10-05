@@ -61,6 +61,10 @@ export const imageSizes: Record<string, [number, number]> = {
     1100,
     1000
   ],
+  "/assets/cut-trixie.webp": [
+    640,
+    1495
+  ],
   "/assets/cyber-lab-1.jpg": [
     1577,
     1050

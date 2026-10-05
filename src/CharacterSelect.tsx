@@ -123,7 +123,9 @@ const DEPTH = 0.09;
 
 // A cutout of Shlok's photo as a thick 3D card: a bright front, a darkened mirrored
 // back, and stacked dark layers between them that read as the card's edge.
-function PhotoCard({ character, ring, still }: { character: Character; ring: string; still: boolean }) {
+type CardSource = { id: string; cutout: string; cutoutSize: [number, number]; cardHeight: number };
+
+function PhotoCard({ character, ring, still }: { character: CardSource; ring: string; still: boolean }) {
   const group = useRef<THREE.Group>(null);
   const texture = useTexture(character.cutout);
   texture.colorSpace = THREE.SRGBColorSpace;
@@ -132,8 +134,8 @@ function PhotoCard({ character, ring, still }: { character: Character; ring: str
   const height = character.cardHeight;
   const width = (height * pw) / ph;
   // Shrink wide cards so they always fit the stage, whatever its width.
-  const viewportWidth = useThree((state) => state.viewport.width);
-  const fit = Math.min(1, (viewportWidth * 0.86) / width);
+  const viewport = useThree((state) => state.viewport);
+  const fit = Math.min(1, (viewport.width * 0.86) / width, (viewport.height * 0.8) / height);
 
   useEffect(() => {
     if (group.current) group.current.scale.setScalar(0.55 * fit);
@@ -378,18 +380,20 @@ type SideCharacter = {
   signature: string;
   weakness: string;
   ring: string;
+  card?: CardSource;
 };
 
 const sideCharacters: SideCharacter[] = [
   {
     id: "trixie",
     name: "Trixie",
-    tagline: "Classified.",
-    stats: ["Mystery", "Presence", "Charm"],
-    ultimate: { name: "Classified", text: "Details unlock later." },
-    signature: "Classified",
-    weakness: "Classified",
-    ring: "#c79bff"
+    tagline: "German shepherd. Professional sunglasses wearer.",
+    stats: ["Loyalty", "Fluff", "Bark"],
+    ultimate: { name: "Guard Mode", text: "Barks first, asks questions never." },
+    signature: "Sunglasses",
+    weakness: "Treats.",
+    ring: "#c79bff",
+    card: { id: "trixie", cutout: "/assets/cut-trixie.webp", cutoutSize: [640, 1495], cardHeight: 2.25 }
   },
   {
     id: "helper",
@@ -403,7 +407,7 @@ const sideCharacters: SideCharacter[] = [
   },
   {
     id: "goldfish",
-    name: "Souls of the Goldfish",
+    name: "souls of my childhood goldfish",
     tagline: "Still swimming, just not in water.",
     stats: ["Ghost Glow", "Bubble Count", "Memory"],
     ultimate: { name: "Final Splash", text: "One dramatic bubble, right on cue." },
@@ -512,48 +516,8 @@ function GoldfishSouls() {
   );
 }
 
-function ClassifiedCard() {
-  const mesh = useRef<THREE.Group>(null);
-  const texture = useRef<THREE.CanvasTexture | null>(null);
-  if (!texture.current) {
-    const canvas = document.createElement("canvas");
-    canvas.width = 256;
-    canvas.height = 256;
-    const ctx = canvas.getContext("2d");
-    if (ctx) {
-      ctx.fillStyle = "#c79bff";
-      ctx.font = "bold 200px sans-serif";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.shadowColor = "#c79bff";
-      ctx.shadowBlur = 24;
-      ctx.fillText("?", 128, 140);
-    }
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.colorSpace = THREE.SRGBColorSpace;
-    texture.current = tex;
-  }
-  useFrame(({ clock }) => {
-    const node = mesh.current;
-    if (!node) return;
-    node.position.y = 1.0 + Math.sin(clock.elapsedTime * 1.4) * 0.06;
-    node.rotation.y = Math.sin(clock.elapsedTime * 0.7) * 0.7;
-  });
-  return (
-    <group ref={mesh}>
-      <mesh>
-        <planeGeometry args={[1.5, 1.5]} />
-        <meshBasicMaterial map={texture.current} transparent toneMapped={false} />
-      </mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.75, 0.01, 8, 48]} />
-        <meshStandardMaterial color="#c79bff" emissive="#c79bff" emissiveIntensity={1.2} />
-      </mesh>
-    </group>
-  );
-}
-
 function SideSelect() {
+  const reduced = useReducedMotion();
   const [index, setIndex] = useState(1);
   const [inView, setInView] = useState(true);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -586,6 +550,7 @@ function SideSelect() {
           dpr={[1, 1.5]}
           camera={{ position: [0, 1.15, 4.4], fov: 32 }}
           gl={{ antialias: true, alpha: true }}
+          onCreated={({ camera }) => camera.lookAt(0, 1.0, 0)}
           aria-label={`3D scene: ${current.name}`}
         >
           <ambientLight intensity={0.8} />
@@ -594,7 +559,7 @@ function SideSelect() {
           <Suspense fallback={null}>
             {current.id === "helper" && <HelperModel />}
             {current.id === "goldfish" && <GoldfishSouls />}
-            {current.id === "trixie" && <ClassifiedCard />}
+            {current.card && <PhotoCard key={current.id} character={current.card} ring={current.ring} still={!!reduced} />}
           </Suspense>
           <Platform ring={current.ring} />
         </Canvas>
