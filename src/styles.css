@@ -5637,7 +5637,7 @@ h3 {
   z-index: 40;
   pointer-events: none;
   opacity: 0;
-  animation: plasmaFly 7.5s linear 2.4s 1 both;
+  animation: plasmaFly 10.5s linear 2.4s 1 both;
 }
 
 .plasma-core {
@@ -5676,16 +5676,16 @@ h3 {
 }
 
 @keyframes plasmaFly {
-  /* 0-44%: the dragon slowly spools the pulse up at its mouth */
+  /* 0-60%: the dragon spends a good while spooling the pulse up at its mouth */
   0% { opacity: 0; transform: translate(calc(100vw - 5.4rem), calc(100vh - 5.7rem)) scale(0.08); animation-timing-function: ease-in; }
-  10% { opacity: 0.85; transform: translate(calc(100vw - 5.4rem), calc(100vh - 5.7rem)) scale(0.22); animation-timing-function: ease-in; }
-  30% { opacity: 1; transform: translate(calc(100vw - 5.6rem), calc(100vh - 5.9rem)) scale(0.6); animation-timing-function: ease-in-out; }
-  44% { opacity: 1; transform: translate(calc(100vw - 5.8rem), calc(100vh - 6rem)) scale(1.2); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
+  12% { opacity: 0.85; transform: translate(calc(100vw - 5.4rem), calc(100vh - 5.7rem)) scale(0.22); animation-timing-function: ease-in; }
+  36% { opacity: 1; transform: translate(calc(100vw - 5.6rem), calc(100vh - 5.9rem)) scale(0.6); animation-timing-function: ease-in-out; }
+  60% { opacity: 1; transform: translate(calc(100vw - 5.8rem), calc(100vh - 6rem)) scale(1.25); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
   /* then it fires fast up the right side, reflects off the top and streaks left */
-  58% { opacity: 1; transform: translate(calc(100vw - 8rem), 6vh) scale(1); animation-timing-function: linear; }
-  60% { opacity: 1; transform: translate(calc(100vw - 8.6rem), 3vh) scale(1.4); animation-timing-function: linear; }
-  62% { opacity: 1; transform: translate(calc(100vw - 10rem), 6vh) scale(1); animation-timing-function: linear; }
-  96% { opacity: 1; transform: translate(-14rem, 62vh) scale(1); }
+  70% { opacity: 1; transform: translate(calc(100vw - 8rem), 6vh) scale(1); animation-timing-function: linear; }
+  72% { opacity: 1; transform: translate(calc(100vw - 8.6rem), 3vh) scale(1.4); animation-timing-function: linear; }
+  74% { opacity: 1; transform: translate(calc(100vw - 10rem), 6vh) scale(1); animation-timing-function: linear; }
+  97% { opacity: 1; transform: translate(-14rem, 62vh) scale(1); }
   100% { opacity: 0; transform: translate(-18rem, 66vh) scale(0.6); }
 }
 

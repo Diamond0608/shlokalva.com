@@ -161,7 +161,7 @@ const projects: Project[] = [
     summary:
       "My Team Dinoco robotics work documents months of National Robotics League competition, including my role as team captain, mechanical build work, coordination, and competition preparation.",
     facts: [
-      "I was team captain, which in practice meant coordination, travel planning, documentation, social media help, mechanical build work, development, and driving the bot.",
+      "As team captain, I handled coordination, travel planning, documentation, social media help, mechanical build work, development, and driving the bot.",
       "We reached a day late after our match had already started because our flight got cancelled, then paid for another flight because giving up was not really on the menu.",
       "A lot of us were sick, but we still grinded through the day and climbed from 92nd to second in the playoffs.",
       "We became a captain team, reached the quarter finals, and were eliminated after an error by our partner team.",
@@ -988,7 +988,7 @@ function App() {
             <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer" className="secondary">
               GitHub <Github size={18} />
             </a>
-            <a href="https://www.linkedin.com/in/shlok-alva-031041351" target="_blank" rel="noreferrer" className="secondary">
+            <a href="https://www.linkedin.com/in/shlokalva/" target="_blank" rel="noreferrer" className="secondary">
               LinkedIn <ExternalLink size={18} />
             </a>
             <a href="https://www.instagram.com/teamdinoco_nrl?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="secondary">
@@ -1268,7 +1268,7 @@ function App() {
           <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer">
             GitHub <ExternalLink size={17} />
           </a>
-          <a href="https://www.linkedin.com/in/shlok-alva-031041351" target="_blank" rel="noreferrer">
+          <a href="https://www.linkedin.com/in/shlokalva/" target="_blank" rel="noreferrer">
             LinkedIn <ExternalLink size={17} />
           </a>
           <a href="https://www.instagram.com/teamdinoco_nrl?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer">
