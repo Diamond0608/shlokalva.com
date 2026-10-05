@@ -817,6 +817,19 @@ function App() {
   const reducedMotion = useReducedMotion();
   useMozartLoop(soundEnabled);
 
+  // When the tab is left, the title waves for attention; it goes back when the visitor returns.
+  useEffect(() => {
+    const original = document.title;
+    const onVisibility = () => {
+      document.title = document.hidden ? "I'll wait for you! ✈" : original;
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      document.title = original;
+    };
+  }, []);
+
   // External links always open in a new tab so the portfolio stays open.
   useEffect(() => {
     const onClick = (event: MouseEvent) => {
@@ -886,8 +899,11 @@ function App() {
       <DragonCompanion />
 
       <aside className="flight-nav" aria-label="Flight Deck Navigation">
-        <a className="seat-brand" href="#top">
-          VT-PLN
+        <a className="seat-brand" href="#top" aria-label="Shlok Alva, back to the top">
+          <span className="sa-mark" aria-hidden="true">
+            <b>S</b>
+            <b>A</b>
+          </span>
         </a>
         {nav.map(([seat, label, target, hint], index) => (
           <a key={seat} href={`#${target}`} className={activeNav === target ? "on" : undefined} aria-current={activeNav === target ? "location" : undefined}>
