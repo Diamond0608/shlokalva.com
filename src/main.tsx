@@ -106,12 +106,12 @@ const images = {
 };
 
 const nav = [
-  ["NAV", "Mission", "mission"],
-  ["HGR", "Projects", "projects"],
-  ["LOG", "Experiences", "experiences"],
-  ["SYS", "Skills", "skills"],
-  ["INT", "Interests", "interests"],
-  ["COM", "Contact", "contact"]
+  ["NAV", "Mission", "mission", "What drives me"],
+  ["HGR", "Projects", "projects", "Robots, CAD and builds"],
+  ["LOG", "Experiences", "experiences", "My Hack Club story"],
+  ["SYS", "Skills", "skills", "Tools I build with"],
+  ["INT", "Interests", "interests", "Gaming, badminton, poems"],
+  ["COM", "Contact", "contact", "Email and links"]
 ];
 
 const projects: Project[] = [
@@ -259,37 +259,6 @@ const projects: Project[] = [
   }
 ];
 
-const experiences = [
-  {
-    title: "CERN Visit",
-    subtitle: "Geneva Learning Experience",
-    image: images.cernGroup,
-    body:
-      "A one-week school masterclass where we visited ALICE, ISOLDE, CMS, ATLAS, the Antimatter Factory, and a lot of places I had only read about before."
-  },
-  {
-    title: "Dwello Aerospace",
-    subtitle: "Aircraft Propulsion Internship",
-    image: images.dwelloTwo,
-    body:
-      "Ramjet and turbofan propulsion models, a technical report, and animation. The full write-up is in Project Hangar."
-  },
-  {
-    title: "Cyber Club Leadership",
-    subtitle: "President And Vice President",
-    image: images.pcBuilding,
-    body:
-      "I helped run events, guide juniors through hands-on tech work, and make the cyber side of school life feel active instead of just theoretical."
-  },
-  {
-    title: "Robotics Club",
-    subtitle: "Founder And Committee Member",
-    image: images.blackShirtCohorts,
-    body:
-      "I helped get more people into robotics and tech at school, while learning that explaining a build can be harder than building it."
-  }
-];
-
 const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }> = [
   {
     title: "CERN Evenings",
@@ -316,33 +285,14 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
 ];
 
 const skills = [
-  { title: "Python", detail: "Project scripting, technical tools, and software foundations." },
-  { title: "Fusion 360", detail: "CAD assemblies, mechanical parts, propulsion models, and print-ready design." },
-  { title: "MySQL", detail: "Database fundamentals and structured data work." },
-  { title: "ESP32 / ESP8266", detail: "Embedded robotics architecture and hardware control." },
-  { title: "Arduino IDE", detail: "Board setup, code upload, and electronics debugging." },
-  { title: "3D Printing", detail: "Designing parts around print constraints and assembly." },
-  { title: "Technical Writing", detail: "Reports, documentation, BOMs, and build guides." }
+  { title: "Fusion 360", proof: "Little Helper, Trinetra, Dwello propulsion models" },
+  { title: "ESP32 / ESP8266", proof: "Little Helper: motors, RFID lock, ultrasonic stop" },
+  { title: "3D Printing", proof: "Chassis, panels and enclosures, on a Bambu Lab A1" },
+  { title: "Arduino IDE", proof: "Board setup, uploads and electronics debugging" },
+  { title: "Python", proof: "Project scripting, technical tools and foundations" },
+  { title: "MySQL", proof: "Database fundamentals and structured data work" },
+  { title: "Technical Writing", proof: "Reports, BOMs, build guides and 70 devlogs" }
 ];
-
-const signals = [
-  {
-    title: "IIT Madras Aerospace Course",
-    body: "Completed an eight-week aerospace certification course.",
-    image: images.iitmLogo
-  },
-  {
-    title: "My Flying Academy Workshop",
-    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real.",
-    image: images.planeOutline
-  },
-  {
-    title: "Cyber Competitions",
-    body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
-    image: images.hkuAiChallenge
-  }
-];
-
 const interests = [
   {
     title: "Gaming",
@@ -350,7 +300,7 @@ const interests = [
   },
   {
     title: "Badminton",
-    body: "Played casually. Not everything needs a medal table; sometimes it's just fun to hit things very fast."
+    body: "Started playing in Grade 10 and went for coaching for a year to improve my skills. Not everything needs a medal table; sometimes it's just fun to hit things very fast."
   }
 ];
 
@@ -608,95 +558,62 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
   );
 }
 
-function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: GalleryImage) => void }) {
+function ProjectRow({ project, index, onOpen }: { project: Project; index: number; onOpen: (image: GalleryImage) => void }) {
+  const [open, setOpen] = useState(false);
   const Icon = project.icon;
+  const hero = project.gallery[0];
   return (
     <motion.article
-      className="project-card"
+      className={index % 2 === 1 ? "proj proj-rev" : "proj"}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.16 }}
+      viewport={{ once: true, amount: 0.12 }}
     >
-      <div className="project-flip">
-        <div className="project-face project-front">
-          <Img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
-          <div className="project-overlay">
-            <span>{project.eyebrow}</span>
-            <h3>{project.title}</h3>
-          </div>
-        </div>
-        <div className="project-face project-back">
-          <Img
-            className="project-back-img"
-            src={(project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model") ?? project.gallery[0]).src}
-            alt=""
-            loading="lazy"
-          />
-          <div className="project-back-scrim" />
-          <div className="project-emblem" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <b />
-            <Icon size={30} />
-          </div>
-          <span className="project-back-eyebrow">{project.eyebrow}</span>
-          <h3>{project.title}</h3>
-          <span>Flight Notes</span>
-        </div>
-      </div>
-      <div className="project-copy">
-        <p>{project.summary}</p>
-        <ul>
-          {project.facts.map((fact) => (
-            <li key={fact}>{fact}</li>
-          ))}
-        </ul>
+      <button className="proj-media" onClick={() => onOpen(hero)} aria-label={`Open image: ${hero.caption}`}>
+        <Img src={hero.src} alt={hero.alt} loading="lazy" />
+        <span className="proj-index">{String(index + 1).padStart(2, "0")}</span>
+      </button>
+      <div className="proj-body">
+        <span className="proj-eyebrow">
+          <Icon size={16} /> {project.eyebrow}
+        </span>
+        <h3 className="proj-title">{project.title}</h3>
+        <p className="proj-sum">{project.summary}</p>
         {project.caution && <p className="caution">{project.caution}</p>}
-        <div className="chip-row">
-          {project.stack.map((item) => (
-            <span key={item}>{item}</span>
+        <dl className="proj-stats" aria-label={`${project.title} project statistics`}>
+          {project.stats.map((stat) => (
+            <div key={stat.label}>
+              <dt>{stat.label}</dt>
+              <dd>{stat.value}</dd>
+            </div>
           ))}
-        </div>
-        {project.link && (
-          <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
-            Open Source Link <ExternalLink size={15} />
-          </a>
-        )}
-      </div>
-      <div className="project-stats" aria-label={`${project.title} project statistics`}>
-        {project.stats.map((stat) => (
-          <motion.div
-            key={stat.label}
-            className="stat-card"
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35 }}
-          >
-            <span>{stat.label}</span>
-            <strong>{stat.value}</strong>
-          </motion.div>
-        ))}
-      </div>
-      <details className="spec-sheet">
-        <summary>Technical Spec Sheet</summary>
-        <div className="spec-sheet-grid">
-          <div><span>Project</span><strong>{project.title}</strong></div>
-          <div><span>Creator</span><strong>Shlok Alva</strong></div>
-          <div><span>Category</span><strong>{project.eyebrow}</strong></div>
-          <div><span>Stack</span><strong>{project.stack.join(" • ")}</strong></div>
-        </div>
-      </details>
-      <div className="media-timeline" aria-label="Project media timeline">
-        {project.gallery.map((item, index) => (
-          <button key={`${item.caption}-timeline`} onClick={() => onOpen(item)} title={item.caption}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <strong>{item.type === "model" ? "3D" : item.youtubeId || item.type === "video" ? "VIDEO" : "MEDIA"}</strong>
+        </dl>
+        <div className="proj-actions">
+          <button className="proj-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+            {open ? "Hide Details" : "Details And Media"} <ChevronRight size={16} className={open ? "proj-chev open" : "proj-chev"} />
           </button>
-        ))}
+          {project.link && (
+            <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
+              Open Source Link <ExternalLink size={15} />
+            </a>
+          )}
+        </div>
       </div>
-      <PhotoStrip gallery={project.gallery} onOpen={onOpen} />
+      {open && (
+        <div className="proj-more">
+          <ul>
+            {project.facts.map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
+          </ul>
+          <div className="chip-row">
+            {project.stack.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
+          <PhotoStrip gallery={project.gallery} onOpen={onOpen} />
+        </div>
+      )}
     </motion.article>
   );
 }
@@ -826,10 +743,11 @@ function App() {
         <a className="seat-brand" href="#top">
           VT-PLN
         </a>
-        {nav.map(([seat, label, target]) => (
+        {nav.map(([seat, label, target, hint]) => (
           <a key={seat} href={`#${target}`}>
             <span>{seat}</span>
             <strong>{label}</strong>
+            <small>{hint}</small>
           </a>
         ))}
         <button className="audio-control" onClick={handleSoundToggle} aria-label="Toggle Interface Sound">
@@ -872,18 +790,6 @@ function App() {
           </div>
         </div>
         <div className="hero-board">
-          <div className="flight-card">
-            <div className="flight-card-copy">
-              <span>Aircraft Registry</span>
-              <strong>VT-PLN</strong>
-              <p>Engineering • Robotics • Aerospace • Software</p>
-              <div className="flight-card-status">
-                <span>FLIGHT DECK</span>
-                <b>CONFIG / VT-PLN</b>
-                <i />
-              </div>
-            </div>
-          </div>
           <CockpitPanel />
           <FlightMascot />
         </div>
@@ -903,16 +809,18 @@ function App() {
         <div>
           <span>Best Work</span>
           <strong>Little Helper</strong>
-          <p>
-            Hack Club BEEST, approved and golden. <a href="#projects">See the projects</a>
-          </p>
+          <p>Hack Club BEEST, approved and golden.</p>
+          <a className="glance-btn" href="#projects">
+            See The Projects <ChevronRight size={15} />
+          </a>
         </div>
         <div>
           <span>Also</span>
-          <strong>CERN And IIT Madras</strong>
-          <p>
-            A Geneva masterclass and an aerospace course. <a href="#timeline">See the timeline</a>
-          </p>
+          <strong>Cyber Club President</strong>
+          <p>Robotics Club founder and committee member.</p>
+          <a className="glance-btn" href="#timeline">
+            See The Timeline <ChevronRight size={15} />
+          </a>
         </div>
       </section>
 
@@ -953,32 +861,15 @@ function App() {
           <h2>Project Hangar</h2>
           <p>Things I Built, Helped Build, Or Learned From The Hard Way.</p>
         </div>
-        <div className="project-grid">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
+        <div className="proj-list">
+          {projects.map((project, index) => (
+            <ProjectRow key={project.id} project={project} index={index} onOpen={setActiveImage} />
           ))}
         </div>
       </section>
 
       <section id="experiences" className="section">
-        <div className="section-head">
-          <p className="eyebrow">Experiences</p>
-          <h2>Flight Log</h2>
-        </div>
-        <div className="experience-grid">
-          {experiences.map((experience) => (
-            <article key={experience.title} className="experience-card">
-              <Img src={experience.image} alt="" loading="lazy" />
-              <div>
-                <span>{experience.subtitle}</span>
-                <h3>{experience.title}</h3>
-                <p>{experience.body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <article id="beest" className="beest-card">
+        <article id="beest" className="beest-card beest-solo">
           <div className="beest-gallery">
             <img
               className="beest-hero"
@@ -1066,44 +957,22 @@ function App() {
         </div>
       </section>
 
-      <section id="skills" className="section skills">
+      <section id="skills" className="section skills band">
         <div className="section-head">
           <p className="eyebrow">Skills</p>
-          <h2>Skills And Tech Stack</h2>
-          <p>Tools I Use Across Hardware Builds, CAD Work, Robotics, Documentation, And Software-Backed Projects.</p>
+          <h2>Tools I Actually Use</h2>
         </div>
-        <div className="skills-grid">
+        <ul className="skill-line">
           {skills.map((skill) => (
-            <article key={skill.title}>
-              <BadgeInfo size={20} />
-              <h3>{skill.title}</h3>
-              <p>{skill.detail}</p>
-            </article>
+            <li key={skill.title}>
+              <strong>{skill.title}</strong>
+              <span>{skill.proof}</span>
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
-      <section className="section">
-        <div className="section-head">
-          <p className="eyebrow">Signals</p>
-          <h2>Other Stuff Worth Keeping On The Radar</h2>
-          <p>A few more pieces of the story that still matter, even when they do not need a giant project card.</p>
-        </div>
-        <div className="signal-grid">
-          {signals.map((signal) => (
-            <article key={signal.title}>
-              <Img src={signal.image} alt="" loading="lazy" />
-              <div>
-                <Radar size={18} />
-                <h3>{signal.title}</h3>
-                <p>{signal.body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="interests" className="section interests">
+      <section id="interests" className="section interests band">
         <div className="section-head">
           <p className="eyebrow">Other Interests</p>
           <h2>Outside The Hangar</h2>

@@ -19,7 +19,15 @@ type BoundsApi = ReturnType<typeof useBounds>;
 // Exposes the Bounds fit() so Reset can re-frame the model instead of
 // returning to the pre-fit camera, which sits inside the model.
 function BoundsHandle({ apiRef }: { apiRef: { current: BoundsApi | null } }) {
-  apiRef.current = useBounds();
+  const api = useBounds();
+  apiRef.current = api;
+  // The first fit can run before the model's geometry is laid out, which left the viewer blank until
+  // the user dragged it. Re-fit once the model is really there, over a few frames to be safe.
+  useEffect(() => {
+    const refit = () => api.refresh().clip().fit();
+    const timers = [60, 250, 700].map((delay) => window.setTimeout(refit, delay));
+    return () => timers.forEach((id) => window.clearTimeout(id));
+  }, [api]);
   return null;
 }
 
