@@ -5451,3 +5451,7 @@ h3 {
     font-size: 1.7rem;
   }
 }
+
+.flight-nav .seat-brand {
+  color: var(--amber) !important;
+}
