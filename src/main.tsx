@@ -7,6 +7,7 @@ import {
   ChevronRight,
   ChevronLeft,
   ExternalLink,
+  FileText,
   Github,
   Plane,
   Play,
@@ -41,7 +42,7 @@ type GalleryImage = {
   src: string;
   alt: string;
   caption: string;
-  type?: "image" | "video" | "model";
+  type?: "image" | "video" | "model" | "pdf";
   modelPath?: string;
   youtubeId?: string;
 };
@@ -187,7 +188,7 @@ const projects: Project[] = [
   },
   {
     id: "dwello",
-    status: { label: "Completed", tone: "done", note: "Four CAD models, a simulation study, an animation and a written report delivered." },
+    status: { label: "Completed", tone: "done", note: "Three models, a report and an animation delivered." },
     learned: "I learnt how fuel flow rates actually work, how to bring that into numericals, and how to write project reports that go deep and explain every design choice.",
     title: "Aircraft Propulsion Internship",
     eyebrow: "Dwello Aerospace",
@@ -195,24 +196,24 @@ const projects: Project[] = [
     summary:
       "During my one-month Dwello Aerospace internship, I worked on aircraft propulsion, including ramjet and turbofan CAD models, calculations, simulation, animation, and a final technical report.",
     facts: [
-      "Started from a ramjet problem statement (80 kg/s of air, 0.2 kg/s of fuel, inlet Mach 2, exit Mach 2.9, 70,000 N of thrust) and solved the thrust and mass-flow equations by hand for the inlet and exit areas: about 0.097 m² at the inlet and 0.297 m² (roughly 0.61 m across) at the exit nozzle.",
-      "Modelled four engines in Fusion 360: an annular and a can-combustor ramjet in titanium, and two turbofans in aluminium with the Al-Li alloy in mind, showing the fan, shaft, low- and high-pressure compressors and turbines, core and bypass ducts.",
-      "Shaped the blades for their jobs: short and straight for compressors, swirled for turbines, tilted on the front fan to push air in and guard against foreign objects.",
-      "Ran wind-tunnel airflow studies (ramjet at Mach 4, turbofan at Mach 0.6) and thermal analyses with stated assumptions for convection, emissivity and a 2000 °C combustion core.",
-      "Animated the turbofan, drew a dimensioned drawing of the ramjet, and wrote a report that explains each design choice and openly says it is not a real-world engine."
+      "Designed three propulsion models around ramjet and turbofan problem statements.",
+      "Produced CAD models including turbofan and ramjet variants.",
+      "Created simulation and animation work alongside a written aircraft propulsion report.",
+      "Documented propulsion concepts and the methodology behind the model choices."
     ],
     stack: ["Fusion 360", "CAD Modelling", "Aircraft Propulsion", "Simulation", "Technical Reporting"],
     stats: [
       { label: "Duration", value: "1 Month" },
-      { label: "Design Thrust", value: "70,000 N" },
-      { label: "Models", value: "4 CAD" },
+      { label: "Domain", value: "Propulsion" },
+      { label: "Models", value: "3" },
       { label: "Output", value: "Report + Animation" }
     ],
     gallery: [
       { src: images.dwelloOne, alt: "Turbofan can type CAD render", caption: "Turbofan CAD Render" },
       { src: images.dwelloTwo, alt: "Turbofan side CAD render", caption: "Propulsion Assembly" },
       { src: images.dwelloThree, alt: "Turbofan front CAD render", caption: "Fan Geometry" },
-      { src: images.turbofanAnimation, alt: "Turbofan engine animation", caption: "Turbofan Engine Animation", type: "video" }
+      { src: images.turbofanAnimation, alt: "Turbofan engine animation", caption: "Turbofan Engine Animation", type: "video" },
+      { src: "/assets/dwello-propulsion-report.pdf", alt: "Aircraft propulsion internship report, PDF", caption: "Full Report (PDF)", type: "pdf" }
     ]
   },
   {
@@ -305,6 +306,8 @@ const skills = [
   { title: "MySQL", detail: "Database fundamentals and structured data work." },
   { title: "ESP32 / ESP8266", detail: "Embedded robotics architecture and hardware control." },
   { title: "Arduino IDE", detail: "Board setup, code upload, and electronics debugging." },
+  { title: "Engineering Analysis", detail: "Wind-tunnel airflow and thermal simulation, plus hand-solved thrust and mass-flow calculations." },
+  { title: "Propulsion Design", detail: "Ramjet and turbofan layouts, blade shaping, and material choices such as titanium and Al-Li." },
   { title: "3D Printing", detail: "Designing parts around print constraints and assembly." },
   { title: "Technical Writing", detail: "Reports, documentation, BOMs, and build guides." }
 ];
@@ -562,7 +565,14 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
         <ChevronLeft size={17} />
       </button>
       <div ref={stripRef} className="photo-strip" aria-label="Scrollable Photo Gallery">
-        {gallery.map((image) => (
+        {gallery.map((image) =>
+          image.type === "pdf" ? (
+            <a key={image.src} className="photo-tile photo-tile-doc" href={image.src} target="_blank" rel="noreferrer" aria-label={`${image.caption}, opens in a new tab`}>
+              <FileText size={44} aria-hidden="true" />
+              <span>{image.caption}</span>
+              <small aria-hidden="true">PDF</small>
+            </a>
+          ) : (
           <button key={`${image.src}-${image.caption}`} className="photo-tile" aria-label={image.youtubeId || image.type === "video" ? `${image.caption} (video)` : image.caption} onClick={() => onOpen(image)}>
             {image.type === "video" ? (
               <video src={image.src} muted loop playsInline preload="metadata" />
@@ -574,7 +584,8 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
               <small aria-hidden="true">{image.type === "model" ? "3D" : <Play size={14} />}</small>
             ) : null}
           </button>
-        ))}
+          )
+        )}
       </div>
       <button className="media-scroll media-scroll-right" onClick={() => scroll(1)} aria-label="Scroll media right">
         <ChevronRight size={17} />
@@ -598,7 +609,7 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
   const Icon = project.icon;
   const hero = project.gallery[0];
   const backImage =
-    project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model") ?? hero;
+    project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model" && item.type !== "pdf") ?? hero;
   return (
     <motion.article
       className={index % 2 === 1 ? "proj proj-rev" : "proj"}
@@ -1215,7 +1226,7 @@ function App() {
         <div className="section-head">
           <p className="eyebrow">Propulsion System</p>
           <h2>Engine Room</h2>
-          <p>The turbofan from my Dwello Aerospace internship, brought into the portfolio as a live engineering display.</p>
+          <p>The can-type turbofan from my Dwello Aerospace internship, with its core and bypass ducts. I modelled it in aluminium with the Al-Li alloy in mind, then animated it.</p>
         </div>
         <div className="engine-stage" aria-label="Interactive 3D turbofan CAD model">
           <div className="engine-stage-glow engine-stage-glow-one" />

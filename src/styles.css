@@ -5737,3 +5737,35 @@ h3 {
   border: 2px solid var(--cc);
   box-shadow: 0 0 14px color-mix(in srgb, var(--cc) 35%, transparent);
 }
+
+/* The report sits in the photo strip as a document tile */
+.photo-tile-doc {
+  display: grid;
+  width: 12rem;
+  height: 12.5rem;
+  place-items: center;
+  align-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(160deg, rgba(137, 216, 255, 0.12), rgba(8, 11, 16, 0.9));
+  color: var(--sky);
+  cursor: pointer;
+  text-align: center;
+}
+
+.photo-tile-doc span {
+  position: static;
+  color: var(--cream);
+}
+
+.photo-tile-doc small {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  padding: 0.12rem 0.4rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  color: var(--amber);
+  font-size: 0.6rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+}

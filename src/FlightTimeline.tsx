@@ -8,7 +8,7 @@ const milestones: Milestone[] = [
   { label: "01", date: "6 Aug 2009", title: "Born", body: "The start of the flight plan." },
   { label: "02", date: "2012", title: "Montessori To Grade 12", body: "15 years at NPS Koramangala, Montessori to Grade 12." },
   { label: "03", date: "Grade 10", title: "Badminton", body: "Started playing, then a year of coaching to improve my skills." },
-  { label: "04", date: "May 2025", title: "Dwello Aerospace", body: "A month on propulsion: ramjet and turbofan CAD, simulation, report." },
+  { label: "04", date: "May 2025", title: "Dwello Aerospace", body: "Solved a 70 kN ramjet by hand, then modelled four engines in CAD." },
   { label: "05", date: "Summer, Grade 11", title: "Flying Academy Workshop", body: "A one-day aviation workshop that made the pilot path feel real." },
   { label: "06", date: "Grade 11", title: "IIT Madras Aerospace Course", body: "An eight-week aerospace certification course." },
   { label: "07", date: "Grades 11 & 12", title: "Cyber Club", body: "Led as President and Vice President: events and guiding juniors." },
