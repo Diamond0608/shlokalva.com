@@ -263,7 +263,7 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
   {
     title: "CERN Evenings",
     body:
-      "The science was the point, but the best memories were also the evening walks through Chamonix, Carouge, Geneva Old Town, and the random friend-group moments between the serious bits.",
+      "Evening walks through Chamonix, Carouge and Geneva Old Town.",
     gallery: [
       { src: images.cernGroup, alt: "CERN visit group photo", caption: "CERN With Friends" },
       { src: images.cernLab, alt: "CERN laboratory visit photo", caption: "CERN Lab" },
@@ -275,7 +275,7 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
   {
     title: "Cyber Club, Helios And Iris",
     body:
-      "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris, alongside speaking and running Cyber Club events.",
+      "Helios, Iris and Cyber Club events, on stage and behind the scenes.",
     gallery: [
       { src: images.cyberPodium, alt: "Speaking at a Cyber Club or Helios event", caption: "On Stage" },
       { src: images.cyberLabOne, alt: "Running a school tech event", caption: "Running Events" },
@@ -357,6 +357,7 @@ function useMozartLoop(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const startedRef = useRef(false);
+  const startingRef = useRef(false);
   const melodyTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -439,7 +440,8 @@ function useMozartLoop(enabled: boolean) {
     };
 
     const startMusic = () => {
-      if (startedRef.current) return;
+      if (startedRef.current || startingRef.current) return;
+      startingRef.current = true;
 
       context.resume().then(() => {
         // The audio element is primed during the user gesture while muted.
@@ -448,15 +450,18 @@ function useMozartLoop(enabled: boolean) {
         music.currentTime = 0;
         music.play().then(() => {
           startedRef.current = true;
+          startingRef.current = false;
           stopSynth();
           playSequence(firstSynth, 185, () => {
             playSequence(secondSynth, 155, handoffToMozart);
           });
         }).catch(() => {
           startedRef.current = false;
+          startingRef.current = false;
         });
       }).catch(() => {
         startedRef.current = false;
+        startingRef.current = false;
       });
     };
 
@@ -486,6 +491,7 @@ function useMozartLoop(enabled: boolean) {
       music.currentTime = 0;
       music.muted = true;
       startedRef.current = false;
+      startingRef.current = false;
     };
   }, [enabled]);
 }
@@ -654,6 +660,51 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
   );
 }
 
+// An original friendly dragon: sleek teal body, ember-amber wings and crest, a tucked tail with a spade tip.
+function DragonCompanion() {
+  return (
+    <div className="dragon" aria-hidden="true">
+      <svg viewBox="0 0 230 150" className="dragon-svg">
+        <defs>
+          <linearGradient id="dgBody" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#7fe3d4" />
+            <stop offset="1" stopColor="#2a8fa8" />
+          </linearGradient>
+          <linearGradient id="dgWing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#ffb066" />
+            <stop offset="1" stopColor="#e0642a" stopOpacity="0.55" />
+          </linearGradient>
+        </defs>
+        <g className="dragon-bob">
+          <g className="dragon-wing dragon-wing-far">
+            <path d="M126 78 C112 44 86 30 58 34 C68 44 74 52 80 60 C88 58 96 60 102 64 C112 66 120 72 126 78 Z" fill="#b24a22" opacity="0.7" />
+          </g>
+          <path className="dragon-tail" d="M26 120 C46 130 74 122 96 100 L108 108 C80 138 46 142 20 130 Z" fill="url(#dgBody)" />
+          <path d="M14 126 L26 118 L30 132 Z" fill="#ffb066" />
+          <path d="M88 94 C104 72 146 70 164 86 C172 94 166 110 146 114 C124 120 96 114 88 94 Z" fill="url(#dgBody)" />
+          <path d="M120 112 C122 124 130 128 138 122" stroke="#2a8fa8" strokeWidth="6" strokeLinecap="round" fill="none" />
+          <path d="M156 84 C166 68 176 60 188 58" stroke="url(#dgBody)" strokeWidth="14" strokeLinecap="round" fill="none" />
+          <path d="M178 52 C188 46 204 48 212 56 C218 62 216 68 206 70 C198 72 188 68 182 64 Z" fill="url(#dgBody)" />
+          <path d="M184 50 L178 34 L192 46 Z" fill="#ffb066" />
+          <path d="M194 49 L192 33 L202 47 Z" fill="#ffb066" />
+          <g fill="#ffb066">
+            <path d="M104 78 L110 66 L116 78 Z" />
+            <path d="M122 74 L128 62 L134 74 Z" />
+            <path d="M140 76 L146 64 L152 77 Z" />
+          </g>
+          <circle cx="200" cy="57" r="3.6" fill="#fff" />
+          <circle cx="201" cy="57.4" r="1.9" fill="#0f2330" />
+          <path d="M203 65 Q208 68 212 63" stroke="#0f2330" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          <g className="dragon-wing dragon-wing-near">
+            <path d="M132 80 C118 38 88 18 50 22 C62 34 70 46 78 58 C88 54 98 54 106 58 C114 62 124 70 132 80 Z" fill="url(#dgWing)" />
+            <path d="M132 80 L50 22 M132 80 L78 58 M132 80 L106 58" stroke="#ffd2a6" strokeWidth="1.4" fill="none" opacity="0.7" />
+          </g>
+        </g>
+      </svg>
+    </div>
+  );
+}
+
 function CockpitPanel() {
   return (
     <div className="cockpit-panel" aria-label="A350-inspired flight deck instrumentation">
@@ -775,6 +826,8 @@ function App() {
       </div>
       {!booted && <FlightLoader />}
 
+      <DragonCompanion />
+
       <aside className="flight-nav" aria-label="Flight Deck Navigation">
         <a className="seat-brand" href="#top">
           VT-PLN
@@ -819,6 +872,9 @@ function App() {
           <div className="hero-actions">
             <a href="#projects" className="primary">
               Enter Project Hangar <ChevronRight size={18} />
+            </a>
+            <a href="/beest/" className="secondary">
+              Read The Devlogs <ChevronRight size={18} />
             </a>
             <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer" className="secondary">
               GitHub <Github size={18} />
@@ -1080,8 +1136,8 @@ function App() {
           <p className="eyebrow">Contact</p>
           <div className="final-boarding-image">
             <Img
-              src="https://www.aircraft.airbus.com/sites/g/files/jlcbta126/files/2021-10/A350%20MSN3%20COCKPIT%20WHILE%20DUSK.jpg"
-              alt="Airbus A350 cockpit"
+              src="/assets/dwello-turbofan-1.jpg"
+              alt="Turbofan CAD render from the Dwello Aerospace internship"
               loading="lazy"
             />
           </div>
@@ -1090,6 +1146,9 @@ function App() {
           <p>Phone: <a href={`tel:${contactPhone}`}>{contactPhone}</a></p>
         </div>
         <div className="contact-actions">
+          <a href="/beest/">
+            Little Helper Devlog <ChevronRight size={17} />
+          </a>
           <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer">
             GitHub <ExternalLink size={17} />
           </a>

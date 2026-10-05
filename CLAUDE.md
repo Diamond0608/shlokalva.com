@@ -55,6 +55,12 @@ Work happens on one branch, `dev`, which holds everything not yet live. Push to 
 
 `src/CharacterSelect.tsx` (lazy, mounted in `#characters` via `LazyMount`). Six modes shown as 3D photo cards: transparent cutouts of Shlok (`public/assets/cut-*.webp`, background removed with rembg) on a swaying layered card. A stat or Age/Height/Level of `null` renders as PLACEHOLDER. Fill them only with values Shlok gives you (stats are self-rated 1-10); never invent numbers. A smaller Side Character box (Trixie, Little Helper, Souls of the Goldfish) sits to the right of the main select; Trixie is his pet German shepherd (photo card). Keep photos of Shlok only; do not use the ID photo or group shots where he cannot be identified.
 
+## Engine Room and extras
+
+- `public/scene.glb` is ONE merged mesh (a single node from an STL export; splitting it by connectivity gives about 120,000 tiny pieces). There are no bodies named 640/576/577, so a true exploded view is impossible from it. `EngineViewer.tsx` runs a slow lengthwise cutaway instead (renderer clipping plane, studio reflections, brushed-steel material). For a real exploded view, Shlok must re-export the Fusion model as a GLB with separate named bodies.
+- `DragonCompanion` in `main.tsx` is an original SVG dragon (desktop only, decorative, motion respects reduced-motion).
+- The 6 MB Figaro overture is not preloaded (`preload = "none"`); it starts downloading on the first gesture.
+
 ## Content and voice
 
 - First person, plain, a little dry. Headings and `h2/h3` copy are written in Title Case; keep that.
