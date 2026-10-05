@@ -113,7 +113,7 @@ const nav = [
   ["HGR", "Projects", "projects", "Robots, CAD and builds"],
   ["LOG", "Experiences", "experiences", "My Hack Club story"],
   ["SYS", "Skills", "skills", "Tools I build with"],
-  ["INT", "Interests", "interests", "Gaming, badminton, poems"],
+  ["INT", "Interests", "interests", "Flight sim, gaming, poems"],
   ["COM", "Contact", "contact", "Email and links"]
 ];
 
@@ -308,6 +308,10 @@ const skills = [
   { title: "Technical Writing", detail: "Reports, documentation, BOMs, and build guides." }
 ];
 const interests = [
+  {
+    title: "Flight Simulation And Aviation",
+    body: "I have spent a lot of hours in Microsoft Flight Simulator 2020 with my own flight sim equipment. I also follow aviation influencers and news feeds, so I keep up with new aircraft, airlines and the industry."
+  },
   {
     title: "Gaming",
     body: "Valorant, Fortnite, Sea Of Thieves, RDR2, Ghost Of Tsushima, Titanfall 2, and whatever else is currently stealing my sleep."
@@ -899,11 +903,8 @@ function App() {
       <DragonCompanion />
 
       <aside className="flight-nav" aria-label="Flight Deck Navigation">
-        <a className="seat-brand" href="#top" aria-label="Shlok Alva, back to the top">
-          <span className="sa-mark" aria-hidden="true">
-            <b>S</b>
-            <b>A</b>
-          </span>
+        <a className="seat-brand" href="#top">
+          VT-PLN
         </a>
         {nav.map(([seat, label, target, hint], index) => (
           <a key={seat} href={`#${target}`} className={activeNav === target ? "on" : undefined} aria-current={activeNav === target ? "location" : undefined}>
