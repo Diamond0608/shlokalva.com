@@ -5025,3 +5025,186 @@ h3 {
   filter: drop-shadow(0 0 8px currentColor);
   transform: rotate(360deg) scale(1.15);
 }
+
+/* ===== Design pass 4: denser stars, a distinct look per section, devlog button, college heading ===== */
+.proj::before {
+  background-image: none;
+  background: var(--pc);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22420%22 height=%22320%22 viewBox=%220 0 420 320%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22190.4%22 cy=%22178.6%22 r=%221.6%22/%3E%3Ccircle cx=%22190.2%22 cy=%22270.8%22 r=%221.9%22/%3E%3Ccircle cx=%22200.0%22 cy=%22195.6%22 r=%221.6%22/%3E%3Ccircle cx=%22129.0%22 cy=%2232.3%22 r=%222.3%22/%3E%3Ccircle cx=%22265.4%22 cy=%22189.8%22 r=%221.6%22/%3E%3Ccircle cx=%22273.4%22 cy=%22196.1%22 r=%222.6%22/%3E%3Cpath d=%22M265.1 196.1H281.7M273.4 187.7V204.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22346.7%22 cy=%2223.7%22 r=%222.6%22/%3E%3Cpath d=%22M338.3 23.7H355.0M346.7 15.4V32.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22251.0%22 cy=%22246.8%22 r=%221.9%22/%3E%3Ccircle cx=%22351.1%22 cy=%22166.0%22 r=%221.6%22/%3E%3Ccircle cx=%225.9%22 cy=%2230.5%22 r=%221.6%22/%3E%3Ccircle cx=%22415.0%22 cy=%22314.7%22 r=%222.3%22/%3E%3Ccircle cx=%22108.6%22 cy=%22240.5%22 r=%220.9%22/%3E%3Ccircle cx=%2232.9%22 cy=%22243.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.2%22 cy=%22302.9%22 r=%220.9%22/%3E%3Ccircle cx=%2292.0%22 cy=%22293.2%22 r=%223.0%22/%3E%3Cpath d=%22M82.4 293.2H101.6M92.0 283.6V302.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22407.9%22 cy=%22128.0%22 r=%222.6%22/%3E%3Cpath d=%22M399.6 128.0H416.2M407.9 119.7V136.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22324.7%22 cy=%2288.2%22 r=%223.0%22/%3E%3Cpath d=%22M315.1 88.2H334.3M324.7 78.6V97.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.2%22 cy=%22131.9%22 r=%221.1%22/%3E%3Ccircle cx=%22105.5%22 cy=%2235.5%22 r=%223.0%22/%3E%3Cpath d=%22M95.9 35.5H115.1M105.5 25.9V45.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2277.2%22 cy=%22178.5%22 r=%221.1%22/%3E%3Ccircle cx=%22409.9%22 cy=%22244.1%22 r=%221.6%22/%3E%3Ccircle cx=%2252.0%22 cy=%22135.3%22 r=%221.3%22/%3E%3Ccircle cx=%22360.1%22 cy=%22308.2%22 r=%220.9%22/%3E%3Ccircle cx=%2290.8%22 cy=%22127.0%22 r=%222.3%22/%3E%3Ccircle cx=%22241.7%22 cy=%2217.1%22 r=%223.0%22/%3E%3Cpath d=%22M232.1 17.1H251.3M241.7 7.5V26.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22110.4%22 cy=%22245.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.1%22 cy=%2227.2%22 r=%222.3%22/%3E%3Ccircle cx=%22104.1%22 cy=%22191.6%22 r=%221.6%22/%3E%3Ccircle cx=%2256.4%22 cy=%22187.2%22 r=%221.1%22/%3E%3Ccircle cx=%22361.0%22 cy=%2261.0%22 r=%222.6%22/%3E%3Cpath d=%22M352.7 61.0H369.3M361.0 52.7V69.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22340.9%22 cy=%2281.8%22 r=%222.3%22/%3E%3Ccircle cx=%22263.1%22 cy=%22176.8%22 r=%221.6%22/%3E%3Ccircle cx=%22367.5%22 cy=%22192.3%22 r=%220.9%22/%3E%3Ccircle cx=%2248.9%22 cy=%22163.9%22 r=%222.3%22/%3E%3Ccircle cx=%22294.3%22 cy=%2284.2%22 r=%221.9%22/%3E%3Ccircle cx=%22206.3%22 cy=%22166.3%22 r=%220.9%22/%3E%3Ccircle cx=%2256.1%22 cy=%22153.5%22 r=%221.9%22/%3E%3Ccircle cx=%22257.1%22 cy=%2291.4%22 r=%221.1%22/%3E%3Ccircle cx=%22312.6%22 cy=%2225.6%22 r=%221.1%22/%3E%3Ccircle cx=%2228.9%22 cy=%2259.0%22 r=%221.9%22/%3E%3Ccircle cx=%22404.9%22 cy=%2232.8%22 r=%223.0%22/%3E%3Cpath d=%22M395.3 32.8H414.5M404.9 23.2V42.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22408.0%22 cy=%22209.0%22 r=%221.9%22/%3E%3Ccircle cx=%22394.1%22 cy=%22188.0%22 r=%221.6%22/%3E%3Ccircle cx=%22379.0%22 cy=%22222.7%22 r=%220.9%22/%3E%3Ccircle cx=%22250.5%22 cy=%2227.3%22 r=%223.0%22/%3E%3Cpath d=%22M240.9 27.3H260.1M250.5 17.7V36.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22135.4%22 cy=%22315.8%22 r=%223.0%22/%3E%3Cpath d=%22M125.8 315.8H145.0M135.4 306.2V325.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22307.6%22 cy=%22284.9%22 r=%222.3%22/%3E%3Ccircle cx=%2257.4%22 cy=%22304.6%22 r=%220.9%22/%3E%3Ccircle cx=%22286.3%22 cy=%22285.1%22 r=%221.6%22/%3E%3Ccircle cx=%22393.0%22 cy=%2213.4%22 r=%220.9%22/%3E%3Ccircle cx=%22261.5%22 cy=%22123.3%22 r=%221.9%22/%3E%3Ccircle cx=%2233.8%22 cy=%2232.3%22 r=%223.0%22/%3E%3Cpath d=%22M24.2 32.3H43.4M33.8 22.7V41.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22366.5%22 cy=%22231.2%22 r=%222.3%22/%3E%3Ccircle cx=%22290.0%22 cy=%22146.8%22 r=%221.9%22/%3E%3Ccircle cx=%2238.5%22 cy=%22238.1%22 r=%222.6%22/%3E%3Cpath d=%22M30.2 238.1H46.8M38.5 229.7V246.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22202.2%22 cy=%2275.8%22 r=%221.6%22/%3E%3Ccircle cx=%22325.3%22 cy=%22210.0%22 r=%220.9%22/%3E%3Ccircle cx=%22155.6%22 cy=%2248.7%22 r=%221.9%22/%3E%3Ccircle cx=%2273.9%22 cy=%22286.6%22 r=%221.6%22/%3E%3Ccircle cx=%22209.3%22 cy=%2279.3%22 r=%221.3%22/%3E%3Ccircle cx=%2285.8%22 cy=%22138.4%22 r=%221.1%22/%3E%3Ccircle cx=%22366.7%22 cy=%22123.9%22 r=%221.3%22/%3E%3Ccircle cx=%2290.5%22 cy=%2246.0%22 r=%220.9%22/%3E%3Ccircle cx=%22297.0%22 cy=%22300.4%22 r=%221.1%22/%3E%3Ccircle cx=%2250.5%22 cy=%22151.1%22 r=%221.6%22/%3E%3Ccircle cx=%22161.6%22 cy=%22166.2%22 r=%222.3%22/%3E%3Ccircle cx=%22349.7%22 cy=%22310.4%22 r=%220.9%22/%3E%3Ccircle cx=%22345.4%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22296.0%22 cy=%22182.0%22 r=%221.9%22/%3E%3Ccircle cx=%2211.9%22 cy=%2246.4%22 r=%220.9%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22420%22 height=%22320%22 viewBox=%220 0 420 320%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22190.4%22 cy=%22178.6%22 r=%221.6%22/%3E%3Ccircle cx=%22190.2%22 cy=%22270.8%22 r=%221.9%22/%3E%3Ccircle cx=%22200.0%22 cy=%22195.6%22 r=%221.6%22/%3E%3Ccircle cx=%22129.0%22 cy=%2232.3%22 r=%222.3%22/%3E%3Ccircle cx=%22265.4%22 cy=%22189.8%22 r=%221.6%22/%3E%3Ccircle cx=%22273.4%22 cy=%22196.1%22 r=%222.6%22/%3E%3Cpath d=%22M265.1 196.1H281.7M273.4 187.7V204.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22346.7%22 cy=%2223.7%22 r=%222.6%22/%3E%3Cpath d=%22M338.3 23.7H355.0M346.7 15.4V32.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22251.0%22 cy=%22246.8%22 r=%221.9%22/%3E%3Ccircle cx=%22351.1%22 cy=%22166.0%22 r=%221.6%22/%3E%3Ccircle cx=%225.9%22 cy=%2230.5%22 r=%221.6%22/%3E%3Ccircle cx=%22415.0%22 cy=%22314.7%22 r=%222.3%22/%3E%3Ccircle cx=%22108.6%22 cy=%22240.5%22 r=%220.9%22/%3E%3Ccircle cx=%2232.9%22 cy=%22243.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.2%22 cy=%22302.9%22 r=%220.9%22/%3E%3Ccircle cx=%2292.0%22 cy=%22293.2%22 r=%223.0%22/%3E%3Cpath d=%22M82.4 293.2H101.6M92.0 283.6V302.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22407.9%22 cy=%22128.0%22 r=%222.6%22/%3E%3Cpath d=%22M399.6 128.0H416.2M407.9 119.7V136.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22324.7%22 cy=%2288.2%22 r=%223.0%22/%3E%3Cpath d=%22M315.1 88.2H334.3M324.7 78.6V97.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.2%22 cy=%22131.9%22 r=%221.1%22/%3E%3Ccircle cx=%22105.5%22 cy=%2235.5%22 r=%223.0%22/%3E%3Cpath d=%22M95.9 35.5H115.1M105.5 25.9V45.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2277.2%22 cy=%22178.5%22 r=%221.1%22/%3E%3Ccircle cx=%22409.9%22 cy=%22244.1%22 r=%221.6%22/%3E%3Ccircle cx=%2252.0%22 cy=%22135.3%22 r=%221.3%22/%3E%3Ccircle cx=%22360.1%22 cy=%22308.2%22 r=%220.9%22/%3E%3Ccircle cx=%2290.8%22 cy=%22127.0%22 r=%222.3%22/%3E%3Ccircle cx=%22241.7%22 cy=%2217.1%22 r=%223.0%22/%3E%3Cpath d=%22M232.1 17.1H251.3M241.7 7.5V26.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22110.4%22 cy=%22245.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.1%22 cy=%2227.2%22 r=%222.3%22/%3E%3Ccircle cx=%22104.1%22 cy=%22191.6%22 r=%221.6%22/%3E%3Ccircle cx=%2256.4%22 cy=%22187.2%22 r=%221.1%22/%3E%3Ccircle cx=%22361.0%22 cy=%2261.0%22 r=%222.6%22/%3E%3Cpath d=%22M352.7 61.0H369.3M361.0 52.7V69.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22340.9%22 cy=%2281.8%22 r=%222.3%22/%3E%3Ccircle cx=%22263.1%22 cy=%22176.8%22 r=%221.6%22/%3E%3Ccircle cx=%22367.5%22 cy=%22192.3%22 r=%220.9%22/%3E%3Ccircle cx=%2248.9%22 cy=%22163.9%22 r=%222.3%22/%3E%3Ccircle cx=%22294.3%22 cy=%2284.2%22 r=%221.9%22/%3E%3Ccircle cx=%22206.3%22 cy=%22166.3%22 r=%220.9%22/%3E%3Ccircle cx=%2256.1%22 cy=%22153.5%22 r=%221.9%22/%3E%3Ccircle cx=%22257.1%22 cy=%2291.4%22 r=%221.1%22/%3E%3Ccircle cx=%22312.6%22 cy=%2225.6%22 r=%221.1%22/%3E%3Ccircle cx=%2228.9%22 cy=%2259.0%22 r=%221.9%22/%3E%3Ccircle cx=%22404.9%22 cy=%2232.8%22 r=%223.0%22/%3E%3Cpath d=%22M395.3 32.8H414.5M404.9 23.2V42.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22408.0%22 cy=%22209.0%22 r=%221.9%22/%3E%3Ccircle cx=%22394.1%22 cy=%22188.0%22 r=%221.6%22/%3E%3Ccircle cx=%22379.0%22 cy=%22222.7%22 r=%220.9%22/%3E%3Ccircle cx=%22250.5%22 cy=%2227.3%22 r=%223.0%22/%3E%3Cpath d=%22M240.9 27.3H260.1M250.5 17.7V36.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22135.4%22 cy=%22315.8%22 r=%223.0%22/%3E%3Cpath d=%22M125.8 315.8H145.0M135.4 306.2V325.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22307.6%22 cy=%22284.9%22 r=%222.3%22/%3E%3Ccircle cx=%2257.4%22 cy=%22304.6%22 r=%220.9%22/%3E%3Ccircle cx=%22286.3%22 cy=%22285.1%22 r=%221.6%22/%3E%3Ccircle cx=%22393.0%22 cy=%2213.4%22 r=%220.9%22/%3E%3Ccircle cx=%22261.5%22 cy=%22123.3%22 r=%221.9%22/%3E%3Ccircle cx=%2233.8%22 cy=%2232.3%22 r=%223.0%22/%3E%3Cpath d=%22M24.2 32.3H43.4M33.8 22.7V41.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22366.5%22 cy=%22231.2%22 r=%222.3%22/%3E%3Ccircle cx=%22290.0%22 cy=%22146.8%22 r=%221.9%22/%3E%3Ccircle cx=%2238.5%22 cy=%22238.1%22 r=%222.6%22/%3E%3Cpath d=%22M30.2 238.1H46.8M38.5 229.7V246.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22202.2%22 cy=%2275.8%22 r=%221.6%22/%3E%3Ccircle cx=%22325.3%22 cy=%22210.0%22 r=%220.9%22/%3E%3Ccircle cx=%22155.6%22 cy=%2248.7%22 r=%221.9%22/%3E%3Ccircle cx=%2273.9%22 cy=%22286.6%22 r=%221.6%22/%3E%3Ccircle cx=%22209.3%22 cy=%2279.3%22 r=%221.3%22/%3E%3Ccircle cx=%2285.8%22 cy=%22138.4%22 r=%221.1%22/%3E%3Ccircle cx=%22366.7%22 cy=%22123.9%22 r=%221.3%22/%3E%3Ccircle cx=%2290.5%22 cy=%2246.0%22 r=%220.9%22/%3E%3Ccircle cx=%22297.0%22 cy=%22300.4%22 r=%221.1%22/%3E%3Ccircle cx=%2250.5%22 cy=%22151.1%22 r=%221.6%22/%3E%3Ccircle cx=%22161.6%22 cy=%22166.2%22 r=%222.3%22/%3E%3Ccircle cx=%22349.7%22 cy=%22310.4%22 r=%220.9%22/%3E%3Ccircle cx=%22345.4%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22296.0%22 cy=%22182.0%22 r=%221.9%22/%3E%3Ccircle cx=%2211.9%22 cy=%2246.4%22 r=%220.9%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 420px 320px;
+  mask-size: 420px 320px;
+  opacity: 0.85;
+}
+
+.proj::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: #dcecff;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22260%22 viewBox=%220 0 300 260%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22164.1%22 cy=%2291.1%22 r=%221.3%22/%3E%3Ccircle cx=%2229.3%22 cy=%22237.7%22 r=%220.9%22/%3E%3Ccircle cx=%22288.4%22 cy=%2230.1%22 r=%221.1%22/%3E%3Ccircle cx=%22238.5%22 cy=%2225.6%22 r=%221.9%22/%3E%3Ccircle cx=%22162.3%22 cy=%22214.7%22 r=%221.1%22/%3E%3Ccircle cx=%2268.1%22 cy=%22201.6%22 r=%222.3%22/%3E%3Ccircle cx=%22168.3%22 cy=%2253.5%22 r=%221.3%22/%3E%3Ccircle cx=%2285.3%22 cy=%22193.1%22 r=%221.6%22/%3E%3Ccircle cx=%22154.6%22 cy=%22193.6%22 r=%221.9%22/%3E%3Ccircle cx=%22210.7%22 cy=%22122.8%22 r=%220.9%22/%3E%3Ccircle cx=%22217.5%22 cy=%22228.2%22 r=%221.3%22/%3E%3Ccircle cx=%2247.8%22 cy=%2289.9%22 r=%223.0%22/%3E%3Cpath d=%22M38.2 89.9H57.4M47.8 80.3V99.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2251.7%22 cy=%22161.5%22 r=%221.3%22/%3E%3Ccircle cx=%22277.1%22 cy=%22170.2%22 r=%222.3%22/%3E%3Ccircle cx=%22288.2%22 cy=%22164.0%22 r=%222.3%22/%3E%3Ccircle cx=%2263.9%22 cy=%2274.1%22 r=%220.9%22/%3E%3Ccircle cx=%22120.4%22 cy=%22108.4%22 r=%221.6%22/%3E%3Ccircle cx=%2248.0%22 cy=%22234.8%22 r=%220.9%22/%3E%3Ccircle cx=%22215.6%22 cy=%22195.5%22 r=%220.9%22/%3E%3Ccircle cx=%22278.8%22 cy=%22134.6%22 r=%222.6%22/%3E%3Cpath d=%22M270.4 134.6H287.1M278.8 126.3V142.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.3%22 cy=%226.1%22 r=%223.0%22/%3E%3Cpath d=%22M144.7 6.1H163.9M154.3 -3.5V15.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22111.9%22 cy=%2220.6%22 r=%221.3%22/%3E%3Ccircle cx=%22150.0%22 cy=%2236.0%22 r=%222.6%22/%3E%3Cpath d=%22M141.6 36.0H158.3M150.0 27.7V44.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22250.4%22 cy=%22167.2%22 r=%221.1%22/%3E%3Ccircle cx=%2262.9%22 cy=%22163.8%22 r=%221.1%22/%3E%3Ccircle cx=%22279.4%22 cy=%2261.2%22 r=%220.9%22/%3E%3Ccircle cx=%22185.4%22 cy=%22204.1%22 r=%221.3%22/%3E%3Ccircle cx=%2271.5%22 cy=%22108.5%22 r=%221.3%22/%3E%3Ccircle cx=%22124.3%22 cy=%22149.1%22 r=%223.0%22/%3E%3Cpath d=%22M114.7 149.1H133.9M124.3 139.5V158.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22200.7%22 cy=%22113.6%22 r=%221.6%22/%3E%3Ccircle cx=%22233.8%22 cy=%2210.8%22 r=%221.1%22/%3E%3Ccircle cx=%2247.9%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22154.0%22 cy=%2225.7%22 r=%221.6%22/%3E%3Ccircle cx=%22269.9%22 cy=%22115.6%22 r=%221.1%22/%3E%3Ccircle cx=%22242.4%22 cy=%22116.3%22 r=%221.9%22/%3E%3Ccircle cx=%22194.5%22 cy=%2246.1%22 r=%223.0%22/%3E%3Cpath d=%22M184.9 46.1H204.1M194.5 36.5V55.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2219.5%22 cy=%22142.3%22 r=%221.6%22/%3E%3Ccircle cx=%22205.9%22 cy=%2217.7%22 r=%221.1%22/%3E%3Ccircle cx=%2297.5%22 cy=%2233.5%22 r=%221.9%22/%3E%3Ccircle cx=%2252.1%22 cy=%2254.9%22 r=%221.3%22/%3E%3Ccircle cx=%22274.1%22 cy=%226.2%22 r=%221.1%22/%3E%3Ccircle cx=%22130.4%22 cy=%22239.4%22 r=%221.9%22/%3E%3Ccircle cx=%22102.1%22 cy=%22102.7%22 r=%222.3%22/%3E%3Ccircle cx=%2237.3%22 cy=%2244.9%22 r=%221.9%22/%3E%3Ccircle cx=%2225.3%22 cy=%2268.7%22 r=%220.9%22/%3E%3Ccircle cx=%22226.0%22 cy=%2260.0%22 r=%223.0%22/%3E%3Cpath d=%22M216.4 60.0H235.6M226.0 50.4V69.6%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22294.2%22 cy=%22212.5%22 r=%222.3%22/%3E%3Ccircle cx=%2297.1%22 cy=%2221.0%22 r=%222.3%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22260%22 viewBox=%220 0 300 260%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22164.1%22 cy=%2291.1%22 r=%221.3%22/%3E%3Ccircle cx=%2229.3%22 cy=%22237.7%22 r=%220.9%22/%3E%3Ccircle cx=%22288.4%22 cy=%2230.1%22 r=%221.1%22/%3E%3Ccircle cx=%22238.5%22 cy=%2225.6%22 r=%221.9%22/%3E%3Ccircle cx=%22162.3%22 cy=%22214.7%22 r=%221.1%22/%3E%3Ccircle cx=%2268.1%22 cy=%22201.6%22 r=%222.3%22/%3E%3Ccircle cx=%22168.3%22 cy=%2253.5%22 r=%221.3%22/%3E%3Ccircle cx=%2285.3%22 cy=%22193.1%22 r=%221.6%22/%3E%3Ccircle cx=%22154.6%22 cy=%22193.6%22 r=%221.9%22/%3E%3Ccircle cx=%22210.7%22 cy=%22122.8%22 r=%220.9%22/%3E%3Ccircle cx=%22217.5%22 cy=%22228.2%22 r=%221.3%22/%3E%3Ccircle cx=%2247.8%22 cy=%2289.9%22 r=%223.0%22/%3E%3Cpath d=%22M38.2 89.9H57.4M47.8 80.3V99.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2251.7%22 cy=%22161.5%22 r=%221.3%22/%3E%3Ccircle cx=%22277.1%22 cy=%22170.2%22 r=%222.3%22/%3E%3Ccircle cx=%22288.2%22 cy=%22164.0%22 r=%222.3%22/%3E%3Ccircle cx=%2263.9%22 cy=%2274.1%22 r=%220.9%22/%3E%3Ccircle cx=%22120.4%22 cy=%22108.4%22 r=%221.6%22/%3E%3Ccircle cx=%2248.0%22 cy=%22234.8%22 r=%220.9%22/%3E%3Ccircle cx=%22215.6%22 cy=%22195.5%22 r=%220.9%22/%3E%3Ccircle cx=%22278.8%22 cy=%22134.6%22 r=%222.6%22/%3E%3Cpath d=%22M270.4 134.6H287.1M278.8 126.3V142.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.3%22 cy=%226.1%22 r=%223.0%22/%3E%3Cpath d=%22M144.7 6.1H163.9M154.3 -3.5V15.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22111.9%22 cy=%2220.6%22 r=%221.3%22/%3E%3Ccircle cx=%22150.0%22 cy=%2236.0%22 r=%222.6%22/%3E%3Cpath d=%22M141.6 36.0H158.3M150.0 27.7V44.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22250.4%22 cy=%22167.2%22 r=%221.1%22/%3E%3Ccircle cx=%2262.9%22 cy=%22163.8%22 r=%221.1%22/%3E%3Ccircle cx=%22279.4%22 cy=%2261.2%22 r=%220.9%22/%3E%3Ccircle cx=%22185.4%22 cy=%22204.1%22 r=%221.3%22/%3E%3Ccircle cx=%2271.5%22 cy=%22108.5%22 r=%221.3%22/%3E%3Ccircle cx=%22124.3%22 cy=%22149.1%22 r=%223.0%22/%3E%3Cpath d=%22M114.7 149.1H133.9M124.3 139.5V158.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22200.7%22 cy=%22113.6%22 r=%221.6%22/%3E%3Ccircle cx=%22233.8%22 cy=%2210.8%22 r=%221.1%22/%3E%3Ccircle cx=%2247.9%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22154.0%22 cy=%2225.7%22 r=%221.6%22/%3E%3Ccircle cx=%22269.9%22 cy=%22115.6%22 r=%221.1%22/%3E%3Ccircle cx=%22242.4%22 cy=%22116.3%22 r=%221.9%22/%3E%3Ccircle cx=%22194.5%22 cy=%2246.1%22 r=%223.0%22/%3E%3Cpath d=%22M184.9 46.1H204.1M194.5 36.5V55.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2219.5%22 cy=%22142.3%22 r=%221.6%22/%3E%3Ccircle cx=%22205.9%22 cy=%2217.7%22 r=%221.1%22/%3E%3Ccircle cx=%2297.5%22 cy=%2233.5%22 r=%221.9%22/%3E%3Ccircle cx=%2252.1%22 cy=%2254.9%22 r=%221.3%22/%3E%3Ccircle cx=%22274.1%22 cy=%226.2%22 r=%221.1%22/%3E%3Ccircle cx=%22130.4%22 cy=%22239.4%22 r=%221.9%22/%3E%3Ccircle cx=%22102.1%22 cy=%22102.7%22 r=%222.3%22/%3E%3Ccircle cx=%2237.3%22 cy=%2244.9%22 r=%221.9%22/%3E%3Ccircle cx=%2225.3%22 cy=%2268.7%22 r=%220.9%22/%3E%3Ccircle cx=%22226.0%22 cy=%2260.0%22 r=%223.0%22/%3E%3Cpath d=%22M216.4 60.0H235.6M226.0 50.4V69.6%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22294.2%22 cy=%22212.5%22 r=%222.3%22/%3E%3Ccircle cx=%2297.1%22 cy=%2221.0%22 r=%222.3%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 300px 260px;
+  mask-size: 300px 260px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .proj::after {
+    animation: starTwinkle 4.5s ease-in-out infinite alternate-reverse;
+  }
+}
+
+.tl-sky::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 38% 0;
+  background: #e6f1ff;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22520%22 height=%22380%22 viewBox=%220 0 520 380%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22322.9%22 cy=%22279.9%22 r=%222.3%22/%3E%3Ccircle cx=%22337.8%22 cy=%22201.2%22 r=%221.1%22/%3E%3Ccircle cx=%22336.3%22 cy=%22339.1%22 r=%223.0%22/%3E%3Cpath d=%22M326.7 339.1H345.9M336.3 329.5V348.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22448.6%22 cy=%22145.6%22 r=%222.6%22/%3E%3Cpath d=%22M440.3 145.6H457.0M448.6 137.3V154.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.7%22 cy=%2284.6%22 r=%221.6%22/%3E%3Ccircle cx=%2285.7%22 cy=%22300.5%22 r=%223.0%22/%3E%3Cpath d=%22M76.1 300.5H95.3M85.7 290.9V310.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2268.9%22 cy=%224.7%22 r=%221.1%22/%3E%3Ccircle cx=%22400.1%22 cy=%22361.2%22 r=%222.6%22/%3E%3Cpath d=%22M391.8 361.2H408.4M400.1 352.8V369.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22152.1%22 cy=%22361.7%22 r=%222.3%22/%3E%3Ccircle cx=%22324.4%22 cy=%2271.6%22 r=%221.1%22/%3E%3Ccircle cx=%22498.9%22 cy=%22336.5%22 r=%221.3%22/%3E%3Ccircle cx=%22216.4%22 cy=%22352.1%22 r=%221.3%22/%3E%3Ccircle cx=%22158.3%22 cy=%22228.4%22 r=%223.0%22/%3E%3Cpath d=%22M148.7 228.4H167.9M158.3 218.8V238.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2237.8%22 cy=%22136.2%22 r=%222.3%22/%3E%3Ccircle cx=%22165.7%22 cy=%22183.0%22 r=%220.9%22/%3E%3Ccircle cx=%22135.2%22 cy=%22353.3%22 r=%221.3%22/%3E%3Ccircle cx=%22436.6%22 cy=%2210.7%22 r=%221.3%22/%3E%3Ccircle cx=%22196.7%22 cy=%22316.9%22 r=%222.3%22/%3E%3Ccircle cx=%2296.6%22 cy=%22359.3%22 r=%221.1%22/%3E%3Ccircle cx=%22480.0%22 cy=%22354.4%22 r=%221.3%22/%3E%3Ccircle cx=%22461.1%22 cy=%2297.3%22 r=%221.9%22/%3E%3Ccircle cx=%22387.2%22 cy=%22300.6%22 r=%220.9%22/%3E%3Ccircle cx=%22225.7%22 cy=%22367.9%22 r=%221.9%22/%3E%3Ccircle cx=%22316.7%22 cy=%22345.5%22 r=%222.3%22/%3E%3Ccircle cx=%22283.1%22 cy=%22120.2%22 r=%221.1%22/%3E%3Ccircle cx=%22413.0%22 cy=%22237.2%22 r=%221.3%22/%3E%3Ccircle cx=%22514.3%22 cy=%2264.1%22 r=%223.0%22/%3E%3Cpath d=%22M504.7 64.1H523.9M514.3 54.5V73.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2220.3%22 cy=%22279.5%22 r=%221.3%22/%3E%3Ccircle cx=%22237.3%22 cy=%22160.9%22 r=%222.6%22/%3E%3Cpath d=%22M229.0 160.9H245.6M237.3 152.6V169.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22414.5%22 cy=%22128.3%22 r=%222.3%22/%3E%3Ccircle cx=%22292.8%22 cy=%2253.4%22 r=%221.6%22/%3E%3Ccircle cx=%2258.6%22 cy=%22165.7%22 r=%223.0%22/%3E%3Cpath d=%22M49.0 165.7H68.2M58.6 156.1V175.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.9%22 cy=%22172.6%22 r=%221.1%22/%3E%3Ccircle cx=%22503.7%22 cy=%22172.7%22 r=%222.3%22/%3E%3Ccircle cx=%22166.7%22 cy=%22105.9%22 r=%221.1%22/%3E%3Ccircle cx=%2261.6%22 cy=%22309.8%22 r=%221.1%22/%3E%3Ccircle cx=%22325.0%22 cy=%22189.7%22 r=%220.9%22/%3E%3Ccircle cx=%22255.8%22 cy=%22195.6%22 r=%221.9%22/%3E%3Ccircle cx=%22189.0%22 cy=%22296.4%22 r=%222.3%22/%3E%3Ccircle cx=%22304.8%22 cy=%2216.8%22 r=%221.9%22/%3E%3Ccircle cx=%22364.7%22 cy=%22108.5%22 r=%222.3%22/%3E%3Ccircle cx=%22370.6%22 cy=%22360.0%22 r=%221.1%22/%3E%3Ccircle cx=%22301.3%22 cy=%228.3%22 r=%221.3%22/%3E%3Ccircle cx=%22170.9%22 cy=%22105.8%22 r=%221.9%22/%3E%3Ccircle cx=%22335.5%22 cy=%22300.7%22 r=%222.3%22/%3E%3Ccircle cx=%22180.9%22 cy=%22352.8%22 r=%221.1%22/%3E%3Ccircle cx=%22449.4%22 cy=%22260.1%22 r=%221.3%22/%3E%3Ccircle cx=%22269.3%22 cy=%22200.9%22 r=%223.0%22/%3E%3Cpath d=%22M259.7 200.9H278.9M269.3 191.3V210.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22483.9%22 cy=%22181.5%22 r=%222.3%22/%3E%3Ccircle cx=%22347.5%22 cy=%22159.0%22 r=%221.9%22/%3E%3Ccircle cx=%22268.4%22 cy=%22352.4%22 r=%221.9%22/%3E%3Ccircle cx=%22400.6%22 cy=%22240.9%22 r=%220.9%22/%3E%3Ccircle cx=%22104.1%22 cy=%22222.2%22 r=%221.1%22/%3E%3Ccircle cx=%22116.1%22 cy=%22259.2%22 r=%220.9%22/%3E%3Ccircle cx=%22509.1%22 cy=%22368.5%22 r=%222.6%22/%3E%3Cpath d=%22M500.8 368.5H517.4M509.1 360.2V376.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2260.7%22 cy=%22364.1%22 r=%221.9%22/%3E%3Ccircle cx=%2222.3%22 cy=%22177.1%22 r=%221.9%22/%3E%3Ccircle cx=%2240.9%22 cy=%2280.0%22 r=%221.3%22/%3E%3Ccircle cx=%224.3%22 cy=%22154.8%22 r=%221.6%22/%3E%3Ccircle cx=%22447.6%22 cy=%22260.3%22 r=%220.9%22/%3E%3Ccircle cx=%22285.6%22 cy=%22116.1%22 r=%221.9%22/%3E%3Ccircle cx=%22177.8%22 cy=%22220.1%22 r=%221.1%22/%3E%3Ccircle cx=%22218.6%22 cy=%22306.4%22 r=%221.3%22/%3E%3Ccircle cx=%22243.3%22 cy=%2262.3%22 r=%221.6%22/%3E%3Ccircle cx=%22494.1%22 cy=%22364.1%22 r=%221.3%22/%3E%3Ccircle cx=%22424.5%22 cy=%22250.1%22 r=%221.3%22/%3E%3Ccircle cx=%22293.7%22 cy=%22232.8%22 r=%223.0%22/%3E%3Cpath d=%22M284.1 232.8H303.3M293.7 223.2V242.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22223.8%22 cy=%22367.3%22 r=%221.6%22/%3E%3Ccircle cx=%22501.9%22 cy=%22145.3%22 r=%221.1%22/%3E%3Ccircle cx=%22309.1%22 cy=%22100.7%22 r=%221.6%22/%3E%3Ccircle cx=%22132.5%22 cy=%2211.3%22 r=%221.3%22/%3E%3Ccircle cx=%22255.8%22 cy=%22110.5%22 r=%220.9%22/%3E%3Ccircle cx=%22342.0%22 cy=%22361.4%22 r=%220.9%22/%3E%3Ccircle cx=%22404.2%22 cy=%22311.6%22 r=%223.0%22/%3E%3Cpath d=%22M394.6 311.6H413.8M404.2 302.0V321.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22128.7%22 cy=%22180.4%22 r=%223.0%22/%3E%3Cpath d=%22M119.1 180.4H138.3M128.7 170.8V190.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22141.1%22 cy=%2261.6%22 r=%221.3%22/%3E%3Ccircle cx=%22256.0%22 cy=%22373.2%22 r=%221.9%22/%3E%3Ccircle cx=%22454.9%22 cy=%22336.9%22 r=%222.6%22/%3E%3Cpath d=%22M446.6 336.9H463.2M454.9 328.6V345.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22158.0%22 cy=%22202.5%22 r=%221.3%22/%3E%3Ccircle cx=%22378.4%22 cy=%2213.9%22 r=%222.3%22/%3E%3Ccircle cx=%22385.4%22 cy=%22223.8%22 r=%223.0%22/%3E%3Cpath d=%22M375.8 223.8H395.0M385.4 214.2V233.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22287.3%22 cy=%22259.1%22 r=%222.6%22/%3E%3Cpath d=%22M278.9 259.1H295.6M287.3 250.8V267.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2211.5%22 cy=%22293.6%22 r=%221.9%22/%3E%3Ccircle cx=%22356.8%22 cy=%22358.6%22 r=%221.6%22/%3E%3Ccircle cx=%22247.6%22 cy=%22257.8%22 r=%221.3%22/%3E%3Ccircle cx=%22242.1%22 cy=%22286.0%22 r=%220.9%22/%3E%3Ccircle cx=%22359.6%22 cy=%22165.0%22 r=%221.6%22/%3E%3Ccircle cx=%22470.3%22 cy=%2257.1%22 r=%221.9%22/%3E%3Ccircle cx=%22459.0%22 cy=%22365.9%22 r=%221.6%22/%3E%3Ccircle cx=%22304.0%22 cy=%22306.0%22 r=%222.6%22/%3E%3Cpath d=%22M295.6 306.0H312.3M304.0 297.7V314.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22520%22 height=%22380%22 viewBox=%220 0 520 380%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22322.9%22 cy=%22279.9%22 r=%222.3%22/%3E%3Ccircle cx=%22337.8%22 cy=%22201.2%22 r=%221.1%22/%3E%3Ccircle cx=%22336.3%22 cy=%22339.1%22 r=%223.0%22/%3E%3Cpath d=%22M326.7 339.1H345.9M336.3 329.5V348.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22448.6%22 cy=%22145.6%22 r=%222.6%22/%3E%3Cpath d=%22M440.3 145.6H457.0M448.6 137.3V154.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.7%22 cy=%2284.6%22 r=%221.6%22/%3E%3Ccircle cx=%2285.7%22 cy=%22300.5%22 r=%223.0%22/%3E%3Cpath d=%22M76.1 300.5H95.3M85.7 290.9V310.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2268.9%22 cy=%224.7%22 r=%221.1%22/%3E%3Ccircle cx=%22400.1%22 cy=%22361.2%22 r=%222.6%22/%3E%3Cpath d=%22M391.8 361.2H408.4M400.1 352.8V369.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22152.1%22 cy=%22361.7%22 r=%222.3%22/%3E%3Ccircle cx=%22324.4%22 cy=%2271.6%22 r=%221.1%22/%3E%3Ccircle cx=%22498.9%22 cy=%22336.5%22 r=%221.3%22/%3E%3Ccircle cx=%22216.4%22 cy=%22352.1%22 r=%221.3%22/%3E%3Ccircle cx=%22158.3%22 cy=%22228.4%22 r=%223.0%22/%3E%3Cpath d=%22M148.7 228.4H167.9M158.3 218.8V238.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2237.8%22 cy=%22136.2%22 r=%222.3%22/%3E%3Ccircle cx=%22165.7%22 cy=%22183.0%22 r=%220.9%22/%3E%3Ccircle cx=%22135.2%22 cy=%22353.3%22 r=%221.3%22/%3E%3Ccircle cx=%22436.6%22 cy=%2210.7%22 r=%221.3%22/%3E%3Ccircle cx=%22196.7%22 cy=%22316.9%22 r=%222.3%22/%3E%3Ccircle cx=%2296.6%22 cy=%22359.3%22 r=%221.1%22/%3E%3Ccircle cx=%22480.0%22 cy=%22354.4%22 r=%221.3%22/%3E%3Ccircle cx=%22461.1%22 cy=%2297.3%22 r=%221.9%22/%3E%3Ccircle cx=%22387.2%22 cy=%22300.6%22 r=%220.9%22/%3E%3Ccircle cx=%22225.7%22 cy=%22367.9%22 r=%221.9%22/%3E%3Ccircle cx=%22316.7%22 cy=%22345.5%22 r=%222.3%22/%3E%3Ccircle cx=%22283.1%22 cy=%22120.2%22 r=%221.1%22/%3E%3Ccircle cx=%22413.0%22 cy=%22237.2%22 r=%221.3%22/%3E%3Ccircle cx=%22514.3%22 cy=%2264.1%22 r=%223.0%22/%3E%3Cpath d=%22M504.7 64.1H523.9M514.3 54.5V73.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2220.3%22 cy=%22279.5%22 r=%221.3%22/%3E%3Ccircle cx=%22237.3%22 cy=%22160.9%22 r=%222.6%22/%3E%3Cpath d=%22M229.0 160.9H245.6M237.3 152.6V169.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22414.5%22 cy=%22128.3%22 r=%222.3%22/%3E%3Ccircle cx=%22292.8%22 cy=%2253.4%22 r=%221.6%22/%3E%3Ccircle cx=%2258.6%22 cy=%22165.7%22 r=%223.0%22/%3E%3Cpath d=%22M49.0 165.7H68.2M58.6 156.1V175.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.9%22 cy=%22172.6%22 r=%221.1%22/%3E%3Ccircle cx=%22503.7%22 cy=%22172.7%22 r=%222.3%22/%3E%3Ccircle cx=%22166.7%22 cy=%22105.9%22 r=%221.1%22/%3E%3Ccircle cx=%2261.6%22 cy=%22309.8%22 r=%221.1%22/%3E%3Ccircle cx=%22325.0%22 cy=%22189.7%22 r=%220.9%22/%3E%3Ccircle cx=%22255.8%22 cy=%22195.6%22 r=%221.9%22/%3E%3Ccircle cx=%22189.0%22 cy=%22296.4%22 r=%222.3%22/%3E%3Ccircle cx=%22304.8%22 cy=%2216.8%22 r=%221.9%22/%3E%3Ccircle cx=%22364.7%22 cy=%22108.5%22 r=%222.3%22/%3E%3Ccircle cx=%22370.6%22 cy=%22360.0%22 r=%221.1%22/%3E%3Ccircle cx=%22301.3%22 cy=%228.3%22 r=%221.3%22/%3E%3Ccircle cx=%22170.9%22 cy=%22105.8%22 r=%221.9%22/%3E%3Ccircle cx=%22335.5%22 cy=%22300.7%22 r=%222.3%22/%3E%3Ccircle cx=%22180.9%22 cy=%22352.8%22 r=%221.1%22/%3E%3Ccircle cx=%22449.4%22 cy=%22260.1%22 r=%221.3%22/%3E%3Ccircle cx=%22269.3%22 cy=%22200.9%22 r=%223.0%22/%3E%3Cpath d=%22M259.7 200.9H278.9M269.3 191.3V210.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22483.9%22 cy=%22181.5%22 r=%222.3%22/%3E%3Ccircle cx=%22347.5%22 cy=%22159.0%22 r=%221.9%22/%3E%3Ccircle cx=%22268.4%22 cy=%22352.4%22 r=%221.9%22/%3E%3Ccircle cx=%22400.6%22 cy=%22240.9%22 r=%220.9%22/%3E%3Ccircle cx=%22104.1%22 cy=%22222.2%22 r=%221.1%22/%3E%3Ccircle cx=%22116.1%22 cy=%22259.2%22 r=%220.9%22/%3E%3Ccircle cx=%22509.1%22 cy=%22368.5%22 r=%222.6%22/%3E%3Cpath d=%22M500.8 368.5H517.4M509.1 360.2V376.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2260.7%22 cy=%22364.1%22 r=%221.9%22/%3E%3Ccircle cx=%2222.3%22 cy=%22177.1%22 r=%221.9%22/%3E%3Ccircle cx=%2240.9%22 cy=%2280.0%22 r=%221.3%22/%3E%3Ccircle cx=%224.3%22 cy=%22154.8%22 r=%221.6%22/%3E%3Ccircle cx=%22447.6%22 cy=%22260.3%22 r=%220.9%22/%3E%3Ccircle cx=%22285.6%22 cy=%22116.1%22 r=%221.9%22/%3E%3Ccircle cx=%22177.8%22 cy=%22220.1%22 r=%221.1%22/%3E%3Ccircle cx=%22218.6%22 cy=%22306.4%22 r=%221.3%22/%3E%3Ccircle cx=%22243.3%22 cy=%2262.3%22 r=%221.6%22/%3E%3Ccircle cx=%22494.1%22 cy=%22364.1%22 r=%221.3%22/%3E%3Ccircle cx=%22424.5%22 cy=%22250.1%22 r=%221.3%22/%3E%3Ccircle cx=%22293.7%22 cy=%22232.8%22 r=%223.0%22/%3E%3Cpath d=%22M284.1 232.8H303.3M293.7 223.2V242.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22223.8%22 cy=%22367.3%22 r=%221.6%22/%3E%3Ccircle cx=%22501.9%22 cy=%22145.3%22 r=%221.1%22/%3E%3Ccircle cx=%22309.1%22 cy=%22100.7%22 r=%221.6%22/%3E%3Ccircle cx=%22132.5%22 cy=%2211.3%22 r=%221.3%22/%3E%3Ccircle cx=%22255.8%22 cy=%22110.5%22 r=%220.9%22/%3E%3Ccircle cx=%22342.0%22 cy=%22361.4%22 r=%220.9%22/%3E%3Ccircle cx=%22404.2%22 cy=%22311.6%22 r=%223.0%22/%3E%3Cpath d=%22M394.6 311.6H413.8M404.2 302.0V321.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22128.7%22 cy=%22180.4%22 r=%223.0%22/%3E%3Cpath d=%22M119.1 180.4H138.3M128.7 170.8V190.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22141.1%22 cy=%2261.6%22 r=%221.3%22/%3E%3Ccircle cx=%22256.0%22 cy=%22373.2%22 r=%221.9%22/%3E%3Ccircle cx=%22454.9%22 cy=%22336.9%22 r=%222.6%22/%3E%3Cpath d=%22M446.6 336.9H463.2M454.9 328.6V345.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22158.0%22 cy=%22202.5%22 r=%221.3%22/%3E%3Ccircle cx=%22378.4%22 cy=%2213.9%22 r=%222.3%22/%3E%3Ccircle cx=%22385.4%22 cy=%22223.8%22 r=%223.0%22/%3E%3Cpath d=%22M375.8 223.8H395.0M385.4 214.2V233.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22287.3%22 cy=%22259.1%22 r=%222.6%22/%3E%3Cpath d=%22M278.9 259.1H295.6M287.3 250.8V267.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2211.5%22 cy=%22293.6%22 r=%221.9%22/%3E%3Ccircle cx=%22356.8%22 cy=%22358.6%22 r=%221.6%22/%3E%3Ccircle cx=%22247.6%22 cy=%22257.8%22 r=%221.3%22/%3E%3Ccircle cx=%22242.1%22 cy=%22286.0%22 r=%220.9%22/%3E%3Ccircle cx=%22359.6%22 cy=%22165.0%22 r=%221.6%22/%3E%3Ccircle cx=%22470.3%22 cy=%2257.1%22 r=%221.9%22/%3E%3Ccircle cx=%22459.0%22 cy=%22365.9%22 r=%221.6%22/%3E%3Ccircle cx=%22304.0%22 cy=%22306.0%22 r=%222.6%22/%3E%3Cpath d=%22M295.6 306.0H312.3M304.0 297.7V314.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 520px 380px;
+  mask-size: 520px 380px;
+  opacity: 0.8;
+}
+
+.proj-titlerow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  margin: 0.35rem 0 0.7rem;
+}
+
+.proj-titlerow .proj-title {
+  margin: 0;
+}
+
+.proj-devlog {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--pc, var(--line-strong));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pc, #ff8a2a) 14%, transparent);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.proj-devlog:hover {
+  background: color-mix(in srgb, var(--pc, #ff8a2a) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+/* The College page heading: never clip the descenders or the question marks */
+.tl-college h3 {
+  padding: 0.06em 0.04em 0.24em;
+  line-height: 1.12;
+  overflow: visible;
+}
+
+/* ---- Every section gets its own identity: palette, pattern and heading style ---- */
+.section-head .eyebrow {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+}
+
+.section-head h2 {
+  background: linear-gradient(95deg, var(--cream) 30%, var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#projects {
+  --amber: #ff9a4a;
+  --sky: #9cc8ff;
+  --line: rgba(137, 216, 255, 0.28);
+  --line-strong: rgba(137, 216, 255, 0.7);
+}
+
+#projects.band::before {
+  background:
+    linear-gradient(rgba(137, 216, 255, 0.045) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(137, 216, 255, 0.045) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(180deg, rgba(20, 40, 80, 0.55), rgba(5, 8, 16, 0.2));
+  border-block-color: rgba(137, 216, 255, 0.3);
+}
+
+#experiences.band::before {
+  background:
+    repeating-linear-gradient(135deg, rgba(236, 55, 80, 0.07) 0 14px, transparent 14px 28px),
+    linear-gradient(180deg, rgba(60, 8, 18, 0.55), rgba(10, 5, 8, 0.25));
+  border-block-color: rgba(236, 55, 80, 0.4);
+}
+
+#skills.band::before {
+  background:
+    radial-gradient(circle at 12px 12px, rgba(79, 209, 197, 0.16) 1.5px, transparent 2px) 0 0 / 24px 24px,
+    linear-gradient(180deg, rgba(6, 40, 40, 0.5), rgba(5, 12, 14, 0.2));
+  border-block-color: rgba(79, 209, 197, 0.4);
+}
+
+#interests.band::before {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(199, 155, 255, 0.22), transparent 44%),
+    radial-gradient(circle at 80% 70%, rgba(255, 214, 160, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(30, 14, 54, 0.6), rgba(10, 6, 20, 0.25));
+  border-block-color: rgba(199, 155, 255, 0.4);
+}
+
+#contact {
+  position: relative;
+  isolation: isolate;
+}
+
+#contact::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc(50% - 50vw);
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(255, 179, 71, 0.28), transparent 60%),
+    linear-gradient(180deg, transparent, rgba(60, 30, 6, 0.4));
+  border-top: 1px solid rgba(255, 179, 71, 0.4);
+}
+
+/* Honest authorship note */
+.site-footer {
+  width: min(1220px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.4rem 0 2.4rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.site-footer p {
+  max-width: 52rem;
+  margin: 0;
+}
+
+.site-footer strong {
+  margin-right: 0.3rem;
+  color: var(--cream);
+  letter-spacing: 0.04em;
+}
+
+.hero-ai-note {
+  max-width: 28rem;
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+}

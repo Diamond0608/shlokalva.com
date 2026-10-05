@@ -58,6 +58,7 @@ type Project = {
   link?: string;
   caution?: string;
   stats: Array<{ label: string; value: string }>;
+  devlog?: string;
   status: { label: string; tone: "done" | "progress" | "fail"; note: string };
   learned: string;
 };
@@ -119,6 +120,7 @@ const nav = [
 const projects: Project[] = [
   {
     id: "little-helper",
+    devlog: "/beest/",
     status: { label: "Finished", tone: "done", note: "Built end to end and approved golden at Hack Club BEEST." },
     learned: "CAD only gets you halfway: friction-driven tracks, burnt-out motors and wiring only worked after real debugging on the bench.",
     title: "Little Helper",
@@ -186,7 +188,7 @@ const projects: Project[] = [
   {
     id: "dwello",
     status: { label: "Completed", tone: "done", note: "Three models, a report and an animation delivered." },
-    learned: "Writing down the method behind every model choice mattered as much as the CAD itself.",
+    learned: "I learnt how fuel flow rates actually work, how to bring that into numericals, and how to write project reports that go deep and explain every design choice.",
     title: "Aircraft Propulsion Internship",
     eyebrow: "Dwello Aerospace",
     icon: Rocket,
@@ -606,7 +608,14 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
         <span className="proj-eyebrow">
           <Icon size={16} /> {project.eyebrow}
         </span>
-        <h3 className="proj-title">{project.title}</h3>
+        <div className="proj-titlerow">
+          <h3 className="proj-title">{project.title}</h3>
+          {project.devlog && (
+            <a className="proj-devlog" href={project.devlog}>
+              Read The Devlog <ChevronRight size={15} />
+            </a>
+          )}
+        </div>
         <p className={`proj-status proj-status-${project.status.tone}`}>
           <b>Status: {project.status.label}</b> {project.status.note}
         </p>
@@ -888,6 +897,7 @@ function App() {
               GitHub <Github size={18} />
             </a>
           </div>
+          <p className="hero-ai-note">This site was built with AI assistance. The projects it shows are my own work.</p>
         </div>
         <div className="hero-board">
           <CockpitPanel />
@@ -955,7 +965,7 @@ function App() {
         <LazyMount><CharacterSelect /></LazyMount>
       </section>
 
-      <section id="projects" className="section">
+      <section id="projects" className="section band">
         <div className="section-head">
           <p className="eyebrow">Projects</p>
           <h2>Project Hangar</h2>
@@ -968,7 +978,7 @@ function App() {
         </div>
       </section>
 
-      <section id="experiences" className="section">
+      <section id="experiences" className="section band">
         <article id="beest" className="beest-card beest-solo">
           <div className="beest-gallery">
             <img
@@ -1144,7 +1154,7 @@ function App() {
           <p className="eyebrow">Contact</p>
           <div className="final-boarding-image">
             <Img
-              src="https://www.aircraft.airbus.com/sites/g/files/jlcbta126/files/2021-10/A350%20MSN3%20COCKPIT%20WHILE%20DUSK.jpg"
+              src="/assets/a350-cockpit.jpg"
               alt="Airbus A350 cockpit"
               loading="lazy"
             />
@@ -1166,6 +1176,12 @@ function App() {
         </div>
       </section>
 
+
+      <footer className="site-footer">
+        <p>
+          <strong>Made with AI.</strong> This site was built with AI assistance (Claude, by Anthropic). The site’s code, layout and some of its wording were produced with AI under my direction. The projects, devlogs, photos and results it describes are my own work.
+        </p>
+      </footer>
 
       {activeImage && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={activeImage.caption} onClick={() => setActiveImage(null)}>

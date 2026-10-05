@@ -367,3 +367,15 @@ h2.small {
   color: var(--muted);
   font-size: 0.8rem;
 }
+
+.ai-note {
+  margin: 1.6rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.ai-note strong {
+  color: var(--cream);
+}

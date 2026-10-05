@@ -43,8 +43,9 @@ function StudioEnvironment() {
 }
 
 // Bounds can fit before the model has been laid out; re-fit a few times shortly after mount.
-function RefitBounds() {
+function RefitBounds({ apiRef }: { apiRef: { current: ReturnType<typeof useBounds> | null } }) {
   const api = useBounds();
+  apiRef.current = api;
   useEffect(() => {
     const refit = () => api.refresh().clip().fit();
     const timers = [60, 250, 700].map((delay) => window.setTimeout(refit, delay));
@@ -169,6 +170,7 @@ export default function EngineViewer() {
   const stateRef = useRef<{ camera: THREE.Camera } | null>(null);
   const startPos = useRef<THREE.Vector3 | null>(null);
   const level = useRef(0);
+  const boundsRef = useRef<ReturnType<typeof useBounds> | null>(null);
 
   // Buttons rather than scroll-wheel zoom, so the engine never hijacks page scrolling.
   const zoom = (step: number) => {
@@ -188,6 +190,7 @@ export default function EngineViewer() {
     const camera = stateRef.current?.camera;
     if (!controls || !camera) return;
     controls.reset();
+    boundsRef.current?.refresh().clip().fit();
     level.current = 0;
   };
 
@@ -224,7 +227,7 @@ export default function EngineViewer() {
             <Suspense fallback={null}>
               <Bounds fit clip margin={1.18}>
                 <TurbofanModel />
-                <RefitBounds />
+                <RefitBounds apiRef={boundsRef} />
               </Bounds>
             </Suspense>
 

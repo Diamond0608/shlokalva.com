@@ -12,7 +12,7 @@ function StudioLight() {
     const generator = new THREE.PMREMGenerator(gl);
     const env = generator.fromScene(new RoomEnvironment(), 0.04).texture;
     scene.environment = env;
-    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.4;
+    (scene as THREE.Scene & { environmentIntensity?: number }).environmentIntensity = 0.14;
     return () => {
       scene.environment = null;
       env.dispose();
@@ -68,8 +68,8 @@ function ProjectModel({ src, cutaway, cutOn }: { src: string; cutaway: boolean; 
     }
     const { min, max } = range.current;
     const cut = cutOn ? cutProgress(state.clock.elapsedTime) : 0;
-    // Everything above the plane is removed; at full cut about the upper two thirds is gone.
-    const target = max - (max - min) * 0.66;
+    // Everything above the plane is removed; at full cut about the upper 80% is gone.
+    const target = max - (max - min) * 0.8;
     plane.constant = max + 1 - cut * (max + 1 - target);
   });
 
@@ -160,14 +160,14 @@ export default function ProjectModelViewer({ src, cutaway = false }: { src: stri
         gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = cutaway ? 0.62 : 0.52;
+          gl.toneMappingExposure = cutaway ? 0.34 : 0.52;
         }}
       >
         {cutaway && <StudioLight />}
-        <hemisphereLight intensity={0.82} color="#ffffff" groundColor="#202020" />
-        <directionalLight position={[5, 6, 7]} intensity={1.85} />
-        <directionalLight position={[-4, 2, 3]} intensity={0.82} />
-        <directionalLight position={[2, -2, -5]} intensity={0.65} />
+        <hemisphereLight intensity={cutaway ? 0.3 : 0.82} color="#ffffff" groundColor="#202020" />
+        <directionalLight position={[5, 6, 7]} intensity={cutaway ? 0.8 : 1.85} />
+        <directionalLight position={[-4, 2, 3]} intensity={cutaway ? 0.35 : 0.82} />
+        <directionalLight position={[2, -2, -5]} intensity={cutaway ? 0.25 : 0.65} />
 
         <Suspense fallback={null}>
           <Bounds fit clip margin={1.25}>
