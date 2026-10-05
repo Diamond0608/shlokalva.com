@@ -285,13 +285,13 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
 ];
 
 const skills = [
-  { title: "Fusion 360", proof: "Little Helper, Trinetra, Dwello propulsion models" },
-  { title: "ESP32 / ESP8266", proof: "Little Helper: motors, RFID lock, ultrasonic stop" },
-  { title: "3D Printing", proof: "Chassis, panels and enclosures, on a Bambu Lab A1" },
-  { title: "Arduino IDE", proof: "Board setup, uploads and electronics debugging" },
-  { title: "Python", proof: "Project scripting, technical tools and foundations" },
-  { title: "MySQL", proof: "Database fundamentals and structured data work" },
-  { title: "Technical Writing", proof: "Reports, BOMs, build guides and 70 devlogs" }
+  { title: "Python", detail: "Project scripting, technical tools, and software foundations." },
+  { title: "Fusion 360", detail: "CAD assemblies, mechanical parts, propulsion models, and print-ready design." },
+  { title: "MySQL", detail: "Database fundamentals and structured data work." },
+  { title: "ESP32 / ESP8266", detail: "Embedded robotics architecture and hardware control." },
+  { title: "Arduino IDE", detail: "Board setup, code upload, and electronics debugging." },
+  { title: "3D Printing", detail: "Designing parts around print constraints and assembly." },
+  { title: "Technical Writing", detail: "Reports, documentation, BOMs, and build guides." }
 ];
 const interests = [
   {
@@ -558,46 +558,78 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
   );
 }
 
-function ProjectRow({ project, index, onOpen }: { project: Project; index: number; onOpen: (image: GalleryImage) => void }) {
+// Hybrid: the original flip-card look (image front, radar emblem back, stat cards) with the detail folded away.
+function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: GalleryImage) => void }) {
   const [open, setOpen] = useState(false);
   const Icon = project.icon;
-  const hero = project.gallery[0];
   return (
     <motion.article
-      className={index % 2 === 1 ? "proj proj-rev" : "proj"}
+      className="project-card"
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.12 }}
+      viewport={{ once: true, amount: 0.16 }}
     >
-      <button className="proj-media" onClick={() => onOpen(hero)} aria-label={`Open image: ${hero.caption}`}>
-        <Img src={hero.src} alt={hero.alt} loading="lazy" />
-        <span className="proj-index">{String(index + 1).padStart(2, "0")}</span>
-      </button>
-      <div className="proj-body">
-        <span className="proj-eyebrow">
-          <Icon size={16} /> {project.eyebrow}
-        </span>
-        <h3 className="proj-title">{project.title}</h3>
-        <p className="proj-sum">{project.summary}</p>
-        {project.caution && <p className="caution">{project.caution}</p>}
-        <dl className="proj-stats" aria-label={`${project.title} project statistics`}>
-          {project.stats.map((stat) => (
-            <div key={stat.label}>
-              <dt>{stat.label}</dt>
-              <dd>{stat.value}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className="proj-actions">
-          <button className="proj-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
-            {open ? "Hide Details" : "Details And Media"} <ChevronRight size={16} className={open ? "proj-chev open" : "proj-chev"} />
-          </button>
-          {project.link && (
-            <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
-              Open Source Link <ExternalLink size={15} />
-            </a>
-          )}
+      <div className="project-flip">
+        <div className="project-face project-front">
+          <Img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
+          <div className="project-overlay">
+            <span>{project.eyebrow}</span>
+            <h3>{project.title}</h3>
+          </div>
         </div>
+        <div className="project-face project-back">
+          <Img
+            className="project-back-img"
+            src={(project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model") ?? project.gallery[0]).src}
+            alt=""
+            loading="lazy"
+          />
+          <div className="project-back-scrim" />
+          <div className="project-emblem" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <b />
+            <Icon size={30} />
+          </div>
+          <span className="project-back-eyebrow">{project.eyebrow}</span>
+          <h3>{project.title}</h3>
+          <span>Flight Notes</span>
+        </div>
+      </div>
+      <div className="project-copy">
+        <p>{project.summary}</p>
+        {project.caution && <p className="caution">{project.caution}</p>}
+        <div className="chip-row">
+          {project.stack.map((item) => (
+            <span key={item}>{item}</span>
+          ))}
+        </div>
+      </div>
+      <div className="project-stats" aria-label={`${project.title} project statistics`}>
+        {project.stats.map((stat) => (
+          <motion.div
+            key={stat.label}
+            className="stat-card"
+            initial={{ opacity: 0, y: 8 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.35 }}
+          >
+            <span>{stat.label}</span>
+            <strong>{stat.value}</strong>
+          </motion.div>
+        ))}
+      </div>
+      <div className="proj-actions">
+        <button className="proj-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+          {open ? "Hide Details" : "Details And Media"} <ChevronRight size={16} className={open ? "proj-chev open" : "proj-chev"} />
+        </button>
+        {project.link && (
+          <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
+            Open Source Link <ExternalLink size={15} />
+          </a>
+        )}
       </div>
       {open && (
         <div className="proj-more">
@@ -606,11 +638,15 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
               <li key={fact}>{fact}</li>
             ))}
           </ul>
-          <div className="chip-row">
-            {project.stack.map((item) => (
-              <span key={item}>{item}</span>
-            ))}
-          </div>
+          <details className="spec-sheet">
+            <summary>Technical Spec Sheet</summary>
+            <div className="spec-sheet-grid">
+              <div><span>Project</span><strong>{project.title}</strong></div>
+              <div><span>Creator</span><strong>Shlok Alva</strong></div>
+              <div><span>Category</span><strong>{project.eyebrow}</strong></div>
+              <div><span>Stack</span><strong>{project.stack.join(" • ")}</strong></div>
+            </div>
+          </details>
           <PhotoStrip gallery={project.gallery} onOpen={onOpen} />
         </div>
       )}
@@ -861,9 +897,9 @@ function App() {
           <h2>Project Hangar</h2>
           <p>Things I Built, Helped Build, Or Learned From The Hard Way.</p>
         </div>
-        <div className="proj-list">
-          {projects.map((project, index) => (
-            <ProjectRow key={project.id} project={project} index={index} onOpen={setActiveImage} />
+        <div className="project-grid">
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
           ))}
         </div>
       </section>
@@ -957,19 +993,21 @@ function App() {
         </div>
       </section>
 
-      <section id="skills" className="section skills band">
+      <section id="skills" className="section skills">
         <div className="section-head">
           <p className="eyebrow">Skills</p>
-          <h2>Tools I Actually Use</h2>
+          <h2>Skills And Tech Stack</h2>
+          <p>Tools I Use Across Hardware Builds, CAD Work, Robotics, Documentation, And Software-Backed Projects.</p>
         </div>
-        <ul className="skill-line">
+        <div className="skills-grid">
           {skills.map((skill) => (
-            <li key={skill.title}>
-              <strong>{skill.title}</strong>
-              <span>{skill.proof}</span>
-            </li>
+            <article key={skill.title}>
+              <BadgeInfo size={20} />
+              <h3>{skill.title}</h3>
+              <p>{skill.detail}</p>
+            </article>
           ))}
-        </ul>
+        </div>
       </section>
 
       <section id="interests" className="section interests band">

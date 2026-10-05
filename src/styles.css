@@ -4633,3 +4633,12 @@ h3 {
 .glance .glance-btn {
   color: var(--cream);
 }
+
+/* Hybrid project cards: actions row and expandable detail inside the original card */
+.project-card .proj-actions {
+  padding: 0;
+}
+
+.project-card .proj-more {
+  padding: 0;
+}
