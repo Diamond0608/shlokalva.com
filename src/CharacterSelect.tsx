@@ -397,10 +397,10 @@ const sideCharacters: SideCharacter[] = [
   {
     id: "trixie",
     name: "Trixie",
-    tagline: "German shepherd. Fat sunglasses wearer.",
+    tagline: "German shepherd. Fat.",
     stats: ["Loyalty", "Fluff", "Bark"],
     ultimate: { name: "Asks For Treats", text: "Sits, stares, and wins every single time." },
-    signature: "Sunglasses",
+    signature: "Looks adorable",
     weakness: "Treats.",
     ring: "#c79bff",
     card: { id: "trixie", cutout: "/assets/cut-trixie.webp", cutoutSize: [640, 1495], cardHeight: 2.25 }
