@@ -110,6 +110,17 @@
     <button type="button" id="sound" class="sound-btn" aria-pressed="true">Sound: On</button>
 
     <script>
+      // External links (GitHub, Instagram and so on) always open in a new tab so the portfolio stays open.
+      document.addEventListener("click", function (event) {
+        var link = event.target && event.target.closest ? event.target.closest("a[href]") : null;
+        if (!link || link.target) return;
+        var url;
+        try { url = new URL(link.href, location.href); } catch (e) { return; }
+        if (/^https?:$/.test(url.protocol) && url.origin !== location.origin) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+      });
       (function () {
         // Background music: same Mozart overture as the main page. Browsers only allow audio after a
         // gesture, so it starts on the first scroll, tap or key press. The choice is shared with the main page.

@@ -817,6 +817,22 @@ function App() {
   const reducedMotion = useReducedMotion();
   useMozartLoop(soundEnabled);
 
+  // External links always open in a new tab so the portfolio stays open.
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const link = (event.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (!link || link.target) return;
+      let url: URL;
+      try { url = new URL(link.href, location.href); } catch { return; }
+      if (/^https?:$/.test(url.protocol) && url.origin !== location.origin) {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      }
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
   // The /beest/ page reads this so the sound choice carries across pages.
   useEffect(() => {
     try { localStorage.setItem("portfolio-sound", soundEnabled ? "on" : "off"); } catch { /* storage unavailable */ }
