@@ -412,3 +412,10 @@ a,
 .lightbox {
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='rotate(-18 14 14)' fill='none' stroke='%2389d8ff' stroke-width='1.35' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2.5C12.8 5.2 12.2 8.1 12.2 11.3L12.2 25.3L14 26.5L15.8 25.3L15.8 11.3C15.8 8.1 15.2 5.2 14 2.5Z'/%3E%3Cpath d='M12.5 11.6L3.2 15.8L2.3 14.4L11.8 9.8'/%3E%3Cpath d='M15.5 11.6L24.8 15.8L25.7 14.4L16.2 9.8'/%3E%3Cpath d='M12.3 19.2L7.5 23.5L8.8 24.5L12.8 22.5'/%3E%3Cpath d='M15.7 19.2L20.5 23.5L19.2 24.5L15.2 22.5'/%3E%3C/g%3E%3C/svg%3E") 4 4, auto !important;
 }
+
+.ai-note {
+  margin-top: 1rem;
+  padding-top: 0.7rem;
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
