@@ -5269,20 +5269,20 @@ h3 {
 
 /* A little fewer stars */
 .proj::before {
-  -webkit-mask-size: 600px 457px;
-  mask-size: 600px 457px;
+  -webkit-mask-size: 717px 546px;
+  mask-size: 717px 546px;
   opacity: 0.6;
 }
 
 .proj::after {
-  -webkit-mask-size: 439px 381px;
-  mask-size: 439px 381px;
+  -webkit-mask-size: 525px 455px;
+  mask-size: 525px 455px;
   opacity: 0.3;
 }
 
 .tl-sky::before {
-  -webkit-mask-size: 785px 574px;
-  mask-size: 785px 574px;
+  -webkit-mask-size: 938px 686px;
+  mask-size: 938px 686px;
   opacity: 0.5;
 }
 
