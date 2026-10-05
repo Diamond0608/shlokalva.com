@@ -57,6 +57,8 @@ button {
 .shell {
   padding-left: 8.2rem;
   overflow: hidden;
+  /* clip (not hidden) so position: sticky works inside, e.g. the flight timeline */
+  overflow: clip;
 }
 
 .flight-background {
@@ -3216,6 +3218,154 @@ h3 {
   }
 }
 
+/* Flight deck instruments: slow, subtle motion (transform/opacity only) */
+.pfd-attitude {
+  position: absolute;
+  inset: -22%;
+}
+
+.pfd-tape {
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  width: 0.55rem;
+  overflow: hidden;
+  border-left: 1px solid rgba(217, 244, 255, 0.22);
+  border-right: 1px solid rgba(217, 244, 255, 0.22);
+  background: rgba(5, 8, 11, 0.35);
+}
+
+.pfd-tape-l { left: 0.5rem; }
+.pfd-tape-r { right: 0.5rem; }
+
+.pfd-tape i {
+  position: absolute;
+  inset: -16px 0 0;
+  background: repeating-linear-gradient(180deg, rgba(217, 244, 255, 0.55) 0 1px, transparent 1px 8px);
+}
+
+.nd-sweep {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 170%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(104, 224, 160, 0.26), transparent 22%, transparent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.phase-dots {
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+}
+
+.phase-dots::after {
+  content: "...";
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pfd-attitude {
+    animation: pfdAttitude 9s ease-in-out infinite;
+  }
+
+  .pfd-tape-l i { animation: pfdTapeUp 1.6s linear infinite; }
+  .pfd-tape-r i { animation: pfdTapeDown 2.4s linear infinite; }
+
+  .pfd-vsi {
+    animation: pfdVsi 3.2s ease-in-out infinite;
+  }
+
+  .pfd-spd strong,
+  .pfd-alt strong {
+    animation: cockpitStatusPulse 3.4s ease-in-out infinite;
+  }
+
+  .pfd-alt strong { animation-delay: 1.2s; }
+
+  .nd-sweep {
+    animation: ndSweep 6s linear infinite;
+  }
+
+  .nd-compass {
+    animation: ndHeading 11s ease-in-out infinite;
+  }
+
+  .nd-track {
+    animation: ndTrack 5s ease-in-out infinite;
+  }
+
+  .ecam-mini i {
+    animation: ecamBlink 4.8s ease-in-out infinite;
+  }
+
+  .ecam-mini div:nth-of-type(2) i { animation-delay: 1.2s; }
+  .ecam-mini div:nth-of-type(3) i { animation-delay: 2.4s; }
+  .ecam-mini div:nth-of-type(4) i { animation-delay: 3.6s; }
+
+  .cockpit-readouts em {
+    animation: cockpitStatusPulse 2.4s ease-in-out infinite;
+  }
+
+  .phase-dots::after {
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    vertical-align: bottom;
+    animation: phaseDots 1.6s steps(4, end) infinite;
+  }
+
+  .phase-dots::after {
+    content: "...";
+  }
+}
+
+@keyframes pfdAttitude {
+  0%, 100% { transform: rotate(-3.5deg) translateY(-3px); }
+  50% { transform: rotate(3.5deg) translateY(4px); }
+}
+
+@keyframes pfdTapeUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(8px); }
+}
+
+@keyframes pfdTapeDown {
+  from { transform: translateY(8px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes pfdVsi {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes ndSweep {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes ndHeading {
+  0%, 100% { transform: translateX(calc(-50% - 7px)); }
+  50% { transform: translateX(calc(-50% + 7px)); }
+}
+
+@keyframes ndTrack {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+  50% { transform: translate(-50%, -50%) rotate(5deg); }
+}
+
+@keyframes ecamBlink {
+  0%, 82%, 100% { opacity: 1; }
+  90% { opacity: 0.25; }
+}
+
+@keyframes phaseDots {
+  from { width: 0; }
+  to { width: 1.2em; }
+}
+
 /* Project card back: a different image, darkened, with an animated radar emblem */
 .project-back {
   justify-items: center;
@@ -3366,150 +3516,275 @@ h3 {
   .cs-side-stage { height: clamp(15rem, 44vw, 20rem); }
 }
 
-/* Flight deck instruments: slow, subtle motion (transform/opacity only) */
-.pfd-attitude {
-  position: absolute;
-  inset: -22%;
+/* Flight timeline: an A350 takes off as you scroll. Native scrolling only, never captured. */
+.tl-wrap {
+  position: relative;
+  height: 430vh;
 }
 
-.pfd-tape {
-  position: absolute;
-  top: 18%;
-  bottom: 18%;
-  width: 0.55rem;
+.tl-stage {
+  position: sticky;
+  top: 1rem;
+  height: calc(100vh - 2rem);
+  min-height: 28rem;
   overflow: hidden;
-  border-left: 1px solid rgba(217, 244, 255, 0.22);
-  border-right: 1px solid rgba(217, 244, 255, 0.22);
-  background: rgba(5, 8, 11, 0.35);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #05070a;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 24px 60px rgba(0, 0, 0, 0.32);
 }
 
-.pfd-tape-l { left: 0.5rem; }
-.pfd-tape-r { right: 0.5rem; }
-
-.pfd-tape i {
+.tl-sky {
   position: absolute;
-  inset: -16px 0 0;
-  background: repeating-linear-gradient(180deg, rgba(217, 244, 255, 0.55) 0 1px, transparent 1px 8px);
+  inset: 0 0 auto;
+  height: 150%;
+  background: linear-gradient(180deg, #05070a 0%, #0b1118 38%, #1a1422 58%, #4a2310 72%, #8a3d16 80%, #1a0e08 82%, #05070a 100%);
 }
 
-.nd-sweep {
+.tl-clouds {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 170%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background: conic-gradient(from 0deg, rgba(104, 224, 160, 0.26), transparent 22%, transparent);
-  transform: translate(-50%, -50%);
+  inset: 0;
   pointer-events: none;
 }
 
-.phase-dots {
-  display: inline-block;
-  width: 1.2em;
-  text-align: left;
+.tl-clouds i {
+  position: absolute;
+  height: 5rem;
+  border-radius: 50%;
+  background: rgba(190, 200, 215, 0.12);
+  filter: blur(18px);
 }
 
-.phase-dots::after {
-  content: "...";
+.tl-clouds i:nth-child(1) { left: -6%; top: 8%; width: 46%; }
+.tl-clouds i:nth-child(2) { right: -8%; top: 34%; width: 52%; }
+.tl-clouds i:nth-child(3) { left: 24%; top: 58%; width: 40%; }
+
+.tl-runway {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 260%;
+  height: 1800px;
+  overflow: hidden;
+  transform: translateX(-50%) perspective(1400px) rotateX(66deg);
+  transform-origin: 50% 100%;
+  border-top: 2px solid rgba(255, 138, 42, 0.55);
+  background:
+    linear-gradient(90deg, transparent 38%, rgba(255, 241, 223, 0.4) 38.15% 38.4%, transparent 38.55% 61.45%, rgba(255, 241, 223, 0.4) 61.6% 61.85%, transparent 62%),
+    linear-gradient(180deg, #151a22, #0a0d12);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .pfd-attitude {
-    animation: pfdAttitude 9s ease-in-out infinite;
+.tl-dashes {
+  position: absolute;
+  top: -120px;
+  bottom: 0;
+  left: calc(50% - 0.9rem);
+  width: 1.8rem;
+  background: repeating-linear-gradient(180deg, #f1e6d6 0 60px, transparent 60px 120px);
+}
+
+.tl-plane-wrap {
+  position: absolute;
+  right: 0;
+  bottom: 35%;
+  left: 0;
+  width: min(54vw, 640px);
+  margin: 0 auto;
+  transform-origin: 50% 90%;
+  will-change: transform;
+  filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.55));
+}
+
+.tl-plane {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tl-hud {
+  position: absolute;
+  top: 1rem;
+  left: 1.2rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.45rem;
+  width: min(16rem, 50%);
+}
+
+.tl-phase {
+  color: var(--amber);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+}
+
+.tl-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tl-progress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--sky));
+}
+
+.tl-skip {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.82);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tl-skip:hover {
+  background: rgba(255, 138, 42, 0.18);
+}
+
+.tl-card {
+  position: absolute;
+  top: 4.6rem;
+  left: 1.2rem;
+  z-index: 3;
+  width: min(23rem, calc(100% - 2.4rem));
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(8, 11, 16, 0.82);
+  backdrop-filter: blur(4px);
+  animation: tlCardIn 380ms ease both;
+}
+
+.tl-card-date {
+  color: var(--sky);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tl-card h3 {
+  margin: 0.25rem 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.tl-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@keyframes tlCardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.tl-rail {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  gap: 0.45rem;
+  transform: translateX(-50%);
+}
+
+.tl-dot {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.tl-dot.active,
+.tl-dot:hover {
+  border-color: var(--amber);
+  color: var(--cream);
+  box-shadow: 0 0 12px rgba(255, 138, 42, 0.35);
+}
+
+/* Reduced motion: a plain list, no sticky stage */
+.tl-static {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tl-static li {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.tl-static span {
+  color: var(--sky);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tl-static h3 {
+  margin: 0.25rem 0;
+}
+
+.tl-static p {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 620px) {
+  .tl-wrap {
+    height: 360vh;
   }
 
-  .pfd-tape-l i { animation: pfdTapeUp 1.6s linear infinite; }
-  .pfd-tape-r i { animation: pfdTapeDown 2.4s linear infinite; }
-
-  .pfd-vsi {
-    animation: pfdVsi 3.2s ease-in-out infinite;
+  .tl-stage {
+    height: calc(100svh - 7.5rem);
   }
 
-  .pfd-spd strong,
-  .pfd-alt strong {
-    animation: cockpitStatusPulse 3.4s ease-in-out infinite;
+  .tl-plane-wrap {
+    width: 82vw;
+    bottom: 32%;
   }
 
-  .pfd-alt strong { animation-delay: 1.2s; }
-
-  .nd-sweep {
-    animation: ndSweep 6s linear infinite;
+  .tl-card {
+    top: 4rem;
   }
 
-  .nd-compass {
-    animation: ndHeading 11s ease-in-out infinite;
+  .tl-rail {
+    gap: 0.3rem;
   }
 
-  .nd-track {
-    animation: ndTrack 5s ease-in-out infinite;
-  }
-
-  .ecam-mini i {
-    animation: ecamBlink 4.8s ease-in-out infinite;
-  }
-
-  .ecam-mini div:nth-of-type(2) i { animation-delay: 1.2s; }
-  .ecam-mini div:nth-of-type(3) i { animation-delay: 2.4s; }
-  .ecam-mini div:nth-of-type(4) i { animation-delay: 3.6s; }
-
-  .cockpit-readouts em {
-    animation: cockpitStatusPulse 2.4s ease-in-out infinite;
-  }
-
-  .phase-dots::after {
-    display: inline-block;
-    width: 0;
-    overflow: hidden;
-    vertical-align: bottom;
-    animation: phaseDots 1.6s steps(4, end) infinite;
-  }
-
-  .phase-dots::after {
-    content: "...";
+  .tl-dot {
+    width: 1.8rem;
+    height: 1.8rem;
   }
 }
 
-@keyframes pfdAttitude {
-  0%, 100% { transform: rotate(-3.5deg) translateY(-3px); }
-  50% { transform: rotate(3.5deg) translateY(4px); }
-}
-
-@keyframes pfdTapeUp {
-  from { transform: translateY(0); }
-  to { transform: translateY(8px); }
-}
-
-@keyframes pfdTapeDown {
-  from { transform: translateY(8px); }
-  to { transform: translateY(0); }
-}
-
-@keyframes pfdVsi {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-3px); }
-}
-
-@keyframes ndSweep {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes ndHeading {
-  0%, 100% { transform: translateX(calc(-50% - 7px)); }
-  50% { transform: translateX(calc(-50% + 7px)); }
-}
-
-@keyframes ndTrack {
-  0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
-  50% { transform: translate(-50%, -50%) rotate(5deg); }
-}
-
-@keyframes ecamBlink {
-  0%, 82%, 100% { opacity: 1; }
-  90% { opacity: 0.25; }
-}
-
-@keyframes phaseDots {
-  from { width: 0; }
-  to { width: 1.2em; }
+@media (max-width: 980px) {
+  .tl-stage {
+    height: calc(100svh - 8.2rem);
+  }
 }
