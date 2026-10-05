@@ -33,25 +33,33 @@ export const imageSizes: Record<string, [number, number]> = {
     1395,
     1050
   ],
-  "/assets/char-captain.webp": [
-    640,
-    800
-  ],
-  "/assets/char-explorer.webp": [
-    640,
-    800
-  ],
-  "/assets/char-friend.webp": [
-    640,
-    800
-  ],
-  "/assets/char-philosopher.webp": [
-    640,
-    800
-  ],
   "/assets/concorde-photo.png": [
     388,
     219
+  ],
+  "/assets/cut-captain.webp": [
+    523,
+    1000
+  ],
+  "/assets/cut-engineer.webp": [
+    520,
+    800
+  ],
+  "/assets/cut-explorer.webp": [
+    449,
+    1000
+  ],
+  "/assets/cut-friend.webp": [
+    796,
+    1000
+  ],
+  "/assets/cut-philosopher.webp": [
+    559,
+    1000
+  ],
+  "/assets/cut-pilot.webp": [
+    1097,
+    1000
   ],
   "/assets/cyber-lab-1.jpg": [
     1577,
