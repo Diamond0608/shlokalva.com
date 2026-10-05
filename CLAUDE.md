@@ -32,6 +32,10 @@ tools/*.py                  one-off asset prep scripts with hardcoded Windows `S
 
 Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `#skills`, signals, `#interests`, Engine Room (3 live 3D viewers), `#contact`. Nav anchors in the `nav` array must match these ids.
 
+## Branching
+
+Work happens on one branch, `dev`, which holds everything not yet live. Push to `main` only when Shlok says so, then merge `dev` into `main` in one go. The Flight Timeline (`src/FlightTimeline.tsx`) still has placeholder milestones; do not merge `dev` to `main` until Shlok has supplied the real ones.
+
 ## Rules that will bite you
 
 1. **Do not touch the "last updated" string.** `src/main.tsx` contains `LAST UPDATED ON <b>DD MON YYYY</b>` (uppercase month). A GitHub Action rewrites it with a regex `sed`, plus `<lastmod>` in `public/sitemap.xml`, on every push to `main`. Never hand-edit those dates and never change that markup's shape, or the Action silently stops matching.
