@@ -6,15 +6,21 @@ type Milestone = { label: string; date: string; title: string; body: string };
 
 const milestones: Milestone[] = [
   { label: "01", date: "6 Aug 2009", title: "Born", body: "The start of the flight plan." },
-  { label: "02", date: "15 Years", title: "Montessori To Grade 12", body: "All of school at National Public School Koramangala." },
-  { label: "03", date: "May 2025", title: "Dwello Aerospace", body: "A month on aircraft propulsion: ramjet and turbofan CAD, simulation and a report." },
-  { label: "04", date: "Grades 11 & 12", title: "Cyber Club", body: "Led the club as Vice President and President, running events and guiding juniors." },
-  { label: "05", date: "Dec 2025", title: "Team Dinoco At The NRL", body: "Captained the team from 92nd to second in the playoffs, out in the quarter-finals." },
-  { label: "06", date: "May 2026", title: "CERN, Geneva", body: "A week visiting ALICE, ISOLDE, CMS, ATLAS and the Antimatter Factory." },
-  { label: "07", date: "31 May - 19 Aug 2026", title: "Little Helper", body: "Designed and built a track-based robot that carries books for teachers." },
-  { label: "08", date: "15 Jul 2026", title: "Hack Club BEEST", body: "Little Helper approved and golden. Could not travel; the grants bought a printer, drill and monitor." },
-  { label: "09", date: "21 - 23 Aug 2026", title: "Trinetra", body: "A wearable-tech CAD project: enclosure, extension mechanism and an electrical schematic." },
-  { label: "10", date: "Grade 12", title: "Robotics Club", body: "Founded the club to get more people into robotics and tech at school." }
+  { label: "02", date: "2012", title: "Montessori To Grade 12", body: "15 years at National Public School Koramangala, from Montessori to Grade 12." },
+  { label: "03", date: "Grade 10", title: "Badminton", body: "Picked up badminton. Played casually, just for the fun of hitting things fast." },
+  { label: "04", date: "May 2025", title: "Dwello Aerospace", body: "A month on aircraft propulsion: ramjet and turbofan CAD, simulation and a report." },
+  { label: "05", date: "Summer, Grade 11", title: "Flying Academy Workshop", body: "A one-day aviation workshop that made the pilot-career side feel real." },
+  { label: "06", date: "Grade 11", title: "IIT Madras Aerospace Course", body: "An eight-week aerospace certification course." },
+  { label: "07", date: "Grades 11 & 12", title: "Cyber Club", body: "Led as Vice President and President, running events and guiding juniors." },
+  { label: "08", date: "Grades 11 & 12", title: "Cyber Competitions", body: "Cybernautica, Odyssey Caipher and the HKU AI+ Challenge." },
+  { label: "09", date: "Dec 2025", title: "Team Dinoco At The NRL", body: "Captained the team from 92nd to second in the playoffs, out in the quarter-finals." },
+  { label: "10", date: "May 2026", title: "CERN, Geneva", body: "A week visiting ALICE, ISOLDE, CMS, ATLAS and the Antimatter Factory." },
+  { label: "11", date: "May 2026", title: "Hack Club Bakebuild", body: "Submitted a project and received a grant for cookies." },
+  { label: "12", date: "31 May - 19 Aug 2026", title: "Little Helper", body: "Designed and built a track-based robot that carries books for teachers." },
+  { label: "13", date: "15 Jul 2026", title: "Hack Club BEEST", body: "Little Helper approved and golden. Could not travel; the grants bought a printer, drill and monitor." },
+  { label: "14", date: "21 - 23 Aug 2026", title: "Trinetra", body: "A wearable-tech CAD project: enclosure, extension mechanism and an electrical schematic." },
+  { label: "15", date: "Grade 12", title: "Helios And Iris", body: "Volunteered at the Helios robotics fest and was an event head for Robo-FC at Iris." },
+  { label: "16", date: "Grade 12", title: "Robotics Club", body: "Founded the club to get more people into robotics and tech at school." }
 ];
 
 const PHASES: Array<[number, string]> = [
@@ -267,10 +273,11 @@ export default function FlightTimeline() {
         </button>
 
         <ol className="tl-cards" aria-live="polite">
+          {shown > 6 && <li className="tl-earlier" aria-hidden="true">+{shown - 6} earlier</li>}
           {milestones.map((milestone, i) => (
             <li
               key={milestone.label}
-              className={["tl-row", i < shown ? "shown" : "", i === shown - 1 ? "latest" : "", i % 2 === 0 ? "left" : "right"].join(" ")}
+              className={["tl-row", i < shown ? "shown" : "", i === shown - 1 ? "latest" : "", i % 2 === 0 ? "left" : "right", i < shown - 6 ? "old" : ""].join(" ")}
               style={{ "--i": i } as CSSProperties}
               aria-hidden={i >= shown}
             >

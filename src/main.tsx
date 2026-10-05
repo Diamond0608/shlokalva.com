@@ -889,6 +889,33 @@ function App() {
         </div>
       </section>
 
+      <section className="glance" aria-label="At a glance">
+        <div>
+          <span>Studying</span>
+          <strong>Grade 12</strong>
+          <p>National Public School Koramangala</p>
+        </div>
+        <div>
+          <span>Aiming For</span>
+          <strong>Aerospace Engineering</strong>
+          <p>Robotics, CAD and propulsion</p>
+        </div>
+        <div>
+          <span>Best Work</span>
+          <strong>Little Helper</strong>
+          <p>
+            Hack Club BEEST, approved and golden. <a href="#projects">See the projects</a>
+          </p>
+        </div>
+        <div>
+          <span>Also</span>
+          <strong>CERN And IIT Madras</strong>
+          <p>
+            A Geneva masterclass and an aerospace course. <a href="#timeline">See the timeline</a>
+          </p>
+        </div>
+      </section>
+
       <section id="mission" className="section mission">
         <div>
           <p className="eyebrow">Mission</p>

@@ -3519,11 +3519,11 @@ h3 {
 /* Flight timeline: an A350 takes off as you scroll. Native scrolling only, never captured. */
 .tl-wrap {
   position: relative;
-  height: 620vh;
+  height: 780vh;
 }
 
 .tl-stage {
-  --card-h: 5.9rem;
+  --card-h: 5.2rem;
   position: sticky;
   top: 1rem;
   height: calc(100vh - 2rem);
@@ -3731,7 +3731,7 @@ h3 {
 
 @media (max-width: 620px) {
   .tl-wrap {
-    height: 520vh;
+    height: 660vh;
   }
 
   .tl-stage {
@@ -4105,5 +4105,144 @@ h3 {
     bottom: calc(3.4rem + 0.9rem);
     left: calc(0.8rem + 0.9rem);
     z-index: 3;
+  }
+}
+
+/* 16 milestones: tighter cards, smaller jump dots, older rows collapse on phones */
+.tl-card-box {
+  padding: 0.5rem 0.75rem 0.55rem;
+}
+
+.tl-card-box h3 {
+  font-size: 0.96rem;
+}
+
+.tl-card-box p {
+  font-size: 0.73rem;
+  line-height: 1.3;
+}
+
+.tl-date-side {
+  font-size: 0.78rem;
+}
+
+.tl-dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.54rem;
+}
+
+.tl-rail {
+  gap: 0.3rem;
+}
+
+.tl-earlier {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .tl-rail {
+    display: none;
+  }
+
+  .tl-cards {
+    inset: 3.5rem 0.8rem 1rem;
+  }
+
+  .tl-row.old {
+    display: none;
+  }
+
+  .tl-earlier {
+    display: block;
+    margin: 0 0 0.1rem 2.3rem;
+    color: var(--muted);
+    font-size: 0.62rem;
+    font-weight: 950;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}
+
+/* Dates live inside the cards: no more collisions with the opposite column */
+.tl-date-side {
+  display: none;
+}
+
+.tl-card-date-m {
+  display: block;
+  margin-bottom: 0.1rem;
+  color: var(--sky);
+  font-size: 0.56rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .tl-card-date-m {
+    margin: 0;
+  }
+}
+
+/* At a glance: an open strip, no cards, so a first-time visitor gets the answer straight away */
+.glance {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(1220px, calc(100% - 2rem));
+  margin: 0 auto;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+}
+
+.glance > div {
+  padding: 1.4rem 1.2rem 1.5rem;
+  border-left: 1px solid var(--line);
+}
+
+.glance > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.glance span {
+  color: var(--amber);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.glance strong {
+  display: block;
+  margin: 0.4rem 0 0.35rem;
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  line-height: 1.1;
+}
+
+.glance p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.glance a {
+  color: var(--sky);
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .glance {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .glance > div:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .glance > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
   }
 }

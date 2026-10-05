@@ -34,7 +34,7 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 
 ## Branching
 
-Work happens on one branch, `dev`, which holds everything not yet live. Push to `main` only when Shlok says so, then merge `dev` into `main` in one go. The Flight Timeline (`src/FlightTimeline.tsx`) has nine drafted milestones; four still say "Date TBD" and need real dates from Shlok before `dev` goes to `main`. Only use facts already on the site or given by Shlok.
+Work happens on one branch, `dev`, which holds everything not yet live. Push to `main` only when Shlok says so, then merge `dev` into `main` in one go. The Flight Timeline (`src/FlightTimeline.tsx`) has 16 milestones plus the College takeover; dates come from Shlok. Bakebuild is shown as May 2026 and "Summer, Grade 11" has no year because Shlok was unsure; confirm before going live. Only use facts already on the site or given by Shlok.
 
 ## Rules that will bite you
 
