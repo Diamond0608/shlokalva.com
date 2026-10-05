@@ -173,10 +173,55 @@
 <details class="entry" id="log-70"><summary><span class="num">#70</span><span class="etitle">Added details to the Repo</span><span class="meta">Aug 19, 2026 · 45m tracked</span></summary><div class="body"><p>So for some of the finishing touches on the project I added build instructions and photos to the git repo and then added the code files to the repo as well. I added some enhancements to the appearance of the readme as well by adding photos into the build instructions of the code,bom,hardware build etc. I also included the demo video link.</p><div class="shots"><a href="/assets/beest/log70-1.webp" target="_blank" rel="noreferrer"><img src="/assets/beest/log70-1.webp" width="381" height="917" loading="lazy" decoding="async" alt="Image 1 from devlog #70: Added details to the Repo"></a><a href="/assets/beest/log70-2.webp" target="_blank" rel="noreferrer"><img src="/assets/beest/log70-2.webp" width="489" height="906" loading="lazy" decoding="async" alt="Image 2 from devlog #70: Added details to the Repo"></a></div></div></details></section>
 
       <p class="foot"><a class="back" href="/">&larr; Back To Portfolio</a></p>
+      <p class="ai-note"><strong>Made with AI.</strong> This site was built with AI assistance (Claude, by Anthropic). The devlog entries, photos and results are my own work.</p>
     </main>
 
+    <button type="button" id="sound" class="sound-btn" aria-pressed="true">Sound: On</button>
+
     <script>
+      // External links (GitHub, Instagram and so on) always open in a new tab so the portfolio stays open.
+      document.addEventListener("click", function (event) {
+        var link = event.target && event.target.closest ? event.target.closest("a[href]") : null;
+        if (!link || link.target) return;
+        var url;
+        try { url = new URL(link.href, location.href); } catch (e) { return; }
+        if (/^https?:$/.test(url.protocol) && url.origin !== location.origin) {
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+        }
+      });
       (function () {
+        // Background music: same Mozart overture as the main page. Browsers only allow audio after a
+        // gesture, so it starts on the first scroll, tap or key press. The choice is shared with the main page.
+        var KEY = "portfolio-sound";
+        var on = true;
+        try { on = localStorage.getItem(KEY) !== "off"; } catch (e) {}
+        var music = new Audio("https://upload.wikimedia.org/wikipedia/commons/e/e2/Mozart%2C_The_Marriage_of_Figaro_%28overture%29.ogg");
+        music.loop = true;
+        music.volume = 0.42;
+        music.preload = "none";
+        var btn = document.getElementById("sound");
+        var started = false;
+        var sync = function () {
+          btn.textContent = on ? "Sound: On" : "Sound: Off";
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        };
+        var start = function () {
+          if (!on || started) return;
+          music.play().then(function () { started = true; detach(); }).catch(function () {});
+        };
+        var events = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"];
+        var detach = function () { events.forEach(function (e) { window.removeEventListener(e, start); }); };
+        events.forEach(function (e) { window.addEventListener(e, start, { passive: true }); });
+        btn.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          on = !on;
+          try { localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+          if (on) { started = false; events.forEach(function (e) { window.addEventListener(e, start, { passive: true }); }); start(); }
+          else music.pause();
+          sync();
+        });
+        sync();
         var all = function () { return document.querySelectorAll("details.entry"); };
         document.getElementById("expand").addEventListener("click", function () { all().forEach(function (d) { d.open = true; }); });
         document.getElementById("collapse").addEventListener("click", function () { all().forEach(function (d) { d.open = false; }); });

@@ -1,102 +1,93 @@
 import React, { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import {
   Bounds,
   Center,
   OrbitControls,
   useAnimations,
+  useBounds,
   useGLTF
 } from "@react-three/drei";
 import * as THREE from "three";
+import { Maximize2, Pause, Play, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { CutControls, initialCut, resolveCut, type CutState } from "./CutControls";
+import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
-type MotionPart = {
-  object: THREE.Object3D;
-  position: THREE.Vector3;
-  axisOffset: number;
-  radialOffset: THREE.Vector3;
-  weight: number;
-};
+// scene.glb is a single merged mesh (one node, no named bodies), so a true exploded view of separate
+// parts is not possible from it. Instead the "inspection cycle" is a slow lengthwise cutaway: a clipping
+// plane sweeps down through the engine, holds on the opened view, then closes again.
+const CYCLE = 44; // seconds: closed, slow opening, long hold, closing, closed
+const smooth = (t: number) => t * t * (3 - 2 * t);
 
-function containsMesh(object: THREE.Object3D) {
-  let found = false;
-  object.traverse((child) => {
-    if (child instanceof THREE.Mesh) found = true;
-  });
-  return found;
+function cutProgress(elapsed: number) {
+  const phase = elapsed % CYCLE;
+  if (phase < 5) return 0;
+  if (phase < 19) return smooth((phase - 5) / 14);
+  if (phase < 35) return 1;
+  if (phase < 43) return 1 - smooth((phase - 35) / 8);
+  return 0;
 }
 
-function TurbofanModel() {
+function StudioEnvironment() {
+  const { gl, scene } = useThree();
+  useEffect(() => {
+    const generator = new THREE.PMREMGenerator(gl);
+    const env = generator.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environment = env;
+    return () => {
+      scene.environment = null;
+      env.dispose();
+      generator.dispose();
+    };
+  }, [gl, scene]);
+  return null;
+}
+
+// Bounds can fit before the model has been laid out; re-fit a few times shortly after mount.
+function RefitBounds({ apiRef }: { apiRef: { current: ReturnType<typeof useBounds> | null } }) {
+  const api = useBounds();
+  apiRef.current = api;
+  useEffect(() => {
+    const refit = () => api.refresh().clip().fit();
+    const timers = [60, 250, 700].map((delay) => window.setTimeout(refit, delay));
+    return () => timers.forEach((id) => window.clearTimeout(id));
+  }, [api]);
+  return null;
+}
+
+function TurbofanModel({ cutState, liveRef }: { cutState: CutState; liveRef: { current: number } }) {
   const { scene, animations } = useGLTF("/scene.glb");
   const modelRef = useRef<THREE.Group>(null);
   const motionRootRef = useRef<THREE.Group>(null);
   const { actions } = useAnimations(animations, modelRef);
+  const plane = useMemo(() => new THREE.Plane(new THREE.Vector3(0, -1, 0), 1e6), []);
+  const range = useRef<{ min: number; max: number } | null>(null);
 
-  // Only hide the three specific Fusion bodies requested for the exploded inspection.
-  // Match exact body numbers anywhere in the imported Fusion hierarchy; never hide
-  // their parent assemblies, which was causing the whole engine to disappear.
-  const inspectionBodies = useMemo(() => {
-    const targets = new Set(["640", "576", "577"]);
-    const matches: THREE.Object3D[] = [];
-    scene.traverse((object) => {
-      const name = object.name.trim();
-      if (targets.has(name) || /^(body|component)[ _-]?(640|576|577)$/i.test(name)) {
-        matches.push(object);
-      }
-    });
-    return matches;
-  }, [scene]);
-
-  const parts = useMemo<MotionPart[]>(() => {
-    const box = new THREE.Box3().setFromObject(scene);
-    const size = box.getSize(new THREE.Vector3());
-    const center = box.getCenter(new THREE.Vector3());
-    const candidates: MotionPart[] = [];
-
-    scene.traverse((object) => {
-      if (object === scene || object.children.length > 0 && object.parent !== scene) return;
-      if (!(object instanceof THREE.Mesh)) return;
-
-      const objectBox = new THREE.Box3().setFromObject(object);
-      const objectCenter = objectBox.getCenter(new THREE.Vector3());
-      // Keep the motion-study approximation aligned with the imported model's X axis.
-      // The GLB from Fusion is already oriented in its own model coordinates.
-      const relative = objectCenter.clone().sub(center);
-      const projection = relative.x;
-      const radial = relative.clone().sub(new THREE.Vector3(projection, 0, 0));
-
-      candidates.push({
-        object,
-        position: object.position.clone(),
-        axisOffset: Math.sign(projection) || 0,
-        radialOffset: radial.normalize(),
-        weight: Math.min(1, Math.max(0.18, objectBox.getSize(new THREE.Vector3()).length() / size.length()))
-      });
-    });
-
-    return candidates;
-  }, [scene]);
+  // Global clipping plane on the renderer (simpler and sturdier than per-material planes).
+  const gl = useThree((state) => state.gl);
+  useEffect(() => {
+    gl.clippingPlanes = [plane];
+    return () => {
+      gl.clippingPlanes = [];
+    };
+  }, [gl, plane]);
 
   useEffect(() => {
     scene.traverse((object) => {
       if (!(object instanceof THREE.Mesh)) return;
-
       object.castShadow = true;
       object.receiveShadow = true;
 
-      const materials = Array.isArray(object.material)
-        ? object.material
-        : [object.material];
-
-      materials.forEach((material) => {
-        if ("metalness" in material && typeof material.metalness === "number") {
-          material.metalness = 0.82;
-        }
-        if ("roughness" in material && typeof material.roughness === "number") {
-          material.roughness = 0.32;
-        }
-        if ("color" in material && material.color instanceof THREE.Color) {
-          material.color.lerp(new THREE.Color("#d2d7dc"), 0.9);
-        }
+      const materials = Array.isArray(object.material) ? object.material : [object.material];
+      materials.forEach((material: THREE.Material) => {
+        const standard = material as THREE.MeshStandardMaterial;
+        // Brushed-steel look: reflective, lightly rough, lit by the studio environment.
+        standard.metalness = 0.92;
+        standard.roughness = 0.26;
+        standard.color = new THREE.Color("#cfd5dc");
+        standard.envMapIntensity = 1.15;
+        standard.side = THREE.DoubleSide; // the cutaway shows interior surfaces
+        standard.needsUpdate = true;
       });
     });
 
@@ -107,51 +98,23 @@ function TurbofanModel() {
     return () => {
       Object.values(actions).forEach((action) => action?.stop());
     };
-  }, [actions, scene]);
+  }, [actions, scene, plane]);
 
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const root = motionRootRef.current;
     if (!root) return;
-
-    const elapsed = state.clock.elapsedTime;
-    // If Fusion's animation was exported into the GLB, let the actual clips drive it.
-    // Otherwise reproduce the intended motion-study feel procedurally:
-    // closed -> progressively opened/exploded -> held -> reassembled.
-    if (animations.length === 0) {
-      const cycle = 24;
-      const phase = elapsed % cycle;
-      let explode = 0;
-
-      if (phase < 6) {
-        explode = phase / 6;
-      } else if (phase < 16) {
-        explode = 1;
-      } else if (phase < 22) {
-        explode = 1 - (phase - 16) / 6;
-      }
-
-      parts.forEach(({ object, position, axisOffset, radialOffset, weight }) => {
-        const axial = axisOffset * explode * 0.62 * (0.45 + weight);
-        const radial = radialOffset.multiplyScalar(explode * 0.08 * weight);
-        object.position.copy(position).add(
-          new THREE.Vector3(axial, 0, 0)
-        ).add(radial);
-      });
-
-      // During the 10-second exploded inspection hold, hide only bodies
-      // 640, 576 and 577. Never hide a parent assembly.
-      const inspecting = phase >= 6 && phase < 16;
-      inspectionBodies.forEach((body) => {
-        body.visible = !inspecting;
-      });
-    } else {
-      // If a real Fusion animation was exported into the GLB, don't interfere
-      // with its timeline or visibility.
-      inspectionBodies.forEach((body) => {
-        body.visible = true;
-      });
+    if (!range.current) {
+      const box = new THREE.Box3().setFromObject(root);
+      if (box.isEmpty()) return;
+      range.current = { min: box.min.y, max: box.max.y };
     }
-
+    const { min, max } = range.current;
+    const mid = (min + max) / 2;
+    const auto = cutProgress(state.clock.elapsedTime);
+    liveRef.current = auto;
+    const cut = resolveCut(cutState, auto);
+    // Everything above the plane is removed; at cut = 1 only the lower half remains.
+    plane.constant = max + 1 - cut * (max + 1 - (mid + (max - min) * 0.02));
   });
 
   return (
@@ -206,9 +169,80 @@ class EngineErrorBoundary extends React.Component<
 
 export default function EngineViewer() {
   const [visible] = useState(true);
+  const [cutState, setCutState] = useState<CutState>(initialCut);
+  const liveRef = useRef(0);
+  const controlsRef = useRef<any>(null);
+  const stateRef = useRef<{ camera: THREE.Camera } | null>(null);
+  const startPos = useRef<THREE.Vector3 | null>(null);
+  const level = useRef(0);
+  const viewerRef = useRef<HTMLDivElement>(null);
+  const [autoRotate, setAutoRotate] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [wheelZoom, setWheelZoom] = useState(false);
+  const boundsRef = useRef<ReturnType<typeof useBounds> | null>(null);
+
+  // Zoom: scroll wheel / pinch (OrbitControls) plus these buttons.
+  const zoom = (step: number) => {
+    const controls = controlsRef.current;
+    const camera = stateRef.current?.camera;
+    if (!controls || !camera) return;
+    const next = Math.max(-3, Math.min(5, level.current + step));
+    if (next === level.current) return;
+    level.current = next;
+    const factor = step > 0 ? 1 / 1.28 : 1.28;
+    camera.position.sub(controls.target).multiplyScalar(factor).add(controls.target);
+    controls.update();
+  };
+
+  const reset = () => {
+    const controls = controlsRef.current;
+    const camera = stateRef.current?.camera;
+    if (!controls || !camera) return;
+    controls.reset();
+    boundsRef.current?.refresh().clip().fit();
+    level.current = 0;
+  };
+
+  // Native fullscreen where allowed, otherwise a fixed full-window fallback.
+  const toggleFullscreen = async () => {
+    const node = viewerRef.current;
+    if (!node) return;
+    if (expanded) {
+      setExpanded(false);
+      return;
+    }
+    if (document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => undefined);
+      return;
+    }
+    try {
+      if (!node.requestFullscreen) throw new Error("unsupported");
+      await Promise.race([node.requestFullscreen(), new Promise((_, reject) => window.setTimeout(reject, 600))]);
+      if (!document.fullscreenElement) setExpanded(true);
+    } catch {
+      if (!document.fullscreenElement) setExpanded(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopImmediatePropagation();
+        setExpanded(false);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [expanded]);
 
   return (
-    <div className="engine-viewer">
+    <div
+      ref={viewerRef}
+      className={expanded ? "engine-viewer is-expanded" : "engine-viewer"}
+      onPointerDown={() => setWheelZoom(true)}
+      onPointerLeave={() => setWheelZoom(false)}
+    >
       {!visible ? (
         <EngineLoading />
       ) : (
@@ -218,15 +252,19 @@ export default function EngineViewer() {
             camera={{ position: [4.8, 2.6, 6.2], fov: 34 }}
             dpr={[1, 1.5]}
             gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-            onCreated={({ gl }) => {
+            onCreated={(state) => {
+              const { gl } = state;
+              stateRef.current = state;
               gl.toneMapping = THREE.ACESFilmicToneMapping;
-              gl.toneMappingExposure = 1.18;
+              gl.toneMappingExposure = 1.05;
+              gl.localClippingEnabled = true;
             }}
           >
-            <hemisphereLight intensity={2.35} color="#ffffff" groundColor="#202020" />
+            <StudioEnvironment />
+            <hemisphereLight intensity={0.9} color="#ffffff" groundColor="#202020" />
             <directionalLight
               position={[5, 6, 7]}
-              intensity={3.8}
+              intensity={2.4}
               castShadow
               shadow-mapSize={[2048, 2048]}
             />
@@ -235,18 +273,42 @@ export default function EngineViewer() {
 
             <Suspense fallback={null}>
               <Bounds fit clip margin={1.18}>
-                <TurbofanModel />
+                <TurbofanModel cutState={cutState} liveRef={liveRef} />
+                <RefitBounds apiRef={boundsRef} />
               </Bounds>
             </Suspense>
 
             <OrbitControls
+              ref={controlsRef}
               enablePan={false}
-              enableZoom={false}
+              enableZoom={wheelZoom}
+              zoomSpeed={0.85}
+              autoRotate={autoRotate}
+              autoRotateSpeed={1.6}
               enableDamping
               dampingFactor={0.06}
               rotateSpeed={0.65}
             />
           </Canvas>
+          <CutControls state={cutState} setState={setCutState} liveRef={liveRef} className="cut-controls-engine" />
+          <div className="engine-wheel-hint">{wheelZoom ? "Scroll to zoom" : "Click the model to scroll-zoom"}</div>
+          <div className="engine-zoom" role="group" aria-label="Turbofan zoom controls">
+            <button onClick={() => zoom(1)} aria-label="Zoom in">
+              <ZoomIn size={17} />
+            </button>
+            <button onClick={() => zoom(-1)} aria-label="Zoom out">
+              <ZoomOut size={17} />
+            </button>
+            <button onClick={() => setAutoRotate((value) => !value)} aria-label={autoRotate ? "Pause auto rotation" : "Start auto rotation"}>
+              {autoRotate ? <Pause size={16} /> : <Play size={16} />}
+            </button>
+            <button onClick={reset} aria-label="Reset view">
+              <RotateCcw size={16} />
+            </button>
+            <button onClick={toggleFullscreen} aria-label="Toggle fullscreen">
+              <Maximize2 size={16} />
+            </button>
+          </div>
         </EngineErrorBoundary>
       )}
     </div>

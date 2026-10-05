@@ -57,6 +57,8 @@ button {
 .shell {
   padding-left: 8.2rem;
   overflow: hidden;
+  /* clip (not hidden) so position: sticky works inside, e.g. the flight timeline */
+  overflow: clip;
 }
 
 .flight-background {
@@ -3362,4 +3364,2060 @@ h3 {
 @keyframes phaseDots {
   from { width: 0; }
   to { width: 1.2em; }
+}
+
+/* Project card back: a different image, darkened, with an animated radar emblem */
+.project-back {
+  justify-items: center;
+  text-align: center;
+}
+
+.project-back-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.62;
+  filter: saturate(0.9) blur(1px);
+  transform: scale(1.06);
+}
+
+.project-back-scrim {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(5, 7, 10, 0.1), rgba(5, 7, 10, 0.82) 74%),
+    linear-gradient(transparent 40%, rgba(5, 7, 10, 0.92));
+}
+
+.project-back > *:not(.project-back-img):not(.project-back-scrim) {
+  position: relative;
+  z-index: 2;
+}
+
+.project-emblem {
+  position: relative;
+  display: grid;
+  width: 6.4rem;
+  height: 6.4rem;
+  place-items: center;
+  color: var(--amber);
+}
+
+.project-emblem i,
+.project-emblem b {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+
+.project-emblem i {
+  border: 1px solid rgba(137, 216, 255, 0.4);
+}
+
+.project-emblem i:nth-child(2) {
+  inset: 15%;
+  border-color: rgba(255, 138, 42, 0.5);
+}
+
+.project-emblem i:nth-child(3) {
+  inset: 30%;
+  border-color: rgba(137, 216, 255, 0.3);
+}
+
+.project-emblem b {
+  background: conic-gradient(from 0deg, rgba(137, 216, 255, 0.4), transparent 26%, transparent);
+  animation: emblemSweep 3.6s linear infinite;
+  animation-play-state: paused;
+}
+
+.project-emblem svg {
+  filter: drop-shadow(0 0 10px rgba(255, 138, 42, 0.6));
+}
+
+.project-card:hover .project-emblem b {
+  animation-play-state: running;
+}
+
+.project-back .project-back-eyebrow {
+  display: block !important;
+  margin-top: 0.3rem;
+  color: var(--sky);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@keyframes emblemSweep {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-emblem b { animation: none; }
+}
+
+/* Character Select: fit the whole thing in one screen */
+.character-section {
+  padding: clamp(1.6rem, 3vw, 2.6rem) 0 clamp(2rem, 4vw, 3.4rem);
+}
+
+.character-section .section-head {
+  margin-bottom: 0.9rem;
+}
+
+.cs-wrap {
+  --cs-h: min(calc(100svh - 8.5rem), 52rem);
+}
+
+.cs-stage {
+  height: max(15rem, calc(var(--cs-h) * 0.55));
+}
+
+.cs-side-stage {
+  height: max(13rem, calc(var(--cs-h) * 0.5));
+}
+
+.cs-panel,
+.cs-side-panel {
+  gap: 0.7rem;
+  padding: 0.85rem 1rem;
+}
+
+.cs-head h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.cs-stats {
+  gap: 0.4rem;
+}
+
+.cs-info div {
+  padding: 0.4rem 0.6rem;
+}
+
+.cs-ult {
+  padding: 0.6rem 0.75rem;
+}
+
+.cs-ult p {
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.cs-lore {
+  gap: 0.2rem;
+}
+
+@media (max-width: 980px) {
+  .cs-stage { height: clamp(18rem, 52vw, 24rem); }
+  .cs-side-stage { height: clamp(15rem, 44vw, 20rem); }
+}
+
+/* Flight timeline: an A350 takes off as you scroll. Native scrolling only, never captured. */
+.tl-wrap {
+  position: relative;
+  height: 780vh;
+}
+
+.tl-stage {
+  --card-h: 5.2rem;
+  position: sticky;
+  top: 1rem;
+  height: calc(100vh - 2rem);
+  min-height: 28rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #05070a;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 24px 60px rgba(0, 0, 0, 0.32);
+}
+
+.tl-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1.2px 1.2px at 8% 12%, #fff, transparent 60%),
+    radial-gradient(1px 1px at 22% 28%, #cfe8ff, transparent 60%),
+    radial-gradient(1.4px 1.4px at 37% 9%, #fff, transparent 60%),
+    radial-gradient(1px 1px at 51% 22%, #fff, transparent 60%),
+    radial-gradient(1.2px 1.2px at 63% 8%, #cfe8ff, transparent 60%),
+    radial-gradient(1px 1px at 74% 30%, #fff, transparent 60%),
+    radial-gradient(1.4px 1.4px at 88% 15%, #fff, transparent 60%),
+    radial-gradient(1px 1px at 15% 40%, #fff, transparent 60%),
+    radial-gradient(1px 1px at 93% 44%, #cfe8ff, transparent 60%),
+    linear-gradient(180deg, #03050a 0%, #070c16 30%, #121626 48%, #2a1a26 58%, #5a2a16 64%, #a8511c 68%, #2a1208 70%, #05070a 100%);
+}
+
+.tl-moon {
+  position: absolute;
+  top: 9%;
+  right: 12%;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 34%, #f4f1e8, #b9b6aa 70%);
+  box-shadow: 0 0 40px 10px rgba(220, 230, 255, 0.18);
+}
+
+.tl-clouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tl-clouds i {
+  position: absolute;
+  height: 5rem;
+  border-radius: 50%;
+  background: rgba(190, 200, 215, 0.12);
+  filter: blur(18px);
+}
+
+.tl-clouds i:nth-child(1) { left: -6%; top: 8%; width: 46%; }
+.tl-clouds i:nth-child(2) { right: -8%; top: 34%; width: 52%; }
+.tl-clouds i:nth-child(3) { left: 24%; top: 58%; width: 40%; }
+
+.tl-runway {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 260%;
+  height: 1800px;
+  overflow: hidden;
+  transform: translateX(-50%) perspective(1400px) rotateX(66deg);
+  transform-origin: 50% 100%;
+  border-top: 2px solid rgba(255, 138, 42, 0.55);
+  background:
+    linear-gradient(90deg, transparent 38%, rgba(255, 241, 223, 0.4) 38.15% 38.4%, transparent 38.55% 61.45%, rgba(255, 241, 223, 0.4) 61.6% 61.85%, transparent 62%),
+    linear-gradient(180deg, #151a22, #0a0d12);
+}
+
+.tl-plane-wrap {
+  position: absolute;
+  right: 0;
+  bottom: 35%;
+  left: 0;
+  width: min(54vw, 640px);
+  margin: 0 auto;
+  transform-origin: 50% 90%;
+  will-change: transform;
+  filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.55));
+}
+
+.tl-plane {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tl-hud {
+  position: absolute;
+  top: 1rem;
+  left: 1.2rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.45rem;
+  width: min(16rem, 50%);
+}
+
+.tl-phase {
+  color: var(--amber);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+}
+
+.tl-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tl-progress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--sky));
+}
+
+.tl-skip {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.82);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tl-skip:hover {
+  background: rgba(255, 138, 42, 0.18);
+}
+
+.tl-rail {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  gap: 0.45rem;
+  transform: translateX(-50%);
+}
+
+.tl-dot {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.tl-dot.active,
+.tl-dot:hover {
+  border-color: var(--amber);
+  color: var(--cream);
+  box-shadow: 0 0 12px rgba(255, 138, 42, 0.35);
+}
+
+/* Reduced motion: a plain list, no sticky stage */
+.tl-static {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tl-static li {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.tl-static span {
+  color: var(--sky);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tl-static h3 {
+  margin: 0.25rem 0;
+}
+
+.tl-static p {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 620px) {
+  .tl-wrap {
+    height: 660vh;
+  }
+
+  .tl-stage {
+    height: calc(100svh - 7.5rem);
+  }
+
+  .tl-plane-wrap {
+    width: 82vw;
+    bottom: 32%;
+  }
+
+  .tl-rail {
+    gap: 0.3rem;
+  }
+
+  .tl-dot {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .tl-stage {
+    height: calc(100svh - 8.2rem);
+  }
+}
+
+/* Timeline v2: static runway with lights, skyline, plane shadow, cumulative centred milestone cards */
+.tl-runway {
+  background:
+    radial-gradient(circle, #ffd08a 0 28%, transparent 30%) 37.6% 0 / 0.8rem 120px repeat-y,
+    radial-gradient(circle, #ffd08a 0 28%, transparent 30%) 62.4% 0 / 0.8rem 120px repeat-y,
+    linear-gradient(90deg, transparent 38%, rgba(255, 241, 223, 0.34) 38.15% 38.4%, transparent 38.55% 61.45%, rgba(255, 241, 223, 0.34) 61.6% 61.85%, transparent 62%),
+    linear-gradient(180deg, #171c25, #0a0d12);
+}
+
+.tl-runway::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 0.9rem);
+  width: 1.8rem;
+  background: repeating-linear-gradient(180deg, #f1e6d6 0 60px, transparent 60px 120px);
+}
+
+.tl-skyline {
+  position: absolute;
+  right: 0;
+  bottom: 37%;
+  left: 0;
+  width: 100%;
+  height: 13%;
+  opacity: 0.95;
+}
+
+.tl-shadow {
+  position: absolute;
+  right: 0;
+  bottom: 35%;
+  left: 0;
+  width: min(54vw, 640px);
+  height: 3.2rem;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(0, 0, 0, 0.7), transparent 70%);
+  filter: blur(6px);
+  pointer-events: none;
+}
+
+.tl-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(ellipse at 50% 55%, transparent 55%, rgba(0, 0, 0, 0.55));
+  pointer-events: none;
+}
+
+.tl-navlight {
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+.tl-navlight-red { color: #ff4d4d; }
+.tl-navlight-green { color: #4dff88; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .tl-navlight {
+    animation: tlBlink 1.4s ease-in-out infinite;
+  }
+  .tl-navlight-green { animation-delay: 0.7s; }
+}
+
+@keyframes tlBlink {
+  0%, 60%, 100% { opacity: 1; }
+  75% { opacity: 0.15; }
+}
+
+/* Timeline structure: a central spine, nodes, connectors, alternating cards with dates on the opposite side */
+.tl-cards {
+  position: absolute;
+  inset: 3.8rem 1.2rem 3.6rem;
+  z-index: 3;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.tl-spine {
+  position: absolute;
+  top: calc(3.8rem + var(--card-h) / 2);
+  bottom: calc(3.6rem + var(--card-h) / 2);
+  left: 50%;
+  z-index: 1;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(137, 216, 255, 0.14);
+}
+
+.tl-spine i {
+  position: absolute;
+  inset: 0 0 auto;
+  height: max(0px, calc(100% * (var(--shown) - 1) / (var(--n) - 1)));
+  background: linear-gradient(180deg, var(--sky), var(--amber));
+  box-shadow: 0 0 10px rgba(137, 216, 255, 0.45);
+  transition: height 700ms cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+.tl-row {
+  position: absolute;
+  top: calc((100% - var(--card-h)) * var(--i) / (var(--n) - 1));
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.4rem minmax(0, 1fr);
+  align-items: center;
+  height: var(--card-h);
+}
+
+.tl-node {
+  z-index: 2;
+  display: grid;
+  grid-column: 2;
+  width: 1.9rem;
+  height: 1.9rem;
+  place-items: center;
+  justify-self: center;
+  border: 2px solid rgba(137, 216, 255, 0.35);
+  border-radius: 50%;
+  background: #070a10;
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 950;
+  transition: border-color 400ms ease, color 400ms ease, box-shadow 400ms ease, transform 400ms ease;
+  transform: scale(0.7);
+}
+
+.tl-row.shown .tl-node {
+  border-color: var(--sky);
+  color: var(--cream);
+  transform: scale(1);
+}
+
+.tl-row.latest .tl-node {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 5px rgba(255, 138, 42, 0.18), 0 0 18px rgba(255, 138, 42, 0.5);
+  color: var(--amber);
+}
+
+.tl-card-box {
+  position: relative;
+  max-width: 27rem;
+  padding: 0.65rem 0.85rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(8, 11, 16, 0.94);
+  text-align: center;
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition: opacity 450ms ease, transform 450ms ease, border-color 300ms ease, box-shadow 300ms ease;
+}
+
+.tl-card-box::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 1.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--sky), var(--amber));
+  opacity: 0.8;
+}
+
+.tl-row.left .tl-card-box { grid-column: 1; justify-self: end; margin-right: 1.5rem; }
+.tl-row.left .tl-card-box::after { left: 100%; }
+.tl-row.right .tl-card-box { grid-column: 3; justify-self: start; margin-left: 1.5rem; }
+.tl-row.right .tl-card-box::after { right: 100%; }
+
+.tl-row.shown .tl-card-box {
+  opacity: 1;
+  transform: none;
+}
+
+.tl-row.latest .tl-card-box {
+  border-color: var(--amber);
+  box-shadow: 0 0 22px rgba(255, 138, 42, 0.26);
+}
+
+.tl-date-side {
+  align-self: center;
+  color: rgba(137, 216, 255, 0.78);
+  font-size: 0.86rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 500ms ease 120ms;
+}
+
+.tl-row.left .tl-date-side { grid-column: 3; padding-left: 1.5rem; text-align: left; }
+.tl-row.right .tl-date-side { grid-column: 1; padding-right: 1.5rem; text-align: right; }
+.tl-row.shown .tl-date-side { opacity: 1; }
+
+.tl-card-date-m {
+  display: none;
+}
+
+.tl-card-box h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.04rem;
+}
+
+.tl-card-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.38;
+}
+
+/* The college page: a full-stage panel that scrolls up over everything */
+.tl-college {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.8rem;
+  padding: 2rem;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 138, 42, 0.24), transparent 46%),
+    radial-gradient(circle at 20% 80%, rgba(137, 216, 255, 0.12), transparent 40%),
+    #05070a;
+}
+
+.tl-college-moon {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  width: 22rem;
+  height: 22rem;
+  border: 1px solid rgba(137, 216, 255, 0.14);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3rem rgba(137, 216, 255, 0.04), 0 0 0 6.5rem rgba(255, 138, 42, 0.04);
+  transform: translateX(-50%);
+}
+
+.tl-college-eyebrow {
+  position: relative;
+  color: var(--amber);
+  font-size: 0.8rem;
+  font-weight: 950;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.tl-college h3 {
+  position: relative;
+  margin: 0;
+  font-size: clamp(3rem, 11vw, 8.5rem);
+  padding-bottom: 0.12em;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--cream), #ffb066 70%, var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tl-college p {
+  position: relative;
+  max-width: 30rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+@media (max-width: 760px) {
+  .tl-cards {
+    inset: 3.5rem 0.8rem 3.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .tl-spine {
+    top: 0.9rem;
+    bottom: 0.9rem;
+    left: 0.9rem;
+  }
+
+  .tl-row {
+    position: relative;
+    top: auto;
+    display: grid;
+    grid-template-columns: 1.8rem minmax(0, 1fr);
+    gap: 0.5rem;
+    height: auto;
+  }
+
+  .tl-node {
+    grid-column: 1;
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.54rem;
+  }
+
+  .tl-row.left .tl-card-box,
+  .tl-row.right .tl-card-box {
+    grid-column: 2;
+    justify-self: stretch;
+    max-width: none;
+    margin: 0;
+    padding: 0.3rem 0.6rem;
+    text-align: left;
+  }
+
+  .tl-card-box::after,
+  .tl-date-side {
+    display: none;
+  }
+
+  .tl-card-date-m {
+    display: block;
+    color: var(--sky);
+    font-size: 0.54rem;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .tl-card-box h3 { margin: 0; font-size: 0.9rem; }
+  .tl-card-box p { display: none; }
+  .tl-row.latest .tl-card-box p { display: block; font-size: 0.72rem; }
+
+  .tl-skyline { bottom: 36%; }
+}
+
+.tl-plane-wrap {
+  z-index: 2;
+}
+
+.tl-shadow {
+  z-index: 1;
+}
+
+@media (max-width: 760px) {
+  .tl-spine {
+    top: calc(3.5rem + 0.9rem);
+    bottom: calc(3.4rem + 0.9rem);
+    left: calc(0.8rem + 0.9rem);
+    z-index: 3;
+  }
+}
+
+/* 16 milestones: tighter cards, smaller jump dots, older rows collapse on phones */
+.tl-card-box {
+  padding: 0.5rem 0.75rem 0.55rem;
+}
+
+.tl-card-box h3 {
+  font-size: 0.96rem;
+}
+
+.tl-card-box p {
+  font-size: 0.73rem;
+  line-height: 1.3;
+}
+
+.tl-date-side {
+  font-size: 0.78rem;
+}
+
+.tl-dot {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.54rem;
+}
+
+.tl-rail {
+  gap: 0.3rem;
+}
+
+.tl-earlier {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .tl-rail {
+    display: none;
+  }
+
+  .tl-cards {
+    inset: 3.5rem 0.8rem 1rem;
+  }
+
+  .tl-row.old {
+    display: none;
+  }
+
+  .tl-earlier {
+    display: block;
+    margin: 0 0 0.1rem 2.3rem;
+    color: var(--muted);
+    font-size: 0.62rem;
+    font-weight: 950;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+}
+
+/* Dates live inside the cards: no more collisions with the opposite column */
+.tl-date-side {
+  display: none;
+}
+
+.tl-card-date-m {
+  display: block;
+  margin-bottom: 0.1rem;
+  color: var(--sky);
+  font-size: 0.56rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .tl-card-date-m {
+    margin: 0;
+  }
+}
+
+/* At a glance: an open strip, no cards, so a first-time visitor gets the answer straight away */
+.glance {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: min(1220px, calc(100% - 2rem));
+  margin: 0 auto;
+  border-top: 1px solid var(--line-strong);
+  border-bottom: 1px solid var(--line);
+}
+
+.glance > div {
+  padding: 1.4rem 1.2rem 1.5rem;
+  border-left: 1px solid var(--line);
+}
+
+.glance > div:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.glance span {
+  color: var(--amber);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.glance strong {
+  display: block;
+  margin: 0.4rem 0 0.35rem;
+  font-size: clamp(1.25rem, 2.4vw, 1.9rem);
+  line-height: 1.1;
+}
+
+.glance p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.glance a {
+  color: var(--sky);
+  white-space: nowrap;
+}
+
+@media (max-width: 860px) {
+  .glance {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .glance > div:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .glance > div:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+}
+
+/* Design pass: projects as open alternating rows, skills as a table, full-bleed bands */
+.proj-list {
+  display: grid;
+  gap: clamp(2.6rem, 5vw, 4.4rem);
+}
+
+.proj {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.2rem, 3vw, 2.8rem);
+}
+
+.proj-rev .proj-media {
+  order: 2;
+}
+
+.proj-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 11;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #0a0d12;
+  cursor: zoom-in;
+}
+
+.proj-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 700ms ease;
+}
+
+.proj-media:hover img {
+  transform: scale(1.04);
+}
+
+.proj-index {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.9rem;
+  color: rgba(255, 241, 223, 0.92);
+  font-size: clamp(2.2rem, 5vw, 3.6rem);
+  font-weight: 950;
+  letter-spacing: -0.04em;
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7);
+}
+
+.proj-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--sky);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.proj-title {
+  margin: 0.35rem 0 0.7rem;
+  font-size: clamp(1.9rem, 4vw, 3.1rem);
+  line-height: 1.04;
+}
+
+.proj-sum {
+  margin: 0 0 0.7rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.proj-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  margin: 1rem 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+}
+
+.proj-stats dt {
+  color: var(--sky);
+  font-size: 0.6rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.proj-stats dd {
+  margin: 0.1rem 0 0;
+  font-weight: 850;
+}
+
+.proj-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem 1.2rem;
+}
+
+.proj-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.95rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--cream);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.proj-toggle:hover {
+  background: rgba(255, 138, 42, 0.14);
+}
+
+.proj-chev {
+  transition: transform 250ms ease;
+}
+
+.proj-chev.open {
+  transform: rotate(90deg);
+}
+
+.proj-more {
+  grid-column: 1 / -1;
+  padding: 0.4rem 0 0;
+  animation: tlCardIn 0.35s ease both;
+}
+
+.proj-more ul {
+  margin: 0 0 0.8rem;
+  padding-left: 1.2rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@keyframes tlCardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.band {
+  position: relative;
+  isolation: isolate;
+}
+
+.band::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc(50% - 50vw);
+  border-block: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(137, 216, 255, 0.04), rgba(255, 138, 42, 0.035));
+}
+
+.skill-line {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.skill-line li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.skill-line li:first-child {
+  border-top: 1px solid var(--line);
+}
+
+.skill-line strong {
+  font-size: clamp(1.5rem, 3.6vw, 2.7rem);
+  letter-spacing: -0.02em;
+  transition: color 200ms ease;
+}
+
+.skill-line li:hover strong {
+  color: var(--amber);
+}
+
+.skill-line span {
+  max-width: 26rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+#experiences.section {
+  padding-top: 0;
+}
+
+@media (max-width: 860px) {
+  .proj {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .proj-rev .proj-media {
+    order: 0;
+  }
+
+  .skill-line li {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .skill-line span {
+    text-align: left;
+  }
+}
+
+/* Every part of a timeline row sits in the same grid row (left cards were falling into an implicit second row) */
+.tl-row > * {
+  grid-row: 1;
+}
+
+/* Timeline sizing is derived from the stage height, so rows, nodes and cards can never collide */
+.tl-stage {
+  container-type: size;
+}
+
+.tl-cards,
+.tl-spine {
+  --H: calc(100cqh - 7.4rem);
+  --ch: min(5.2rem, calc((2 * var(--H) - 0.5rem * (var(--n) - 1)) / (var(--n) + 1)));
+}
+
+.tl-row {
+  top: calc((100% - var(--ch)) * var(--i) / (var(--n) - 1));
+  height: var(--ch);
+}
+
+.tl-card-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--ch);
+  overflow: hidden;
+}
+
+.tl-card-box p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.tl-node {
+  width: clamp(0.9rem, calc((var(--H) - var(--ch)) / (var(--n) - 1) - 0.8rem), 1.7rem);
+  height: clamp(0.9rem, calc((var(--H) - var(--ch)) / (var(--n) - 1) - 0.8rem), 1.7rem);
+  font-size: clamp(0.4rem, calc((var(--H) - var(--ch)) / (var(--n) - 1) / 3.6), 0.6rem);
+}
+
+.tl-spine {
+  top: calc(3.8rem + var(--ch) / 2);
+  bottom: calc(3.6rem + var(--ch) / 2);
+}
+
+@container (max-height: 820px) {
+  .tl-card-box p {
+    display: none;
+  }
+
+  .tl-row.latest {
+    z-index: 5;
+  }
+
+  .tl-row.latest .tl-card-box {
+    height: auto;
+    min-height: var(--ch);
+    background: #090c12;
+  }
+
+  .tl-row.latest .tl-card-box p {
+    display: -webkit-box;
+  }
+}
+
+@container (max-height: 640px) {
+  .tl-card-box h3 {
+    font-size: 0.82rem;
+  }
+
+  .tl-card-date-m {
+    display: none;
+  }
+
+  .tl-row.latest .tl-card-date-m {
+    display: block;
+  }
+}
+
+@media (max-width: 760px) {
+  .tl-row {
+    top: auto;
+    height: auto;
+  }
+
+  .tl-card-box {
+    height: auto;
+    display: block;
+  }
+
+  .tl-node {
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.54rem;
+  }
+
+  .tl-spine {
+    top: calc(3.5rem + 0.9rem);
+    bottom: calc(3.4rem + 0.9rem);
+  }
+
+  .tl-card-box p {
+    display: none;
+  }
+
+  .tl-row.latest .tl-card-box p {
+    display: block;
+  }
+}
+
+/* Nav: a one-line explanation under each label (desktop side menu only) */
+.flight-nav a small {
+  display: block;
+  max-width: 100%;
+  margin-top: 0.1rem;
+  color: var(--muted);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+.flight-nav a {
+  min-height: 4rem;
+}
+
+@media (max-width: 980px) {
+  .flight-nav a small {
+    display: none;
+  }
+
+  .flight-nav a {
+    min-height: 3.6rem;
+  }
+}
+
+.glance-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.8rem;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  color: var(--cream);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.glance-btn:hover {
+  border-color: var(--amber);
+  background: rgba(255, 138, 42, 0.16);
+  transform: translateY(-1px);
+}
+
+.glance .glance-btn {
+  color: var(--cream);
+}
+
+/* Hybrid project cards: actions row and expandable detail inside the original card */
+.project-card .proj-actions {
+  padding: 0;
+}
+
+.project-card .proj-more {
+  padding: 0;
+}
+
+/* Dragon companion */
+.dragon {
+  position: fixed;
+  right: 1.2rem;
+  bottom: 1.4rem;
+  z-index: 15;
+  width: 8.4rem;
+  pointer-events: none;
+  filter: drop-shadow(0 0 14px rgba(127, 227, 212, 0.28));
+}
+
+.dragon-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.dragon-wing {
+  transform-box: view-box;
+  transform-origin: 130px 78px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .dragon { animation: dragonDrift 9s ease-in-out infinite; }
+  .dragon-bob { animation: dragonBob 3s ease-in-out infinite; }
+  .dragon-wing-near { animation: dragonFlap 1.1s ease-in-out infinite; }
+  .dragon-wing-far { animation: dragonFlap 1.1s ease-in-out -0.25s infinite; }
+  .dragon-tail {
+    transform-box: view-box;
+    transform-origin: 96px 104px;
+    animation: dragonTail 2.6s ease-in-out infinite;
+  }
+}
+
+@keyframes dragonDrift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(-14px); }
+}
+
+@keyframes dragonBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+
+@keyframes dragonFlap {
+  0%, 100% { transform: rotate(6deg); }
+  50% { transform: rotate(-26deg); }
+}
+
+@keyframes dragonTail {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(5deg); }
+}
+
+@media (max-width: 980px) {
+  .dragon { display: none; }
+}
+
+/* Poems: set as literature, not UI */
+.poem-grid summary {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.5rem;
+  font-style: italic;
+  letter-spacing: 0.01em;
+}
+
+.poem-grid pre {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: var(--cream);
+}
+
+/* Touch-friendly dots: small visible dot, 1.6rem hit area */
+.cs-dots button {
+  position: relative;
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cs-dots button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.62rem;
+  height: 0.62rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.cs-dots button.active::after {
+  border-color: var(--amber);
+  background: var(--amber);
+  box-shadow: 0 0 10px rgba(255, 138, 42, 0.5);
+}
+
+.cs-dots {
+  gap: 0;
+}
+
+/* Project status, lessons, and per-section accent colours */
+.proj-status {
+  margin: 0 0 0.6rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.4;
+}
+
+.proj-status b {
+  margin-right: 0.35rem;
+  letter-spacing: 0.04em;
+}
+
+.proj-status-done { border-left-color: #68e0a0; }
+.proj-status-done b { color: #68e0a0; }
+.proj-status-progress { border-left-color: var(--sky); }
+.proj-status-progress b { color: var(--sky); }
+.proj-status-fail { border-left-color: #ff6b5b; }
+.proj-status-fail b { color: #ff8b7d; }
+
+.proj-learned {
+  margin: 0 0 0.6rem;
+  color: var(--cream);
+  font-size: 0.88rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.proj-learned span {
+  margin-right: 0.4rem;
+  color: var(--sky);
+  font-size: 0.62rem;
+  font-style: normal;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Same dark base everywhere, but each part of the story gets its own accent */
+#experiences {
+  --amber: #ec3750;
+  --line: rgba(236, 55, 80, 0.3);
+  --line-strong: rgba(236, 55, 80, 0.75);
+}
+
+#skills {
+  --amber: #4fd1c5;
+  --line: rgba(79, 209, 197, 0.26);
+  --line-strong: rgba(79, 209, 197, 0.7);
+}
+
+#interests {
+  --amber: #c79bff;
+  --sky: #ffd6a0;
+  --line: rgba(199, 155, 255, 0.28);
+  --line-strong: rgba(199, 155, 255, 0.72);
+}
+
+#contact {
+  --amber: #ffb347;
+  --line: rgba(255, 179, 71, 0.3);
+  --line-strong: rgba(255, 179, 71, 0.75);
+}
+
+.dragon {
+  filter: drop-shadow(0 0 14px rgba(88, 214, 194, 0.35));
+}
+
+/* Nothing on a timeline card is ever lost: hover or focus (and the newest card) opens the full text */
+.tl-cards {
+  pointer-events: none;
+}
+
+.tl-card-box {
+  pointer-events: auto;
+}
+
+.tl-row:hover,
+.tl-row:focus-within {
+  z-index: 6;
+}
+
+.tl-row .tl-card-box:hover,
+.tl-row .tl-card-box:focus {
+  height: auto;
+  min-height: var(--ch);
+  overflow: visible;
+  background: #090c12;
+  border-color: var(--line-strong);
+  outline: none;
+}
+
+.tl-row .tl-card-box:hover p,
+.tl-row .tl-card-box:focus p {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+.tl-row .tl-card-box:hover .tl-card-date-m,
+.tl-row .tl-card-box:focus .tl-card-date-m {
+  display: block;
+}
+
+.tl-row.latest .tl-card-box {
+  height: auto;
+  min-height: var(--ch);
+  overflow: visible;
+}
+
+.tl-row.latest .tl-card-box p {
+  display: block;
+  -webkit-line-clamp: unset;
+}
+
+.tl-row.latest {
+  z-index: 5;
+}
+
+/* Project Hangar v3: boxed rows, a different star colour behind each project, quick-glance stat boxes */
+.proj-list {
+  gap: clamp(1.4rem, 3vw, 2.2rem);
+}
+
+.proj {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(1rem, 2.4vw, 1.6rem);
+  overflow: hidden;
+  border: 1px solid rgba(137, 216, 255, 0.34);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--pc) 14%, transparent), transparent 46%),
+    linear-gradient(160deg, rgba(14, 24, 40, 0.92), rgba(7, 10, 17, 0.96));
+  box-shadow: inset 0 0 36px rgba(137, 216, 255, 0.05), 0 24px 60px rgba(0, 0, 0, 0.36);
+}
+
+.proj::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image:
+    radial-gradient(1.3px 1.3px at 8% 14%, var(--pc), transparent 60%),
+    radial-gradient(1px 1px at 21% 72%, var(--pc), transparent 60%),
+    radial-gradient(1.5px 1.5px at 34% 30%, var(--pc), transparent 60%),
+    radial-gradient(1px 1px at 47% 88%, var(--pc), transparent 60%),
+    radial-gradient(1.4px 1.4px at 58% 18%, var(--pc), transparent 60%),
+    radial-gradient(1px 1px at 69% 62%, var(--pc), transparent 60%),
+    radial-gradient(1.5px 1.5px at 81% 34%, var(--pc), transparent 60%),
+    radial-gradient(1px 1px at 92% 80%, var(--pc), transparent 60%),
+    radial-gradient(1px 1px at 15% 46%, #cfe4ff, transparent 60%),
+    radial-gradient(1px 1px at 76% 10%, #cfe4ff, transparent 60%),
+    radial-gradient(1px 1px at 40% 58%, #cfe4ff, transparent 60%);
+  opacity: 0.75;
+}
+
+.proj-rev::before {
+  transform: scaleX(-1);
+}
+
+.proj-media {
+  border-color: color-mix(in srgb, var(--pc) 55%, transparent);
+}
+
+.proj-eyebrow {
+  color: var(--pc);
+}
+
+.proj-status {
+  margin: 0 0 0.6rem;
+  background: rgba(137, 216, 255, 0.05);
+}
+
+.proj .chip-row {
+  margin: 0.2rem 0 0.2rem;
+}
+
+.proj-statboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(7.2rem, 1fr));
+  gap: 0.5rem;
+  margin: 0.9rem 0 0.9rem;
+}
+
+.proj-statbox {
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(137, 216, 255, 0.4);
+  border-radius: 8px;
+  background: rgba(137, 216, 255, 0.08);
+  box-shadow: inset 0 0 14px rgba(137, 216, 255, 0.06);
+}
+
+.proj-statbox span {
+  display: block;
+  color: var(--sky);
+  font-size: 0.58rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.proj-statbox strong {
+  display: block;
+  margin-top: 0.15rem;
+  font-size: 0.95rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .proj::before {
+    animation: starTwinkle 6s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes starTwinkle {
+  from { opacity: 0.45; }
+  to { opacity: 0.9; }
+}
+
+/* Timeline: let the card text use three lines before clamping */
+.tl-card-box p {
+  -webkit-line-clamp: 3;
+  line-height: 1.28;
+}
+
+/* Turbofan zoom buttons */
+.engine-zoom {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 4;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.engine-zoom button {
+  display: grid;
+  width: 2.3rem;
+  height: 2.3rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--cream);
+  cursor: pointer;
+}
+
+.engine-zoom button:hover {
+  border-color: var(--line-strong);
+  background: rgba(255, 138, 42, 0.16);
+}
+
+/* Skills cards: lift, glow and a spinning badge on hover (restored) */
+.skills-grid article {
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.skills-grid article:hover {
+  border-color: var(--line-strong);
+  background: rgba(255, 138, 42, 0.07);
+  box-shadow: inset 0 0 26px rgba(255, 138, 42, 0.1), 0 18px 46px rgba(0, 0, 0, 0.45), 0 0 18px rgba(255, 138, 42, 0.16);
+  transform: translateY(-5px);
+}
+
+.skills-grid article svg {
+  transition: transform 500ms ease, filter 220ms ease;
+}
+
+.skills-grid article:hover svg {
+  filter: drop-shadow(0 0 8px currentColor);
+  transform: rotate(360deg) scale(1.15);
+}
+
+/* ===== Design pass 4: denser stars, a distinct look per section, devlog button, college heading ===== */
+.proj::before {
+  background-image: none;
+  background: var(--pc);
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22420%22 height=%22320%22 viewBox=%220 0 420 320%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22190.4%22 cy=%22178.6%22 r=%221.6%22/%3E%3Ccircle cx=%22190.2%22 cy=%22270.8%22 r=%221.9%22/%3E%3Ccircle cx=%22200.0%22 cy=%22195.6%22 r=%221.6%22/%3E%3Ccircle cx=%22129.0%22 cy=%2232.3%22 r=%222.3%22/%3E%3Ccircle cx=%22265.4%22 cy=%22189.8%22 r=%221.6%22/%3E%3Ccircle cx=%22273.4%22 cy=%22196.1%22 r=%222.6%22/%3E%3Cpath d=%22M265.1 196.1H281.7M273.4 187.7V204.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22346.7%22 cy=%2223.7%22 r=%222.6%22/%3E%3Cpath d=%22M338.3 23.7H355.0M346.7 15.4V32.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22251.0%22 cy=%22246.8%22 r=%221.9%22/%3E%3Ccircle cx=%22351.1%22 cy=%22166.0%22 r=%221.6%22/%3E%3Ccircle cx=%225.9%22 cy=%2230.5%22 r=%221.6%22/%3E%3Ccircle cx=%22415.0%22 cy=%22314.7%22 r=%222.3%22/%3E%3Ccircle cx=%22108.6%22 cy=%22240.5%22 r=%220.9%22/%3E%3Ccircle cx=%2232.9%22 cy=%22243.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.2%22 cy=%22302.9%22 r=%220.9%22/%3E%3Ccircle cx=%2292.0%22 cy=%22293.2%22 r=%223.0%22/%3E%3Cpath d=%22M82.4 293.2H101.6M92.0 283.6V302.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22407.9%22 cy=%22128.0%22 r=%222.6%22/%3E%3Cpath d=%22M399.6 128.0H416.2M407.9 119.7V136.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22324.7%22 cy=%2288.2%22 r=%223.0%22/%3E%3Cpath d=%22M315.1 88.2H334.3M324.7 78.6V97.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.2%22 cy=%22131.9%22 r=%221.1%22/%3E%3Ccircle cx=%22105.5%22 cy=%2235.5%22 r=%223.0%22/%3E%3Cpath d=%22M95.9 35.5H115.1M105.5 25.9V45.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2277.2%22 cy=%22178.5%22 r=%221.1%22/%3E%3Ccircle cx=%22409.9%22 cy=%22244.1%22 r=%221.6%22/%3E%3Ccircle cx=%2252.0%22 cy=%22135.3%22 r=%221.3%22/%3E%3Ccircle cx=%22360.1%22 cy=%22308.2%22 r=%220.9%22/%3E%3Ccircle cx=%2290.8%22 cy=%22127.0%22 r=%222.3%22/%3E%3Ccircle cx=%22241.7%22 cy=%2217.1%22 r=%223.0%22/%3E%3Cpath d=%22M232.1 17.1H251.3M241.7 7.5V26.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22110.4%22 cy=%22245.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.1%22 cy=%2227.2%22 r=%222.3%22/%3E%3Ccircle cx=%22104.1%22 cy=%22191.6%22 r=%221.6%22/%3E%3Ccircle cx=%2256.4%22 cy=%22187.2%22 r=%221.1%22/%3E%3Ccircle cx=%22361.0%22 cy=%2261.0%22 r=%222.6%22/%3E%3Cpath d=%22M352.7 61.0H369.3M361.0 52.7V69.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22340.9%22 cy=%2281.8%22 r=%222.3%22/%3E%3Ccircle cx=%22263.1%22 cy=%22176.8%22 r=%221.6%22/%3E%3Ccircle cx=%22367.5%22 cy=%22192.3%22 r=%220.9%22/%3E%3Ccircle cx=%2248.9%22 cy=%22163.9%22 r=%222.3%22/%3E%3Ccircle cx=%22294.3%22 cy=%2284.2%22 r=%221.9%22/%3E%3Ccircle cx=%22206.3%22 cy=%22166.3%22 r=%220.9%22/%3E%3Ccircle cx=%2256.1%22 cy=%22153.5%22 r=%221.9%22/%3E%3Ccircle cx=%22257.1%22 cy=%2291.4%22 r=%221.1%22/%3E%3Ccircle cx=%22312.6%22 cy=%2225.6%22 r=%221.1%22/%3E%3Ccircle cx=%2228.9%22 cy=%2259.0%22 r=%221.9%22/%3E%3Ccircle cx=%22404.9%22 cy=%2232.8%22 r=%223.0%22/%3E%3Cpath d=%22M395.3 32.8H414.5M404.9 23.2V42.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22408.0%22 cy=%22209.0%22 r=%221.9%22/%3E%3Ccircle cx=%22394.1%22 cy=%22188.0%22 r=%221.6%22/%3E%3Ccircle cx=%22379.0%22 cy=%22222.7%22 r=%220.9%22/%3E%3Ccircle cx=%22250.5%22 cy=%2227.3%22 r=%223.0%22/%3E%3Cpath d=%22M240.9 27.3H260.1M250.5 17.7V36.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22135.4%22 cy=%22315.8%22 r=%223.0%22/%3E%3Cpath d=%22M125.8 315.8H145.0M135.4 306.2V325.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22307.6%22 cy=%22284.9%22 r=%222.3%22/%3E%3Ccircle cx=%2257.4%22 cy=%22304.6%22 r=%220.9%22/%3E%3Ccircle cx=%22286.3%22 cy=%22285.1%22 r=%221.6%22/%3E%3Ccircle cx=%22393.0%22 cy=%2213.4%22 r=%220.9%22/%3E%3Ccircle cx=%22261.5%22 cy=%22123.3%22 r=%221.9%22/%3E%3Ccircle cx=%2233.8%22 cy=%2232.3%22 r=%223.0%22/%3E%3Cpath d=%22M24.2 32.3H43.4M33.8 22.7V41.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22366.5%22 cy=%22231.2%22 r=%222.3%22/%3E%3Ccircle cx=%22290.0%22 cy=%22146.8%22 r=%221.9%22/%3E%3Ccircle cx=%2238.5%22 cy=%22238.1%22 r=%222.6%22/%3E%3Cpath d=%22M30.2 238.1H46.8M38.5 229.7V246.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22202.2%22 cy=%2275.8%22 r=%221.6%22/%3E%3Ccircle cx=%22325.3%22 cy=%22210.0%22 r=%220.9%22/%3E%3Ccircle cx=%22155.6%22 cy=%2248.7%22 r=%221.9%22/%3E%3Ccircle cx=%2273.9%22 cy=%22286.6%22 r=%221.6%22/%3E%3Ccircle cx=%22209.3%22 cy=%2279.3%22 r=%221.3%22/%3E%3Ccircle cx=%2285.8%22 cy=%22138.4%22 r=%221.1%22/%3E%3Ccircle cx=%22366.7%22 cy=%22123.9%22 r=%221.3%22/%3E%3Ccircle cx=%2290.5%22 cy=%2246.0%22 r=%220.9%22/%3E%3Ccircle cx=%22297.0%22 cy=%22300.4%22 r=%221.1%22/%3E%3Ccircle cx=%2250.5%22 cy=%22151.1%22 r=%221.6%22/%3E%3Ccircle cx=%22161.6%22 cy=%22166.2%22 r=%222.3%22/%3E%3Ccircle cx=%22349.7%22 cy=%22310.4%22 r=%220.9%22/%3E%3Ccircle cx=%22345.4%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22296.0%22 cy=%22182.0%22 r=%221.9%22/%3E%3Ccircle cx=%2211.9%22 cy=%2246.4%22 r=%220.9%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22420%22 height=%22320%22 viewBox=%220 0 420 320%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22190.4%22 cy=%22178.6%22 r=%221.6%22/%3E%3Ccircle cx=%22190.2%22 cy=%22270.8%22 r=%221.9%22/%3E%3Ccircle cx=%22200.0%22 cy=%22195.6%22 r=%221.6%22/%3E%3Ccircle cx=%22129.0%22 cy=%2232.3%22 r=%222.3%22/%3E%3Ccircle cx=%22265.4%22 cy=%22189.8%22 r=%221.6%22/%3E%3Ccircle cx=%22273.4%22 cy=%22196.1%22 r=%222.6%22/%3E%3Cpath d=%22M265.1 196.1H281.7M273.4 187.7V204.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22346.7%22 cy=%2223.7%22 r=%222.6%22/%3E%3Cpath d=%22M338.3 23.7H355.0M346.7 15.4V32.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22251.0%22 cy=%22246.8%22 r=%221.9%22/%3E%3Ccircle cx=%22351.1%22 cy=%22166.0%22 r=%221.6%22/%3E%3Ccircle cx=%225.9%22 cy=%2230.5%22 r=%221.6%22/%3E%3Ccircle cx=%22415.0%22 cy=%22314.7%22 r=%222.3%22/%3E%3Ccircle cx=%22108.6%22 cy=%22240.5%22 r=%220.9%22/%3E%3Ccircle cx=%2232.9%22 cy=%22243.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.2%22 cy=%22302.9%22 r=%220.9%22/%3E%3Ccircle cx=%2292.0%22 cy=%22293.2%22 r=%223.0%22/%3E%3Cpath d=%22M82.4 293.2H101.6M92.0 283.6V302.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22407.9%22 cy=%22128.0%22 r=%222.6%22/%3E%3Cpath d=%22M399.6 128.0H416.2M407.9 119.7V136.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22324.7%22 cy=%2288.2%22 r=%223.0%22/%3E%3Cpath d=%22M315.1 88.2H334.3M324.7 78.6V97.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.2%22 cy=%22131.9%22 r=%221.1%22/%3E%3Ccircle cx=%22105.5%22 cy=%2235.5%22 r=%223.0%22/%3E%3Cpath d=%22M95.9 35.5H115.1M105.5 25.9V45.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2277.2%22 cy=%22178.5%22 r=%221.1%22/%3E%3Ccircle cx=%22409.9%22 cy=%22244.1%22 r=%221.6%22/%3E%3Ccircle cx=%2252.0%22 cy=%22135.3%22 r=%221.3%22/%3E%3Ccircle cx=%22360.1%22 cy=%22308.2%22 r=%220.9%22/%3E%3Ccircle cx=%2290.8%22 cy=%22127.0%22 r=%222.3%22/%3E%3Ccircle cx=%22241.7%22 cy=%2217.1%22 r=%223.0%22/%3E%3Cpath d=%22M232.1 17.1H251.3M241.7 7.5V26.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22110.4%22 cy=%22245.1%22 r=%221.3%22/%3E%3Ccircle cx=%22163.1%22 cy=%2227.2%22 r=%222.3%22/%3E%3Ccircle cx=%22104.1%22 cy=%22191.6%22 r=%221.6%22/%3E%3Ccircle cx=%2256.4%22 cy=%22187.2%22 r=%221.1%22/%3E%3Ccircle cx=%22361.0%22 cy=%2261.0%22 r=%222.6%22/%3E%3Cpath d=%22M352.7 61.0H369.3M361.0 52.7V69.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22340.9%22 cy=%2281.8%22 r=%222.3%22/%3E%3Ccircle cx=%22263.1%22 cy=%22176.8%22 r=%221.6%22/%3E%3Ccircle cx=%22367.5%22 cy=%22192.3%22 r=%220.9%22/%3E%3Ccircle cx=%2248.9%22 cy=%22163.9%22 r=%222.3%22/%3E%3Ccircle cx=%22294.3%22 cy=%2284.2%22 r=%221.9%22/%3E%3Ccircle cx=%22206.3%22 cy=%22166.3%22 r=%220.9%22/%3E%3Ccircle cx=%2256.1%22 cy=%22153.5%22 r=%221.9%22/%3E%3Ccircle cx=%22257.1%22 cy=%2291.4%22 r=%221.1%22/%3E%3Ccircle cx=%22312.6%22 cy=%2225.6%22 r=%221.1%22/%3E%3Ccircle cx=%2228.9%22 cy=%2259.0%22 r=%221.9%22/%3E%3Ccircle cx=%22404.9%22 cy=%2232.8%22 r=%223.0%22/%3E%3Cpath d=%22M395.3 32.8H414.5M404.9 23.2V42.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22408.0%22 cy=%22209.0%22 r=%221.9%22/%3E%3Ccircle cx=%22394.1%22 cy=%22188.0%22 r=%221.6%22/%3E%3Ccircle cx=%22379.0%22 cy=%22222.7%22 r=%220.9%22/%3E%3Ccircle cx=%22250.5%22 cy=%2227.3%22 r=%223.0%22/%3E%3Cpath d=%22M240.9 27.3H260.1M250.5 17.7V36.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22135.4%22 cy=%22315.8%22 r=%223.0%22/%3E%3Cpath d=%22M125.8 315.8H145.0M135.4 306.2V325.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22307.6%22 cy=%22284.9%22 r=%222.3%22/%3E%3Ccircle cx=%2257.4%22 cy=%22304.6%22 r=%220.9%22/%3E%3Ccircle cx=%22286.3%22 cy=%22285.1%22 r=%221.6%22/%3E%3Ccircle cx=%22393.0%22 cy=%2213.4%22 r=%220.9%22/%3E%3Ccircle cx=%22261.5%22 cy=%22123.3%22 r=%221.9%22/%3E%3Ccircle cx=%2233.8%22 cy=%2232.3%22 r=%223.0%22/%3E%3Cpath d=%22M24.2 32.3H43.4M33.8 22.7V41.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22366.5%22 cy=%22231.2%22 r=%222.3%22/%3E%3Ccircle cx=%22290.0%22 cy=%22146.8%22 r=%221.9%22/%3E%3Ccircle cx=%2238.5%22 cy=%22238.1%22 r=%222.6%22/%3E%3Cpath d=%22M30.2 238.1H46.8M38.5 229.7V246.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22202.2%22 cy=%2275.8%22 r=%221.6%22/%3E%3Ccircle cx=%22325.3%22 cy=%22210.0%22 r=%220.9%22/%3E%3Ccircle cx=%22155.6%22 cy=%2248.7%22 r=%221.9%22/%3E%3Ccircle cx=%2273.9%22 cy=%22286.6%22 r=%221.6%22/%3E%3Ccircle cx=%22209.3%22 cy=%2279.3%22 r=%221.3%22/%3E%3Ccircle cx=%2285.8%22 cy=%22138.4%22 r=%221.1%22/%3E%3Ccircle cx=%22366.7%22 cy=%22123.9%22 r=%221.3%22/%3E%3Ccircle cx=%2290.5%22 cy=%2246.0%22 r=%220.9%22/%3E%3Ccircle cx=%22297.0%22 cy=%22300.4%22 r=%221.1%22/%3E%3Ccircle cx=%2250.5%22 cy=%22151.1%22 r=%221.6%22/%3E%3Ccircle cx=%22161.6%22 cy=%22166.2%22 r=%222.3%22/%3E%3Ccircle cx=%22349.7%22 cy=%22310.4%22 r=%220.9%22/%3E%3Ccircle cx=%22345.4%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22296.0%22 cy=%22182.0%22 r=%221.9%22/%3E%3Ccircle cx=%2211.9%22 cy=%2246.4%22 r=%220.9%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 420px 320px;
+  mask-size: 420px 320px;
+  opacity: 0.85;
+}
+
+.proj::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: #dcecff;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22260%22 viewBox=%220 0 300 260%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22164.1%22 cy=%2291.1%22 r=%221.3%22/%3E%3Ccircle cx=%2229.3%22 cy=%22237.7%22 r=%220.9%22/%3E%3Ccircle cx=%22288.4%22 cy=%2230.1%22 r=%221.1%22/%3E%3Ccircle cx=%22238.5%22 cy=%2225.6%22 r=%221.9%22/%3E%3Ccircle cx=%22162.3%22 cy=%22214.7%22 r=%221.1%22/%3E%3Ccircle cx=%2268.1%22 cy=%22201.6%22 r=%222.3%22/%3E%3Ccircle cx=%22168.3%22 cy=%2253.5%22 r=%221.3%22/%3E%3Ccircle cx=%2285.3%22 cy=%22193.1%22 r=%221.6%22/%3E%3Ccircle cx=%22154.6%22 cy=%22193.6%22 r=%221.9%22/%3E%3Ccircle cx=%22210.7%22 cy=%22122.8%22 r=%220.9%22/%3E%3Ccircle cx=%22217.5%22 cy=%22228.2%22 r=%221.3%22/%3E%3Ccircle cx=%2247.8%22 cy=%2289.9%22 r=%223.0%22/%3E%3Cpath d=%22M38.2 89.9H57.4M47.8 80.3V99.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2251.7%22 cy=%22161.5%22 r=%221.3%22/%3E%3Ccircle cx=%22277.1%22 cy=%22170.2%22 r=%222.3%22/%3E%3Ccircle cx=%22288.2%22 cy=%22164.0%22 r=%222.3%22/%3E%3Ccircle cx=%2263.9%22 cy=%2274.1%22 r=%220.9%22/%3E%3Ccircle cx=%22120.4%22 cy=%22108.4%22 r=%221.6%22/%3E%3Ccircle cx=%2248.0%22 cy=%22234.8%22 r=%220.9%22/%3E%3Ccircle cx=%22215.6%22 cy=%22195.5%22 r=%220.9%22/%3E%3Ccircle cx=%22278.8%22 cy=%22134.6%22 r=%222.6%22/%3E%3Cpath d=%22M270.4 134.6H287.1M278.8 126.3V142.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.3%22 cy=%226.1%22 r=%223.0%22/%3E%3Cpath d=%22M144.7 6.1H163.9M154.3 -3.5V15.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22111.9%22 cy=%2220.6%22 r=%221.3%22/%3E%3Ccircle cx=%22150.0%22 cy=%2236.0%22 r=%222.6%22/%3E%3Cpath d=%22M141.6 36.0H158.3M150.0 27.7V44.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22250.4%22 cy=%22167.2%22 r=%221.1%22/%3E%3Ccircle cx=%2262.9%22 cy=%22163.8%22 r=%221.1%22/%3E%3Ccircle cx=%22279.4%22 cy=%2261.2%22 r=%220.9%22/%3E%3Ccircle cx=%22185.4%22 cy=%22204.1%22 r=%221.3%22/%3E%3Ccircle cx=%2271.5%22 cy=%22108.5%22 r=%221.3%22/%3E%3Ccircle cx=%22124.3%22 cy=%22149.1%22 r=%223.0%22/%3E%3Cpath d=%22M114.7 149.1H133.9M124.3 139.5V158.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22200.7%22 cy=%22113.6%22 r=%221.6%22/%3E%3Ccircle cx=%22233.8%22 cy=%2210.8%22 r=%221.1%22/%3E%3Ccircle cx=%2247.9%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22154.0%22 cy=%2225.7%22 r=%221.6%22/%3E%3Ccircle cx=%22269.9%22 cy=%22115.6%22 r=%221.1%22/%3E%3Ccircle cx=%22242.4%22 cy=%22116.3%22 r=%221.9%22/%3E%3Ccircle cx=%22194.5%22 cy=%2246.1%22 r=%223.0%22/%3E%3Cpath d=%22M184.9 46.1H204.1M194.5 36.5V55.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2219.5%22 cy=%22142.3%22 r=%221.6%22/%3E%3Ccircle cx=%22205.9%22 cy=%2217.7%22 r=%221.1%22/%3E%3Ccircle cx=%2297.5%22 cy=%2233.5%22 r=%221.9%22/%3E%3Ccircle cx=%2252.1%22 cy=%2254.9%22 r=%221.3%22/%3E%3Ccircle cx=%22274.1%22 cy=%226.2%22 r=%221.1%22/%3E%3Ccircle cx=%22130.4%22 cy=%22239.4%22 r=%221.9%22/%3E%3Ccircle cx=%22102.1%22 cy=%22102.7%22 r=%222.3%22/%3E%3Ccircle cx=%2237.3%22 cy=%2244.9%22 r=%221.9%22/%3E%3Ccircle cx=%2225.3%22 cy=%2268.7%22 r=%220.9%22/%3E%3Ccircle cx=%22226.0%22 cy=%2260.0%22 r=%223.0%22/%3E%3Cpath d=%22M216.4 60.0H235.6M226.0 50.4V69.6%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22294.2%22 cy=%22212.5%22 r=%222.3%22/%3E%3Ccircle cx=%2297.1%22 cy=%2221.0%22 r=%222.3%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22260%22 viewBox=%220 0 300 260%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22164.1%22 cy=%2291.1%22 r=%221.3%22/%3E%3Ccircle cx=%2229.3%22 cy=%22237.7%22 r=%220.9%22/%3E%3Ccircle cx=%22288.4%22 cy=%2230.1%22 r=%221.1%22/%3E%3Ccircle cx=%22238.5%22 cy=%2225.6%22 r=%221.9%22/%3E%3Ccircle cx=%22162.3%22 cy=%22214.7%22 r=%221.1%22/%3E%3Ccircle cx=%2268.1%22 cy=%22201.6%22 r=%222.3%22/%3E%3Ccircle cx=%22168.3%22 cy=%2253.5%22 r=%221.3%22/%3E%3Ccircle cx=%2285.3%22 cy=%22193.1%22 r=%221.6%22/%3E%3Ccircle cx=%22154.6%22 cy=%22193.6%22 r=%221.9%22/%3E%3Ccircle cx=%22210.7%22 cy=%22122.8%22 r=%220.9%22/%3E%3Ccircle cx=%22217.5%22 cy=%22228.2%22 r=%221.3%22/%3E%3Ccircle cx=%2247.8%22 cy=%2289.9%22 r=%223.0%22/%3E%3Cpath d=%22M38.2 89.9H57.4M47.8 80.3V99.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2251.7%22 cy=%22161.5%22 r=%221.3%22/%3E%3Ccircle cx=%22277.1%22 cy=%22170.2%22 r=%222.3%22/%3E%3Ccircle cx=%22288.2%22 cy=%22164.0%22 r=%222.3%22/%3E%3Ccircle cx=%2263.9%22 cy=%2274.1%22 r=%220.9%22/%3E%3Ccircle cx=%22120.4%22 cy=%22108.4%22 r=%221.6%22/%3E%3Ccircle cx=%2248.0%22 cy=%22234.8%22 r=%220.9%22/%3E%3Ccircle cx=%22215.6%22 cy=%22195.5%22 r=%220.9%22/%3E%3Ccircle cx=%22278.8%22 cy=%22134.6%22 r=%222.6%22/%3E%3Cpath d=%22M270.4 134.6H287.1M278.8 126.3V142.9%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.3%22 cy=%226.1%22 r=%223.0%22/%3E%3Cpath d=%22M144.7 6.1H163.9M154.3 -3.5V15.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22111.9%22 cy=%2220.6%22 r=%221.3%22/%3E%3Ccircle cx=%22150.0%22 cy=%2236.0%22 r=%222.6%22/%3E%3Cpath d=%22M141.6 36.0H158.3M150.0 27.7V44.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22250.4%22 cy=%22167.2%22 r=%221.1%22/%3E%3Ccircle cx=%2262.9%22 cy=%22163.8%22 r=%221.1%22/%3E%3Ccircle cx=%22279.4%22 cy=%2261.2%22 r=%220.9%22/%3E%3Ccircle cx=%22185.4%22 cy=%22204.1%22 r=%221.3%22/%3E%3Ccircle cx=%2271.5%22 cy=%22108.5%22 r=%221.3%22/%3E%3Ccircle cx=%22124.3%22 cy=%22149.1%22 r=%223.0%22/%3E%3Cpath d=%22M114.7 149.1H133.9M124.3 139.5V158.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22200.7%22 cy=%22113.6%22 r=%221.6%22/%3E%3Ccircle cx=%22233.8%22 cy=%2210.8%22 r=%221.1%22/%3E%3Ccircle cx=%2247.9%22 cy=%2290.8%22 r=%222.3%22/%3E%3Ccircle cx=%22154.0%22 cy=%2225.7%22 r=%221.6%22/%3E%3Ccircle cx=%22269.9%22 cy=%22115.6%22 r=%221.1%22/%3E%3Ccircle cx=%22242.4%22 cy=%22116.3%22 r=%221.9%22/%3E%3Ccircle cx=%22194.5%22 cy=%2246.1%22 r=%223.0%22/%3E%3Cpath d=%22M184.9 46.1H204.1M194.5 36.5V55.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2219.5%22 cy=%22142.3%22 r=%221.6%22/%3E%3Ccircle cx=%22205.9%22 cy=%2217.7%22 r=%221.1%22/%3E%3Ccircle cx=%2297.5%22 cy=%2233.5%22 r=%221.9%22/%3E%3Ccircle cx=%2252.1%22 cy=%2254.9%22 r=%221.3%22/%3E%3Ccircle cx=%22274.1%22 cy=%226.2%22 r=%221.1%22/%3E%3Ccircle cx=%22130.4%22 cy=%22239.4%22 r=%221.9%22/%3E%3Ccircle cx=%22102.1%22 cy=%22102.7%22 r=%222.3%22/%3E%3Ccircle cx=%2237.3%22 cy=%2244.9%22 r=%221.9%22/%3E%3Ccircle cx=%2225.3%22 cy=%2268.7%22 r=%220.9%22/%3E%3Ccircle cx=%22226.0%22 cy=%2260.0%22 r=%223.0%22/%3E%3Cpath d=%22M216.4 60.0H235.6M226.0 50.4V69.6%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22294.2%22 cy=%22212.5%22 r=%222.3%22/%3E%3Ccircle cx=%2297.1%22 cy=%2221.0%22 r=%222.3%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 300px 260px;
+  mask-size: 300px 260px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .proj::after {
+    animation: starTwinkle 4.5s ease-in-out infinite alternate-reverse;
+  }
+}
+
+.tl-sky::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 38% 0;
+  background: #e6f1ff;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22520%22 height=%22380%22 viewBox=%220 0 520 380%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22322.9%22 cy=%22279.9%22 r=%222.3%22/%3E%3Ccircle cx=%22337.8%22 cy=%22201.2%22 r=%221.1%22/%3E%3Ccircle cx=%22336.3%22 cy=%22339.1%22 r=%223.0%22/%3E%3Cpath d=%22M326.7 339.1H345.9M336.3 329.5V348.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22448.6%22 cy=%22145.6%22 r=%222.6%22/%3E%3Cpath d=%22M440.3 145.6H457.0M448.6 137.3V154.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.7%22 cy=%2284.6%22 r=%221.6%22/%3E%3Ccircle cx=%2285.7%22 cy=%22300.5%22 r=%223.0%22/%3E%3Cpath d=%22M76.1 300.5H95.3M85.7 290.9V310.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2268.9%22 cy=%224.7%22 r=%221.1%22/%3E%3Ccircle cx=%22400.1%22 cy=%22361.2%22 r=%222.6%22/%3E%3Cpath d=%22M391.8 361.2H408.4M400.1 352.8V369.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22152.1%22 cy=%22361.7%22 r=%222.3%22/%3E%3Ccircle cx=%22324.4%22 cy=%2271.6%22 r=%221.1%22/%3E%3Ccircle cx=%22498.9%22 cy=%22336.5%22 r=%221.3%22/%3E%3Ccircle cx=%22216.4%22 cy=%22352.1%22 r=%221.3%22/%3E%3Ccircle cx=%22158.3%22 cy=%22228.4%22 r=%223.0%22/%3E%3Cpath d=%22M148.7 228.4H167.9M158.3 218.8V238.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2237.8%22 cy=%22136.2%22 r=%222.3%22/%3E%3Ccircle cx=%22165.7%22 cy=%22183.0%22 r=%220.9%22/%3E%3Ccircle cx=%22135.2%22 cy=%22353.3%22 r=%221.3%22/%3E%3Ccircle cx=%22436.6%22 cy=%2210.7%22 r=%221.3%22/%3E%3Ccircle cx=%22196.7%22 cy=%22316.9%22 r=%222.3%22/%3E%3Ccircle cx=%2296.6%22 cy=%22359.3%22 r=%221.1%22/%3E%3Ccircle cx=%22480.0%22 cy=%22354.4%22 r=%221.3%22/%3E%3Ccircle cx=%22461.1%22 cy=%2297.3%22 r=%221.9%22/%3E%3Ccircle cx=%22387.2%22 cy=%22300.6%22 r=%220.9%22/%3E%3Ccircle cx=%22225.7%22 cy=%22367.9%22 r=%221.9%22/%3E%3Ccircle cx=%22316.7%22 cy=%22345.5%22 r=%222.3%22/%3E%3Ccircle cx=%22283.1%22 cy=%22120.2%22 r=%221.1%22/%3E%3Ccircle cx=%22413.0%22 cy=%22237.2%22 r=%221.3%22/%3E%3Ccircle cx=%22514.3%22 cy=%2264.1%22 r=%223.0%22/%3E%3Cpath d=%22M504.7 64.1H523.9M514.3 54.5V73.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2220.3%22 cy=%22279.5%22 r=%221.3%22/%3E%3Ccircle cx=%22237.3%22 cy=%22160.9%22 r=%222.6%22/%3E%3Cpath d=%22M229.0 160.9H245.6M237.3 152.6V169.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22414.5%22 cy=%22128.3%22 r=%222.3%22/%3E%3Ccircle cx=%22292.8%22 cy=%2253.4%22 r=%221.6%22/%3E%3Ccircle cx=%2258.6%22 cy=%22165.7%22 r=%223.0%22/%3E%3Cpath d=%22M49.0 165.7H68.2M58.6 156.1V175.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.9%22 cy=%22172.6%22 r=%221.1%22/%3E%3Ccircle cx=%22503.7%22 cy=%22172.7%22 r=%222.3%22/%3E%3Ccircle cx=%22166.7%22 cy=%22105.9%22 r=%221.1%22/%3E%3Ccircle cx=%2261.6%22 cy=%22309.8%22 r=%221.1%22/%3E%3Ccircle cx=%22325.0%22 cy=%22189.7%22 r=%220.9%22/%3E%3Ccircle cx=%22255.8%22 cy=%22195.6%22 r=%221.9%22/%3E%3Ccircle cx=%22189.0%22 cy=%22296.4%22 r=%222.3%22/%3E%3Ccircle cx=%22304.8%22 cy=%2216.8%22 r=%221.9%22/%3E%3Ccircle cx=%22364.7%22 cy=%22108.5%22 r=%222.3%22/%3E%3Ccircle cx=%22370.6%22 cy=%22360.0%22 r=%221.1%22/%3E%3Ccircle cx=%22301.3%22 cy=%228.3%22 r=%221.3%22/%3E%3Ccircle cx=%22170.9%22 cy=%22105.8%22 r=%221.9%22/%3E%3Ccircle cx=%22335.5%22 cy=%22300.7%22 r=%222.3%22/%3E%3Ccircle cx=%22180.9%22 cy=%22352.8%22 r=%221.1%22/%3E%3Ccircle cx=%22449.4%22 cy=%22260.1%22 r=%221.3%22/%3E%3Ccircle cx=%22269.3%22 cy=%22200.9%22 r=%223.0%22/%3E%3Cpath d=%22M259.7 200.9H278.9M269.3 191.3V210.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22483.9%22 cy=%22181.5%22 r=%222.3%22/%3E%3Ccircle cx=%22347.5%22 cy=%22159.0%22 r=%221.9%22/%3E%3Ccircle cx=%22268.4%22 cy=%22352.4%22 r=%221.9%22/%3E%3Ccircle cx=%22400.6%22 cy=%22240.9%22 r=%220.9%22/%3E%3Ccircle cx=%22104.1%22 cy=%22222.2%22 r=%221.1%22/%3E%3Ccircle cx=%22116.1%22 cy=%22259.2%22 r=%220.9%22/%3E%3Ccircle cx=%22509.1%22 cy=%22368.5%22 r=%222.6%22/%3E%3Cpath d=%22M500.8 368.5H517.4M509.1 360.2V376.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2260.7%22 cy=%22364.1%22 r=%221.9%22/%3E%3Ccircle cx=%2222.3%22 cy=%22177.1%22 r=%221.9%22/%3E%3Ccircle cx=%2240.9%22 cy=%2280.0%22 r=%221.3%22/%3E%3Ccircle cx=%224.3%22 cy=%22154.8%22 r=%221.6%22/%3E%3Ccircle cx=%22447.6%22 cy=%22260.3%22 r=%220.9%22/%3E%3Ccircle cx=%22285.6%22 cy=%22116.1%22 r=%221.9%22/%3E%3Ccircle cx=%22177.8%22 cy=%22220.1%22 r=%221.1%22/%3E%3Ccircle cx=%22218.6%22 cy=%22306.4%22 r=%221.3%22/%3E%3Ccircle cx=%22243.3%22 cy=%2262.3%22 r=%221.6%22/%3E%3Ccircle cx=%22494.1%22 cy=%22364.1%22 r=%221.3%22/%3E%3Ccircle cx=%22424.5%22 cy=%22250.1%22 r=%221.3%22/%3E%3Ccircle cx=%22293.7%22 cy=%22232.8%22 r=%223.0%22/%3E%3Cpath d=%22M284.1 232.8H303.3M293.7 223.2V242.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22223.8%22 cy=%22367.3%22 r=%221.6%22/%3E%3Ccircle cx=%22501.9%22 cy=%22145.3%22 r=%221.1%22/%3E%3Ccircle cx=%22309.1%22 cy=%22100.7%22 r=%221.6%22/%3E%3Ccircle cx=%22132.5%22 cy=%2211.3%22 r=%221.3%22/%3E%3Ccircle cx=%22255.8%22 cy=%22110.5%22 r=%220.9%22/%3E%3Ccircle cx=%22342.0%22 cy=%22361.4%22 r=%220.9%22/%3E%3Ccircle cx=%22404.2%22 cy=%22311.6%22 r=%223.0%22/%3E%3Cpath d=%22M394.6 311.6H413.8M404.2 302.0V321.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22128.7%22 cy=%22180.4%22 r=%223.0%22/%3E%3Cpath d=%22M119.1 180.4H138.3M128.7 170.8V190.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22141.1%22 cy=%2261.6%22 r=%221.3%22/%3E%3Ccircle cx=%22256.0%22 cy=%22373.2%22 r=%221.9%22/%3E%3Ccircle cx=%22454.9%22 cy=%22336.9%22 r=%222.6%22/%3E%3Cpath d=%22M446.6 336.9H463.2M454.9 328.6V345.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22158.0%22 cy=%22202.5%22 r=%221.3%22/%3E%3Ccircle cx=%22378.4%22 cy=%2213.9%22 r=%222.3%22/%3E%3Ccircle cx=%22385.4%22 cy=%22223.8%22 r=%223.0%22/%3E%3Cpath d=%22M375.8 223.8H395.0M385.4 214.2V233.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22287.3%22 cy=%22259.1%22 r=%222.6%22/%3E%3Cpath d=%22M278.9 259.1H295.6M287.3 250.8V267.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2211.5%22 cy=%22293.6%22 r=%221.9%22/%3E%3Ccircle cx=%22356.8%22 cy=%22358.6%22 r=%221.6%22/%3E%3Ccircle cx=%22247.6%22 cy=%22257.8%22 r=%221.3%22/%3E%3Ccircle cx=%22242.1%22 cy=%22286.0%22 r=%220.9%22/%3E%3Ccircle cx=%22359.6%22 cy=%22165.0%22 r=%221.6%22/%3E%3Ccircle cx=%22470.3%22 cy=%2257.1%22 r=%221.9%22/%3E%3Ccircle cx=%22459.0%22 cy=%22365.9%22 r=%221.6%22/%3E%3Ccircle cx=%22304.0%22 cy=%22306.0%22 r=%222.6%22/%3E%3Cpath d=%22M295.6 306.0H312.3M304.0 297.7V314.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22520%22 height=%22380%22 viewBox=%220 0 520 380%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22322.9%22 cy=%22279.9%22 r=%222.3%22/%3E%3Ccircle cx=%22337.8%22 cy=%22201.2%22 r=%221.1%22/%3E%3Ccircle cx=%22336.3%22 cy=%22339.1%22 r=%223.0%22/%3E%3Cpath d=%22M326.7 339.1H345.9M336.3 329.5V348.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22448.6%22 cy=%22145.6%22 r=%222.6%22/%3E%3Cpath d=%22M440.3 145.6H457.0M448.6 137.3V154.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2210.7%22 cy=%2284.6%22 r=%221.6%22/%3E%3Ccircle cx=%2285.7%22 cy=%22300.5%22 r=%223.0%22/%3E%3Cpath d=%22M76.1 300.5H95.3M85.7 290.9V310.1%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2268.9%22 cy=%224.7%22 r=%221.1%22/%3E%3Ccircle cx=%22400.1%22 cy=%22361.2%22 r=%222.6%22/%3E%3Cpath d=%22M391.8 361.2H408.4M400.1 352.8V369.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22152.1%22 cy=%22361.7%22 r=%222.3%22/%3E%3Ccircle cx=%22324.4%22 cy=%2271.6%22 r=%221.1%22/%3E%3Ccircle cx=%22498.9%22 cy=%22336.5%22 r=%221.3%22/%3E%3Ccircle cx=%22216.4%22 cy=%22352.1%22 r=%221.3%22/%3E%3Ccircle cx=%22158.3%22 cy=%22228.4%22 r=%223.0%22/%3E%3Cpath d=%22M148.7 228.4H167.9M158.3 218.8V238.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2237.8%22 cy=%22136.2%22 r=%222.3%22/%3E%3Ccircle cx=%22165.7%22 cy=%22183.0%22 r=%220.9%22/%3E%3Ccircle cx=%22135.2%22 cy=%22353.3%22 r=%221.3%22/%3E%3Ccircle cx=%22436.6%22 cy=%2210.7%22 r=%221.3%22/%3E%3Ccircle cx=%22196.7%22 cy=%22316.9%22 r=%222.3%22/%3E%3Ccircle cx=%2296.6%22 cy=%22359.3%22 r=%221.1%22/%3E%3Ccircle cx=%22480.0%22 cy=%22354.4%22 r=%221.3%22/%3E%3Ccircle cx=%22461.1%22 cy=%2297.3%22 r=%221.9%22/%3E%3Ccircle cx=%22387.2%22 cy=%22300.6%22 r=%220.9%22/%3E%3Ccircle cx=%22225.7%22 cy=%22367.9%22 r=%221.9%22/%3E%3Ccircle cx=%22316.7%22 cy=%22345.5%22 r=%222.3%22/%3E%3Ccircle cx=%22283.1%22 cy=%22120.2%22 r=%221.1%22/%3E%3Ccircle cx=%22413.0%22 cy=%22237.2%22 r=%221.3%22/%3E%3Ccircle cx=%22514.3%22 cy=%2264.1%22 r=%223.0%22/%3E%3Cpath d=%22M504.7 64.1H523.9M514.3 54.5V73.7%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2220.3%22 cy=%22279.5%22 r=%221.3%22/%3E%3Ccircle cx=%22237.3%22 cy=%22160.9%22 r=%222.6%22/%3E%3Cpath d=%22M229.0 160.9H245.6M237.3 152.6V169.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22414.5%22 cy=%22128.3%22 r=%222.3%22/%3E%3Ccircle cx=%22292.8%22 cy=%2253.4%22 r=%221.6%22/%3E%3Ccircle cx=%2258.6%22 cy=%22165.7%22 r=%223.0%22/%3E%3Cpath d=%22M49.0 165.7H68.2M58.6 156.1V175.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22154.9%22 cy=%22172.6%22 r=%221.1%22/%3E%3Ccircle cx=%22503.7%22 cy=%22172.7%22 r=%222.3%22/%3E%3Ccircle cx=%22166.7%22 cy=%22105.9%22 r=%221.1%22/%3E%3Ccircle cx=%2261.6%22 cy=%22309.8%22 r=%221.1%22/%3E%3Ccircle cx=%22325.0%22 cy=%22189.7%22 r=%220.9%22/%3E%3Ccircle cx=%22255.8%22 cy=%22195.6%22 r=%221.9%22/%3E%3Ccircle cx=%22189.0%22 cy=%22296.4%22 r=%222.3%22/%3E%3Ccircle cx=%22304.8%22 cy=%2216.8%22 r=%221.9%22/%3E%3Ccircle cx=%22364.7%22 cy=%22108.5%22 r=%222.3%22/%3E%3Ccircle cx=%22370.6%22 cy=%22360.0%22 r=%221.1%22/%3E%3Ccircle cx=%22301.3%22 cy=%228.3%22 r=%221.3%22/%3E%3Ccircle cx=%22170.9%22 cy=%22105.8%22 r=%221.9%22/%3E%3Ccircle cx=%22335.5%22 cy=%22300.7%22 r=%222.3%22/%3E%3Ccircle cx=%22180.9%22 cy=%22352.8%22 r=%221.1%22/%3E%3Ccircle cx=%22449.4%22 cy=%22260.1%22 r=%221.3%22/%3E%3Ccircle cx=%22269.3%22 cy=%22200.9%22 r=%223.0%22/%3E%3Cpath d=%22M259.7 200.9H278.9M269.3 191.3V210.5%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22483.9%22 cy=%22181.5%22 r=%222.3%22/%3E%3Ccircle cx=%22347.5%22 cy=%22159.0%22 r=%221.9%22/%3E%3Ccircle cx=%22268.4%22 cy=%22352.4%22 r=%221.9%22/%3E%3Ccircle cx=%22400.6%22 cy=%22240.9%22 r=%220.9%22/%3E%3Ccircle cx=%22104.1%22 cy=%22222.2%22 r=%221.1%22/%3E%3Ccircle cx=%22116.1%22 cy=%22259.2%22 r=%220.9%22/%3E%3Ccircle cx=%22509.1%22 cy=%22368.5%22 r=%222.6%22/%3E%3Cpath d=%22M500.8 368.5H517.4M509.1 360.2V376.8%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2260.7%22 cy=%22364.1%22 r=%221.9%22/%3E%3Ccircle cx=%2222.3%22 cy=%22177.1%22 r=%221.9%22/%3E%3Ccircle cx=%2240.9%22 cy=%2280.0%22 r=%221.3%22/%3E%3Ccircle cx=%224.3%22 cy=%22154.8%22 r=%221.6%22/%3E%3Ccircle cx=%22447.6%22 cy=%22260.3%22 r=%220.9%22/%3E%3Ccircle cx=%22285.6%22 cy=%22116.1%22 r=%221.9%22/%3E%3Ccircle cx=%22177.8%22 cy=%22220.1%22 r=%221.1%22/%3E%3Ccircle cx=%22218.6%22 cy=%22306.4%22 r=%221.3%22/%3E%3Ccircle cx=%22243.3%22 cy=%2262.3%22 r=%221.6%22/%3E%3Ccircle cx=%22494.1%22 cy=%22364.1%22 r=%221.3%22/%3E%3Ccircle cx=%22424.5%22 cy=%22250.1%22 r=%221.3%22/%3E%3Ccircle cx=%22293.7%22 cy=%22232.8%22 r=%223.0%22/%3E%3Cpath d=%22M284.1 232.8H303.3M293.7 223.2V242.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22223.8%22 cy=%22367.3%22 r=%221.6%22/%3E%3Ccircle cx=%22501.9%22 cy=%22145.3%22 r=%221.1%22/%3E%3Ccircle cx=%22309.1%22 cy=%22100.7%22 r=%221.6%22/%3E%3Ccircle cx=%22132.5%22 cy=%2211.3%22 r=%221.3%22/%3E%3Ccircle cx=%22255.8%22 cy=%22110.5%22 r=%220.9%22/%3E%3Ccircle cx=%22342.0%22 cy=%22361.4%22 r=%220.9%22/%3E%3Ccircle cx=%22404.2%22 cy=%22311.6%22 r=%223.0%22/%3E%3Cpath d=%22M394.6 311.6H413.8M404.2 302.0V321.2%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22128.7%22 cy=%22180.4%22 r=%223.0%22/%3E%3Cpath d=%22M119.1 180.4H138.3M128.7 170.8V190.0%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22141.1%22 cy=%2261.6%22 r=%221.3%22/%3E%3Ccircle cx=%22256.0%22 cy=%22373.2%22 r=%221.9%22/%3E%3Ccircle cx=%22454.9%22 cy=%22336.9%22 r=%222.6%22/%3E%3Cpath d=%22M446.6 336.9H463.2M454.9 328.6V345.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22158.0%22 cy=%22202.5%22 r=%221.3%22/%3E%3Ccircle cx=%22378.4%22 cy=%2213.9%22 r=%222.3%22/%3E%3Ccircle cx=%22385.4%22 cy=%22223.8%22 r=%223.0%22/%3E%3Cpath d=%22M375.8 223.8H395.0M385.4 214.2V233.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%22287.3%22 cy=%22259.1%22 r=%222.6%22/%3E%3Cpath d=%22M278.9 259.1H295.6M287.3 250.8V267.4%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3Ccircle cx=%2211.5%22 cy=%22293.6%22 r=%221.9%22/%3E%3Ccircle cx=%22356.8%22 cy=%22358.6%22 r=%221.6%22/%3E%3Ccircle cx=%22247.6%22 cy=%22257.8%22 r=%221.3%22/%3E%3Ccircle cx=%22242.1%22 cy=%22286.0%22 r=%220.9%22/%3E%3Ccircle cx=%22359.6%22 cy=%22165.0%22 r=%221.6%22/%3E%3Ccircle cx=%22470.3%22 cy=%2257.1%22 r=%221.9%22/%3E%3Ccircle cx=%22459.0%22 cy=%22365.9%22 r=%221.6%22/%3E%3Ccircle cx=%22304.0%22 cy=%22306.0%22 r=%222.6%22/%3E%3Cpath d=%22M295.6 306.0H312.3M304.0 297.7V314.3%22 stroke=%22%23000%22 stroke-width=%220.8%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 520px 380px;
+  mask-size: 520px 380px;
+  opacity: 0.8;
+}
+
+.proj-titlerow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1rem;
+  margin: 0.35rem 0 0.7rem;
+}
+
+.proj-titlerow .proj-title {
+  margin: 0;
+}
+
+.proj-devlog {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--pc, var(--line-strong));
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--pc, #ff8a2a) 14%, transparent);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.proj-devlog:hover {
+  background: color-mix(in srgb, var(--pc, #ff8a2a) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+/* The College page heading: never clip the descenders or the question marks */
+.tl-college h3 {
+  padding: 0.06em 0.04em 0.24em;
+  line-height: 1.12;
+  overflow: visible;
+}
+
+/* ---- Every section gets its own identity: palette, pattern and heading style ---- */
+.section-head .eyebrow {
+  display: inline-block;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--amber) 12%, transparent);
+}
+
+.section-head h2 {
+  background: linear-gradient(95deg, var(--cream) 30%, var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+#projects {
+  --amber: #ff9a4a;
+  --sky: #9cc8ff;
+  --line: rgba(137, 216, 255, 0.28);
+  --line-strong: rgba(137, 216, 255, 0.7);
+}
+
+#projects.band::before {
+  background:
+    linear-gradient(rgba(137, 216, 255, 0.045) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(90deg, rgba(137, 216, 255, 0.045) 1px, transparent 1px) 0 0 / 44px 44px,
+    linear-gradient(180deg, rgba(20, 40, 80, 0.55), rgba(5, 8, 16, 0.2));
+  border-block-color: rgba(137, 216, 255, 0.3);
+}
+
+#experiences.band::before {
+  background:
+    repeating-linear-gradient(135deg, rgba(236, 55, 80, 0.07) 0 14px, transparent 14px 28px),
+    linear-gradient(180deg, rgba(60, 8, 18, 0.55), rgba(10, 5, 8, 0.25));
+  border-block-color: rgba(236, 55, 80, 0.4);
+}
+
+#skills.band::before {
+  background:
+    radial-gradient(circle at 12px 12px, rgba(79, 209, 197, 0.16) 1.5px, transparent 2px) 0 0 / 24px 24px,
+    linear-gradient(180deg, rgba(6, 40, 40, 0.5), rgba(5, 12, 14, 0.2));
+  border-block-color: rgba(79, 209, 197, 0.4);
+}
+
+#interests.band::before {
+  background:
+    radial-gradient(circle at 20% 30%, rgba(199, 155, 255, 0.22), transparent 44%),
+    radial-gradient(circle at 80% 70%, rgba(255, 214, 160, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(30, 14, 54, 0.6), rgba(10, 6, 20, 0.25));
+  border-block-color: rgba(199, 155, 255, 0.4);
+}
+
+#contact {
+  position: relative;
+  isolation: isolate;
+}
+
+#contact::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0 calc(50% - 50vw);
+  background:
+    radial-gradient(ellipse at 50% 100%, rgba(255, 179, 71, 0.28), transparent 60%),
+    linear-gradient(180deg, transparent, rgba(60, 30, 6, 0.4));
+  border-top: 1px solid rgba(255, 179, 71, 0.4);
+}
+
+/* Honest authorship note */
+.site-footer {
+  width: min(1220px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 1.4rem 0 2.4rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.55;
+}
+
+.site-footer p {
+  max-width: 52rem;
+  margin: 0;
+}
+
+.site-footer strong {
+  margin-right: 0.3rem;
+  color: var(--cream);
+  letter-spacing: 0.04em;
+}
+
+.hero-ai-note {
+  max-width: 28rem;
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+}
+
+/* ===== Round 5: seat-map nav, softer stars, gentle section fades, cutaway controls ===== */
+.flight-nav a {
+  gap: 0.25rem;
+  padding: 0.5rem 0.55rem;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  color: var(--sky);
+}
+
+.seat-row b {
+  margin-right: 0.3rem;
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.seat-row i {
+  width: 0.34rem;
+  height: 0.42rem;
+  border-radius: 2px 2px 1px 1px;
+  background: rgba(137, 216, 255, 0.32);
+  transition: background 220ms ease, box-shadow 220ms ease;
+}
+
+.seat-row u {
+  width: 0.28rem;
+}
+
+.flight-nav a:hover .seat-row i {
+  background: rgba(255, 138, 42, 0.6);
+}
+
+.flight-nav a.on {
+  border-color: var(--amber);
+  background: rgba(255, 138, 42, 0.12);
+}
+
+.flight-nav a.on .seat-row i {
+  background: var(--amber);
+  box-shadow: 0 0 6px rgba(255, 138, 42, 0.7);
+}
+
+.flight-nav a.on .seat-row b {
+  color: var(--amber);
+}
+
+@media (max-width: 980px) {
+  .seat-row {
+    justify-content: center;
+  }
+}
+
+/* A little fewer stars */
+.proj::before {
+  -webkit-mask-size: 1014px 772px;
+  mask-size: 1014px 772px;
+  opacity: 0.6;
+}
+
+.proj::after {
+  -webkit-mask-size: 742px 643px;
+  mask-size: 742px 643px;
+  opacity: 0.3;
+}
+
+.tl-sky::before {
+  -webkit-mask-size: 1327px 970px;
+  mask-size: 1327px 970px;
+  opacity: 0.5;
+}
+
+/* Section backgrounds fade in and out instead of starting with a hard edge */
+.band::before,
+#contact::before {
+  border: 0 !important;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+}
+
+.band::before {
+  inset-block: -4rem;
+}
+
+#contact::before {
+  inset-block: -5rem 0;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 40%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 40%);
+}
+
+/* Cutaway controls (both 3D viewers) */
+.cut-controls {
+  position: absolute;
+  left: 0.8rem;
+  bottom: 0.8rem;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.8);
+}
+
+.cut-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.38rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--cream);
+  font-size: 0.62rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.cut-controls button:hover,
+.cut-controls button[aria-pressed="true"] {
+  border-color: var(--line-strong);
+  background: rgba(255, 138, 42, 0.14);
+}
+
+.cut-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cut-slider input {
+  width: clamp(6rem, 14vw, 10rem);
+  accent-color: var(--amber);
+}
+
+@media (max-width: 640px) {
+  .cut-controls {
+    right: 0.8rem;
+  }
+}
+
+.seat-row { flex-wrap: wrap; row-gap: 0.18rem; }
+.seat-row b { flex-basis: 100%; margin-right: 0; white-space: nowrap; }
+
+/* Turbofan viewer: fullscreen / expanded and wheel zoom */
+.engine-viewer:fullscreen,
+.engine-viewer.is-expanded {
+  width: 100vw;
+  height: 100vh;
+  background: #05070a;
+}
+
+.engine-viewer.is-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}
+
+.engine-wheel-hint {
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  transform: translateX(-50%);
+  z-index: 3;
+  padding: 0.3rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(5, 7, 10, 0.7);
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+/* Stars are now just sparse bright dots (no drawn sparkles) */
+.proj::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22560%22 height=%22420%22 viewBox=%220 0 560 420%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22136%22 cy=%22228%22 r=%221.8%22/%3E%3Ccircle cx=%22508%22 cy=%22199%22 r=%221.2%22/%3E%3Ccircle cx=%22338%22 cy=%22377%22 r=%222.2%22/%3E%3Ccircle cx=%22148%22 cy=%22102%22 r=%222.2%22/%3E%3Ccircle cx=%22302%22 cy=%22230%22 r=%222.2%22/%3E%3Ccircle cx=%22356%22 cy=%2267%22 r=%221.5%22/%3E%3Ccircle cx=%22482%22 cy=%22219%22 r=%221.2%22/%3E%3Ccircle cx=%22374%22 cy=%2232%22 r=%221.2%22/%3E%3Ccircle cx=%22171%22 cy=%2219%22 r=%221.8%22/%3E%3Ccircle cx=%22265%22 cy=%22299%22 r=%222.2%22/%3E%3Ccircle cx=%22397%22 cy=%22382%22 r=%222.2%22/%3E%3Ccircle cx=%22405%22 cy=%22241%22 r=%221.5%22/%3E%3Ccircle cx=%22488%22 cy=%2246%22 r=%221.5%22/%3E%3Ccircle cx=%22277%22 cy=%22111%22 r=%222.2%22/%3E%3Ccircle cx=%22433%22 cy=%22355%22 r=%222.2%22/%3E%3Ccircle cx=%22284%22 cy=%22163%22 r=%221.8%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22560%22 height=%22420%22 viewBox=%220 0 560 420%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22136%22 cy=%22228%22 r=%221.8%22/%3E%3Ccircle cx=%22508%22 cy=%22199%22 r=%221.2%22/%3E%3Ccircle cx=%22338%22 cy=%22377%22 r=%222.2%22/%3E%3Ccircle cx=%22148%22 cy=%22102%22 r=%222.2%22/%3E%3Ccircle cx=%22302%22 cy=%22230%22 r=%222.2%22/%3E%3Ccircle cx=%22356%22 cy=%2267%22 r=%221.5%22/%3E%3Ccircle cx=%22482%22 cy=%22219%22 r=%221.2%22/%3E%3Ccircle cx=%22374%22 cy=%2232%22 r=%221.2%22/%3E%3Ccircle cx=%22171%22 cy=%2219%22 r=%221.8%22/%3E%3Ccircle cx=%22265%22 cy=%22299%22 r=%222.2%22/%3E%3Ccircle cx=%22397%22 cy=%22382%22 r=%222.2%22/%3E%3Ccircle cx=%22405%22 cy=%22241%22 r=%221.5%22/%3E%3Ccircle cx=%22488%22 cy=%2246%22 r=%221.5%22/%3E%3Ccircle cx=%22277%22 cy=%22111%22 r=%222.2%22/%3E%3Ccircle cx=%22433%22 cy=%22355%22 r=%222.2%22/%3E%3Ccircle cx=%22284%22 cy=%22163%22 r=%221.8%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 560px 420px;
+  mask-size: 560px 420px;
+  opacity: 0.95;
+}
+
+.proj::after {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22460%22 height=%22380%22 viewBox=%220 0 460 380%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22108%22 cy=%22360%22 r=%221.5%22/%3E%3Ccircle cx=%2293%22 cy=%2222%22 r=%221.5%22/%3E%3Ccircle cx=%22117%22 cy=%22374%22 r=%221.5%22/%3E%3Ccircle cx=%22186%22 cy=%2217%22 r=%222.2%22/%3E%3Ccircle cx=%22209%22 cy=%22188%22 r=%221.5%22/%3E%3Ccircle cx=%22408%22 cy=%22154%22 r=%222.2%22/%3E%3Ccircle cx=%22111%22 cy=%2213%22 r=%221.8%22/%3E%3Ccircle cx=%22239%22 cy=%22181%22 r=%222.2%22/%3E%3Ccircle cx=%22331%22 cy=%22250%22 r=%221.2%22/%3E%3Ccircle cx=%22450%22 cy=%2229%22 r=%222.2%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22460%22 height=%22380%22 viewBox=%220 0 460 380%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22108%22 cy=%22360%22 r=%221.5%22/%3E%3Ccircle cx=%2293%22 cy=%2222%22 r=%221.5%22/%3E%3Ccircle cx=%22117%22 cy=%22374%22 r=%221.5%22/%3E%3Ccircle cx=%22186%22 cy=%2217%22 r=%222.2%22/%3E%3Ccircle cx=%22209%22 cy=%22188%22 r=%221.5%22/%3E%3Ccircle cx=%22408%22 cy=%22154%22 r=%222.2%22/%3E%3Ccircle cx=%22111%22 cy=%2213%22 r=%221.8%22/%3E%3Ccircle cx=%22239%22 cy=%22181%22 r=%222.2%22/%3E%3Ccircle cx=%22331%22 cy=%22250%22 r=%221.2%22/%3E%3Ccircle cx=%22450%22 cy=%2229%22 r=%222.2%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 460px 380px;
+  mask-size: 460px 380px;
+  opacity: 0.75;
+}
+
+.tl-sky::before {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22760%22 height=%22560%22 viewBox=%220 0 760 560%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22472%22 cy=%22412%22 r=%221.2%22/%3E%3Ccircle cx=%22635%22 cy=%22431%22 r=%221.5%22/%3E%3Ccircle cx=%22491%22 cy=%22500%22 r=%221.2%22/%3E%3Ccircle cx=%22284%22 cy=%22482%22 r=%222.2%22/%3E%3Ccircle cx=%22413%22 cy=%22321%22 r=%221.2%22/%3E%3Ccircle cx=%22553%22 cy=%22230%22 r=%221.5%22/%3E%3Ccircle cx=%22691%22 cy=%22426%22 r=%221.5%22/%3E%3Ccircle cx=%22576%22 cy=%2245%22 r=%222.2%22/%3E%3Ccircle cx=%22101%22 cy=%227%22 r=%221.2%22/%3E%3Ccircle cx=%22163%22 cy=%22124%22 r=%221.5%22/%3E%3Ccircle cx=%22659%22 cy=%22165%22 r=%221.5%22/%3E%3Ccircle cx=%22409%22 cy=%22377%22 r=%221.5%22/%3E%3Ccircle cx=%22142%22 cy=%22537%22 r=%221.5%22/%3E%3Ccircle cx=%22729%22 cy=%22496%22 r=%221.8%22/%3E%3Ccircle cx=%2222%22 cy=%22233%22 r=%221.5%22/%3E%3Ccircle cx=%22203%22 cy=%22188%22 r=%221.2%22/%3E%3Ccircle cx=%22452%22 cy=%22394%22 r=%221.2%22/%3E%3Ccircle cx=%22238%22 cy=%22455%22 r=%222.2%22/%3E%3C/g%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22760%22 height=%22560%22 viewBox=%220 0 760 560%22%3E%3Cg fill=%22%23000%22%3E%3Ccircle cx=%22472%22 cy=%22412%22 r=%221.2%22/%3E%3Ccircle cx=%22635%22 cy=%22431%22 r=%221.5%22/%3E%3Ccircle cx=%22491%22 cy=%22500%22 r=%221.2%22/%3E%3Ccircle cx=%22284%22 cy=%22482%22 r=%222.2%22/%3E%3Ccircle cx=%22413%22 cy=%22321%22 r=%221.2%22/%3E%3Ccircle cx=%22553%22 cy=%22230%22 r=%221.5%22/%3E%3Ccircle cx=%22691%22 cy=%22426%22 r=%221.5%22/%3E%3Ccircle cx=%22576%22 cy=%2245%22 r=%222.2%22/%3E%3Ccircle cx=%22101%22 cy=%227%22 r=%221.2%22/%3E%3Ccircle cx=%22163%22 cy=%22124%22 r=%221.5%22/%3E%3Ccircle cx=%22659%22 cy=%22165%22 r=%221.5%22/%3E%3Ccircle cx=%22409%22 cy=%22377%22 r=%221.5%22/%3E%3Ccircle cx=%22142%22 cy=%22537%22 r=%221.5%22/%3E%3Ccircle cx=%22729%22 cy=%22496%22 r=%221.8%22/%3E%3Ccircle cx=%2222%22 cy=%22233%22 r=%221.5%22/%3E%3Ccircle cx=%22203%22 cy=%22188%22 r=%221.2%22/%3E%3Ccircle cx=%22452%22 cy=%22394%22 r=%221.2%22/%3E%3Ccircle cx=%22238%22 cy=%22455%22 r=%222.2%22/%3E%3C/g%3E%3C/svg%3E");
+  -webkit-mask-size: 760px 560px;
+  mask-size: 760px 560px;
+  opacity: 0.95;
 }

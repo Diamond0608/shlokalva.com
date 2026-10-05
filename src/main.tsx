@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -29,6 +29,7 @@ function Img(props: React.ImgHTMLAttributes<HTMLImageElement> & { src: string })
 const EngineViewer = lazy(() => import("./EngineViewer"));
 const ProjectModelViewer = lazy(() => import("./ProjectModelViewer"));
 const CharacterSelect = lazy(() => import("./CharacterSelect"));
+import FlightTimeline from "./FlightTimeline";
 
 declare global {
   interface Window {
@@ -57,6 +58,9 @@ type Project = {
   link?: string;
   caution?: string;
   stats: Array<{ label: string; value: string }>;
+  devlog?: string;
+  status: { label: string; tone: "done" | "progress" | "fail"; note: string };
+  learned: string;
 };
 
 const images = {
@@ -105,17 +109,20 @@ const images = {
 };
 
 const nav = [
-  ["NAV", "Mission", "mission"],
-  ["HGR", "Projects", "projects"],
-  ["LOG", "Experiences", "experiences"],
-  ["SYS", "Skills", "skills"],
-  ["INT", "Interests", "interests"],
-  ["COM", "Contact", "contact"]
+  ["NAV", "Mission", "mission", "What drives me"],
+  ["HGR", "Projects", "projects", "Robots, CAD and builds"],
+  ["LOG", "Experiences", "experiences", "My Hack Club story"],
+  ["SYS", "Skills", "skills", "Tools I build with"],
+  ["INT", "Interests", "interests", "Gaming, badminton, poems"],
+  ["COM", "Contact", "contact", "Email and links"]
 ];
 
 const projects: Project[] = [
   {
     id: "little-helper",
+    devlog: "/beest/",
+    status: { label: "Finished", tone: "done", note: "Built end to end and approved golden at Hack Club BEEST." },
+    learned: "CAD only gets you halfway: friction-driven tracks, burnt-out motors and wiring only worked after real debugging on the bench.",
     title: "Little Helper",
     eyebrow: "Teacher Book-Carrying Robot",
     icon: Wrench,
@@ -146,6 +153,8 @@ const projects: Project[] = [
   },
   {
     id: "team-dinoco",
+    status: { label: "Competed", tone: "done", note: "Second in the playoff bracket, out in the quarter-finals." },
+    learned: "A robot is only part of a competition: travel, documentation and your partner team decide the result as much as the build.",
     title: "Team Dinoco",
     eyebrow: "National Robotics League",
     icon: Radar,
@@ -178,6 +187,8 @@ const projects: Project[] = [
   },
   {
     id: "dwello",
+    status: { label: "Completed", tone: "done", note: "Three models, a report and an animation delivered." },
+    learned: "I learnt how fuel flow rates actually work, how to bring that into numericals, and how to write project reports that go deep and explain every design choice.",
     title: "Aircraft Propulsion Internship",
     eyebrow: "Dwello Aerospace",
     icon: Rocket,
@@ -205,6 +216,8 @@ const projects: Project[] = [
   },
   {
     id: "trinetra",
+    status: { label: "Designed", tone: "progress", note: "Complete in CAD, with an electrical schematic. Not built." },
+    learned: "Moving parts need room: most of the work was re-placing components and redoing joints until nothing collided.",
     title: "Trinetra",
     eyebrow: "Wearable Tech CAD Project",
     icon: Shield,
@@ -231,6 +244,8 @@ const projects: Project[] = [
   },
   {
     id: "rc-plane",
+    status: { label: "Didn't fly", tone: "fail", note: "Built and ground-tested, never flew." },
+    learned: "A plan on paper and a plane that flies are different things, so test each system before trusting the whole.",
     title: "Self-Made RC Plane",
     eyebrow: "Scratch-Built Attempt",
     icon: Boxes,
@@ -258,42 +273,11 @@ const projects: Project[] = [
   }
 ];
 
-const experiences = [
-  {
-    title: "CERN Visit",
-    subtitle: "Geneva Learning Experience",
-    image: images.cernGroup,
-    body:
-      "A one-week school masterclass where we visited ALICE, ISOLDE, CMS, ATLAS, the Antimatter Factory, and a lot of places I had only read about before."
-  },
-  {
-    title: "Dwello Aerospace",
-    subtitle: "Aircraft Propulsion Internship",
-    image: images.dwelloTwo,
-    body:
-      "Ramjet and turbofan propulsion models, a technical report, and animation. The full write-up is in Project Hangar."
-  },
-  {
-    title: "Cyber Club Leadership",
-    subtitle: "President And Vice President",
-    image: images.pcBuilding,
-    body:
-      "I helped run events, guide juniors through hands-on tech work, and make the cyber side of school life feel active instead of just theoretical."
-  },
-  {
-    title: "Robotics Club",
-    subtitle: "Founder And Committee Member",
-    image: images.blackShirtCohorts,
-    body:
-      "I helped get more people into robotics and tech at school, while learning that explaining a build can be harder than building it."
-  }
-];
-
 const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }> = [
   {
     title: "CERN Evenings",
     body:
-      "The science was the point, but the best memories were also the evening walks through Chamonix, Carouge, Geneva Old Town, and the random friend-group moments between the serious bits.",
+      "Evening walks through Chamonix, Carouge and Geneva Old Town.",
     gallery: [
       { src: images.cernGroup, alt: "CERN visit group photo", caption: "CERN With Friends" },
       { src: images.cernLab, alt: "CERN laboratory visit photo", caption: "CERN Lab" },
@@ -305,7 +289,7 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
   {
     title: "Cyber Club, Helios And Iris",
     body:
-      "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris, alongside speaking and running Cyber Club events.",
+      "Helios, Iris and Cyber Club (President, earlier Vice President) events, on stage and behind the scenes.",
     gallery: [
       { src: images.cyberPodium, alt: "Speaking at a Cyber Club or Helios event", caption: "On Stage" },
       { src: images.cyberLabOne, alt: "Running a school tech event", caption: "Running Events" },
@@ -323,25 +307,6 @@ const skills = [
   { title: "3D Printing", detail: "Designing parts around print constraints and assembly." },
   { title: "Technical Writing", detail: "Reports, documentation, BOMs, and build guides." }
 ];
-
-const signals = [
-  {
-    title: "IIT Madras Aerospace Course",
-    body: "Completed an eight-week aerospace certification course.",
-    image: images.iitmLogo
-  },
-  {
-    title: "My Flying Academy Workshop",
-    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real.",
-    image: images.planeOutline
-  },
-  {
-    title: "Cyber Competitions",
-    body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
-    image: images.hkuAiChallenge
-  }
-];
-
 const interests = [
   {
     title: "Gaming",
@@ -349,7 +314,7 @@ const interests = [
   },
   {
     title: "Badminton",
-    body: "Played casually. Not everything needs a medal table; sometimes it's just fun to hit things very fast."
+    body: "Started playing in Grade 10 and went for coaching for a year to improve my skills. Not everything needs a medal table; sometimes it's just fun to hit things very fast."
   }
 ];
 
@@ -406,6 +371,7 @@ function useMozartLoop(enabled: boolean) {
   const contextRef = useRef<AudioContext | null>(null);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const startedRef = useRef(false);
+  const startingRef = useRef(false);
   const melodyTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -422,7 +388,9 @@ function useMozartLoop(enabled: boolean) {
     );
     musicRef.current = music;
     music.loop = true;
-    music.preload = "auto";
+    // "none": do not pull the 6 MB overture on page load. It starts downloading when the first gesture
+    // primes playback, which is well before the synth intro hands off to it.
+    music.preload = "none";
     music.volume = 0.42;
     music.muted = true;
 
@@ -486,7 +454,8 @@ function useMozartLoop(enabled: boolean) {
     };
 
     const startMusic = () => {
-      if (startedRef.current) return;
+      if (startedRef.current || startingRef.current) return;
+      startingRef.current = true;
 
       context.resume().then(() => {
         // The audio element is primed during the user gesture while muted.
@@ -495,15 +464,18 @@ function useMozartLoop(enabled: boolean) {
         music.currentTime = 0;
         music.play().then(() => {
           startedRef.current = true;
+          startingRef.current = false;
           stopSynth();
           playSequence(firstSynth, 185, () => {
             playSequence(secondSynth, 155, handoffToMozart);
           });
         }).catch(() => {
           startedRef.current = false;
+          startingRef.current = false;
         });
       }).catch(() => {
         startedRef.current = false;
+        startingRef.current = false;
       });
     };
 
@@ -533,6 +505,7 @@ function useMozartLoop(enabled: boolean) {
       music.currentTime = 0;
       music.muted = true;
       startedRef.current = false;
+      startingRef.current = false;
     };
   }, [enabled]);
 }
@@ -605,82 +578,147 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
   );
 }
 
-function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: GalleryImage) => void }) {
+// Each project is a boxed panel with its own star colour: media beside the text, quick-glance stat boxes,
+// tech chips, status and lesson on show, and the full detail behind a button.
+const projectStars: Record<string, string> = {
+  "little-helper": "#ff9a4a",
+  "team-dinoco": "#7aa8ff",
+  dwello: "#4fd1c5",
+  trinetra: "#c79bff",
+  "rc-plane": "#ffd166"
+};
+
+function ProjectRow({ project, index, onOpen }: { project: Project; index: number; onOpen: (image: GalleryImage) => void }) {
+  const [open, setOpen] = useState(false);
   const Icon = project.icon;
+  const hero = project.gallery[0];
   return (
     <motion.article
-      className="project-card"
+      className={index % 2 === 1 ? "proj proj-rev" : "proj"}
+      style={{ "--pc": projectStars[project.id] ?? "#89d8ff" } as CSSProperties}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.16 }}
+      viewport={{ once: true, amount: 0.12 }}
     >
-      <div className="project-flip">
-        <div className="project-face project-front">
-          <Img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
-          <div className="project-overlay">
-            <span>{project.eyebrow}</span>
-            <h3>{project.title}</h3>
-          </div>
+      <button className="proj-media" onClick={() => onOpen(hero)} aria-label={`Open image: ${hero.caption}`}>
+        <Img src={hero.src} alt={hero.alt} loading="lazy" />
+        <span className="proj-index">{String(index + 1).padStart(2, "0")}</span>
+      </button>
+      <div className="proj-body">
+        <span className="proj-eyebrow">
+          <Icon size={16} /> {project.eyebrow}
+        </span>
+        <div className="proj-titlerow">
+          <h3 className="proj-title">{project.title}</h3>
+          {project.devlog && (
+            <a className="proj-devlog" href={project.devlog}>
+              Read The Devlog <ChevronRight size={15} />
+            </a>
+          )}
         </div>
-        <div className="project-face project-back">
-          <Icon size={28} />
-          <h3>{project.title}</h3>
-          <span>Flight Notes</span>
-        </div>
-      </div>
-      <div className="project-copy">
-        <p>{project.summary}</p>
-        <ul>
-          {project.facts.map((fact) => (
-            <li key={fact}>{fact}</li>
-          ))}
-        </ul>
+        <p className={`proj-status proj-status-${project.status.tone}`}>
+          <b>Status: {project.status.label}</b> {project.status.note}
+        </p>
+        <p className="proj-sum">{project.summary}</p>
         {project.caution && <p className="caution">{project.caution}</p>}
+        <p className="proj-learned">
+          <span>What I learned</span> {project.learned}
+        </p>
         <div className="chip-row">
           {project.stack.map((item) => (
             <span key={item}>{item}</span>
           ))}
         </div>
-        {project.link && (
-          <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
-            Open Source Link <ExternalLink size={15} />
-          </a>
-        )}
-      </div>
-      <div className="project-stats" aria-label={`${project.title} project statistics`}>
-        {project.stats.map((stat) => (
-          <motion.div
-            key={stat.label}
-            className="stat-card"
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35 }}
-          >
-            <span>{stat.label}</span>
-            <strong>{stat.value}</strong>
-          </motion.div>
-        ))}
-      </div>
-      <details className="spec-sheet">
-        <summary>Technical Spec Sheet</summary>
-        <div className="spec-sheet-grid">
-          <div><span>Project</span><strong>{project.title}</strong></div>
-          <div><span>Creator</span><strong>Shlok Alva</strong></div>
-          <div><span>Category</span><strong>{project.eyebrow}</strong></div>
-          <div><span>Stack</span><strong>{project.stack.join(" • ")}</strong></div>
+        <div className="proj-statboxes" aria-label={`${project.title} at a glance`}>
+          {project.stats.map((stat) => (
+            <div key={stat.label} className="proj-statbox">
+              <span>{stat.label}</span>
+              <strong>{stat.value}</strong>
+            </div>
+          ))}
         </div>
-      </details>
-      <div className="media-timeline" aria-label="Project media timeline">
-        {project.gallery.map((item, index) => (
-          <button key={`${item.caption}-timeline`} onClick={() => onOpen(item)} title={item.caption}>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <strong>{item.type === "model" ? "3D" : item.youtubeId || item.type === "video" ? "VIDEO" : "MEDIA"}</strong>
+        <div className="proj-actions">
+          <button className="proj-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+            {open ? "Hide Details" : "Details And Media"} <ChevronRight size={16} className={open ? "proj-chev open" : "proj-chev"} />
           </button>
-        ))}
+          {project.link && (
+            <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
+              Open Source Link <ExternalLink size={15} />
+            </a>
+          )}
+        </div>
       </div>
-      <PhotoStrip gallery={project.gallery} onOpen={onOpen} />
+      {open && (
+        <div className="proj-more">
+          <ul>
+            {project.facts.map((fact) => (
+              <li key={fact}>{fact}</li>
+            ))}
+          </ul>
+          <details className="spec-sheet">
+            <summary>Technical Spec Sheet</summary>
+            <div className="spec-sheet-grid">
+              <div><span>Project</span><strong>{project.title}</strong></div>
+              <div><span>Creator</span><strong>Shlok Alva</strong></div>
+              <div><span>Category</span><strong>{project.eyebrow}</strong></div>
+              <div><span>Stack</span><strong>{project.stack.join(" • ")}</strong></div>
+            </div>
+          </details>
+          <PhotoStrip gallery={project.gallery} onOpen={onOpen} />
+        </div>
+      )}
     </motion.article>
+  );
+}
+
+// An original sleek black dragon: dark scales with a teal rim light, big glowing green eyes, swept crest and a spade tail.
+function DragonCompanion() {
+  return (
+    <div className="dragon" aria-hidden="true">
+      <svg viewBox="0 0 230 150" className="dragon-svg">
+        <defs>
+          <linearGradient id="dgBody" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#2b3342" />
+            <stop offset="1" stopColor="#07090e" />
+          </linearGradient>
+          <linearGradient id="dgWing" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#222a3a" />
+            <stop offset="1" stopColor="#0a0d14" stopOpacity="0.85" />
+          </linearGradient>
+          <radialGradient id="dgEye" cx="0.4" cy="0.4" r="0.7">
+            <stop offset="0" stopColor="#d9ff9a" />
+            <stop offset="0.6" stopColor="#5fe06a" />
+            <stop offset="1" stopColor="#1d8f45" />
+          </radialGradient>
+        </defs>
+        <g className="dragon-bob">
+          <g className="dragon-wing dragon-wing-far">
+            <path d="M126 78 C112 44 86 30 58 34 C68 44 74 52 80 60 C88 58 96 60 102 64 C112 66 120 72 126 78 Z" fill="#10141d" opacity="0.9" />
+          </g>
+          <path className="dragon-tail" d="M26 120 C46 130 74 122 96 100 L108 108 C80 138 46 142 20 130 Z" fill="url(#dgBody)" />
+          <path d="M12 126 L26 117 L31 133 Z" fill="#1e3a44" stroke="#58d6c2" strokeWidth="1.2" />
+          <path d="M88 94 C104 72 146 70 164 86 C172 94 166 110 146 114 C124 120 96 114 88 94 Z" fill="url(#dgBody)" stroke="#2f8f8a" strokeWidth="0.8" />
+          <path d="M120 112 C122 124 130 128 138 122" stroke="#10141d" strokeWidth="6" strokeLinecap="round" fill="none" />
+          <path d="M156 84 C166 68 176 60 188 58" stroke="url(#dgBody)" strokeWidth="15" strokeLinecap="round" fill="none" />
+          <path d="M176 50 C187 43 205 46 213 55 C218 61 216 67 207 69 C198 71 187 67 181 63 Z" fill="url(#dgBody)" stroke="#2f8f8a" strokeWidth="0.8" />
+          <path d="M184 47 L168 40 L180 52 Z" fill="#161c28" stroke="#58d6c2" strokeWidth="0.8" />
+          <path d="M192 46 L178 34 L188 50 Z" fill="#161c28" stroke="#58d6c2" strokeWidth="0.8" />
+          <g fill="#161c28" stroke="#58d6c2" strokeWidth="0.7">
+            <path d="M104 78 L109 67 L116 78 Z" />
+            <path d="M122 74 L127 63 L134 74 Z" />
+            <path d="M140 76 L145 65 L152 77 Z" />
+          </g>
+          <ellipse cx="199" cy="56" rx="6" ry="5.4" fill="url(#dgEye)" />
+          <ellipse cx="200" cy="56" rx="1.6" ry="4.2" fill="#04060a" />
+          <circle cx="197.4" cy="53.8" r="1.4" fill="#fff" />
+          <path d="M203 65 Q208 68 212 63" stroke="#58d6c2" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+          <g className="dragon-wing dragon-wing-near">
+            <path d="M132 80 C118 38 88 18 50 22 C62 34 70 46 78 58 C88 54 98 54 106 58 C114 62 124 70 132 80 Z" fill="url(#dgWing)" stroke="#2f8f8a" strokeWidth="0.8" />
+            <path d="M132 80 L50 22 M132 80 L78 58 M132 80 L106 58" stroke="#58d6c2" strokeWidth="1.1" fill="none" opacity="0.55" />
+          </g>
+        </g>
+      </svg>
+    </div>
   );
 }
 
@@ -756,15 +794,55 @@ function LazyMount({ children }: { children: React.ReactNode }) {
 
 function App() {
   const [booted, setBooted] = useState(false);
+  const [activeNav, setActiveNav] = useState("");
+
+  // Seat-map nav: the row for the section currently on screen lights up.
+  useEffect(() => {
+    const targets = nav.map(([, , id]) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    const onScroll = () => {
+      const line = window.innerHeight * 0.4;
+      let current = "";
+      targets.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= line && rect.bottom > line) current = el.id;
+      });
+      setActiveNav(current);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const reducedMotion = useReducedMotion();
   useMozartLoop(soundEnabled);
 
+  // External links always open in a new tab so the portfolio stays open.
+  useEffect(() => {
+    const onClick = (event: MouseEvent) => {
+      const link = (event.target as Element | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (!link || link.target) return;
+      let url: URL;
+      try { url = new URL(link.href, location.href); } catch { return; }
+      if (/^https?:$/.test(url.protocol) && url.origin !== location.origin) {
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      }
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  // The /beest/ page reads this so the sound choice carries across pages.
+  useEffect(() => {
+    try { localStorage.setItem("portfolio-sound", soundEnabled ? "on" : "off"); } catch { /* storage unavailable */ }
+  }, [soundEnabled]);
+
   const handleSoundToggle = () => {
     setSoundEnabled((value) => {
       const next = !value;
       window.dispatchEvent(new CustomEvent("portfolio:sound-toggle", { detail: { enabled: next } }));
+      try { localStorage.setItem("portfolio-sound", next ? "on" : "off"); } catch { /* storage unavailable */ }
       return next;
     });
   };
@@ -805,14 +883,22 @@ function App() {
       </div>
       {!booted && <FlightLoader />}
 
+      <DragonCompanion />
+
       <aside className="flight-nav" aria-label="Flight Deck Navigation">
         <a className="seat-brand" href="#top">
           VT-PLN
         </a>
-        {nav.map(([seat, label, target]) => (
-          <a key={seat} href={`#${target}`}>
-            <span>{seat}</span>
+        {nav.map(([seat, label, target, hint], index) => (
+          <a key={seat} href={`#${target}`} className={activeNav === target ? "on" : undefined} aria-current={activeNav === target ? "location" : undefined}>
+            <span className="seat-row" aria-hidden="true">
+              <b>Row {index + 1}</b>
+              <i /><i /><i />
+              <u />
+              <i /><i /><i />
+            </span>
             <strong>{label}</strong>
+            <small>{hint}</small>
           </a>
         ))}
         <button className="audio-control" onClick={handleSoundToggle} aria-label="Toggle Interface Sound">
@@ -849,26 +935,47 @@ function App() {
             <a href="#projects" className="primary">
               Enter Project Hangar <ChevronRight size={18} />
             </a>
+            <a href="/beest/" className="secondary">
+              Read The Devlogs <ChevronRight size={18} />
+            </a>
             <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer" className="secondary">
               GitHub <Github size={18} />
             </a>
           </div>
+          <p className="hero-ai-note">This site was built with AI assistance. The projects it shows are my own work.</p>
         </div>
         <div className="hero-board">
-          <div className="flight-card">
-            <div className="flight-card-copy">
-              <span>Aircraft Registry</span>
-              <strong>VT-PLN</strong>
-              <p>Engineering • Robotics • Aerospace • Software</p>
-              <div className="flight-card-status">
-                <span>FLIGHT DECK</span>
-                <b>CONFIG / VT-PLN</b>
-                <i />
-              </div>
-            </div>
-          </div>
           <CockpitPanel />
           <FlightMascot />
+        </div>
+      </section>
+
+      <section className="glance" aria-label="At a glance">
+        <div>
+          <span>Studying</span>
+          <strong>Grade 12</strong>
+          <p>National Public School Koramangala</p>
+        </div>
+        <div>
+          <span>Aiming For</span>
+          <strong>Aerospace Engineering</strong>
+          <p>Robotics, CAD and propulsion</p>
+        </div>
+        <div>
+          <span>Best Work</span>
+          <strong>Little Helper</strong>
+          <p>Hack Club BEEST, approved and golden.</p>
+          <a className="glance-btn" href="#projects">
+            See The Projects <ChevronRight size={15} />
+          </a>
+        </div>
+        <div>
+          <span>Also</span>
+          <strong>Cyber Club President</strong>
+          <p>Earlier Vice President. Robotics Club founder and committee member.</p>
+          <a className="glance-btn" href="#timeline">
+            See The Timeline <ChevronRight size={15} />
+          </a>
         </div>
       </section>
 
@@ -888,6 +995,14 @@ function App() {
         </div>
       </section>
 
+      <section id="timeline" className="section timeline-section" aria-label="Flight timeline">
+        <div className="section-head">
+          <p className="eyebrow">Timeline</p>
+          <h2>Flight Timeline</h2>
+        </div>
+        <FlightTimeline />
+      </section>
+
       <section id="characters" className="section character-section">
         <div className="section-head">
           <h2>Character Select</h2>
@@ -895,38 +1010,21 @@ function App() {
         <LazyMount><CharacterSelect /></LazyMount>
       </section>
 
-      <section id="projects" className="section">
+      <section id="projects" className="section band">
         <div className="section-head">
           <p className="eyebrow">Projects</p>
           <h2>Project Hangar</h2>
           <p>Things I Built, Helped Build, Or Learned From The Hard Way.</p>
         </div>
-        <div className="project-grid">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
+        <div className="proj-list">
+          {projects.map((project, index) => (
+            <ProjectRow key={project.id} project={project} index={index} onOpen={setActiveImage} />
           ))}
         </div>
       </section>
 
-      <section id="experiences" className="section">
-        <div className="section-head">
-          <p className="eyebrow">Experiences</p>
-          <h2>Flight Log</h2>
-        </div>
-        <div className="experience-grid">
-          {experiences.map((experience) => (
-            <article key={experience.title} className="experience-card">
-              <Img src={experience.image} alt="" loading="lazy" />
-              <div>
-                <span>{experience.subtitle}</span>
-                <h3>{experience.title}</h3>
-                <p>{experience.body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <article id="beest" className="beest-card">
+      <section id="experiences" className="section band">
+        <article id="beest" className="beest-card beest-solo">
           <div className="beest-gallery">
             <img
               className="beest-hero"
@@ -1031,27 +1129,7 @@ function App() {
         </div>
       </section>
 
-      <section className="section">
-        <div className="section-head">
-          <p className="eyebrow">Signals</p>
-          <h2>Other Stuff Worth Keeping On The Radar</h2>
-          <p>A few more pieces of the story that still matter, even when they do not need a giant project card.</p>
-        </div>
-        <div className="signal-grid">
-          {signals.map((signal) => (
-            <article key={signal.title}>
-              <Img src={signal.image} alt="" loading="lazy" />
-              <div>
-                <Radar size={18} />
-                <h3>{signal.title}</h3>
-                <p>{signal.body}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="interests" className="section interests">
+      <section id="interests" className="section interests band">
         <div className="section-head">
           <p className="eyebrow">Other Interests</p>
           <h2>Outside The Hangar</h2>
@@ -1104,7 +1182,7 @@ function App() {
             <h3>Little Helper — Interactive CAD Model</h3>
             <p>Rotate and zoom the full CAD assembly.</p>
           </div>
-          <LazyMount><ProjectModelViewer src="/assets/little-helper.glb" /></LazyMount>
+          <LazyMount><ProjectModelViewer src="/assets/little-helper.glb" cutaway /></LazyMount>
         </div>
         <div className="engine-project-model">
           <div className="section-head">
@@ -1121,7 +1199,7 @@ function App() {
           <p className="eyebrow">Contact</p>
           <div className="final-boarding-image">
             <Img
-              src="https://www.aircraft.airbus.com/sites/g/files/jlcbta126/files/2021-10/A350%20MSN3%20COCKPIT%20WHILE%20DUSK.jpg"
+              src="/assets/a350-cockpit.jpg"
               alt="Airbus A350 cockpit"
               loading="lazy"
             />
@@ -1131,6 +1209,9 @@ function App() {
           <p>Phone: <a href={`tel:${contactPhone}`}>{contactPhone}</a></p>
         </div>
         <div className="contact-actions">
+          <a href="/beest/">
+            Little Helper Devlog <ChevronRight size={17} />
+          </a>
           <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer">
             GitHub <ExternalLink size={17} />
           </a>
@@ -1140,6 +1221,12 @@ function App() {
         </div>
       </section>
 
+
+      <footer className="site-footer">
+        <p>
+          <strong>Made with AI.</strong> This site was built with AI assistance (Claude, by Anthropic). The site’s code, layout and some of its wording were produced with AI under my direction. The projects, devlogs, photos and results it describes are my own work.
+        </p>
+      </footer>
 
       {activeImage && (
         <div className="lightbox" role="dialog" aria-modal="true" aria-label={activeImage.caption} onClick={() => setActiveImage(null)}>

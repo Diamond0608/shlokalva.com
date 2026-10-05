@@ -32,6 +32,10 @@ tools/*.py                  one-off asset prep scripts with hardcoded Windows `S
 
 Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `#skills`, signals, `#interests`, Engine Room (3 live 3D viewers), `#contact`. Nav anchors in the `nav` array must match these ids.
 
+## Branching
+
+Work happens on one branch, `dev`, which holds everything not yet live. Push to `main` only when Shlok says so, then merge `dev` into `main` in one go. The Flight Timeline (`src/FlightTimeline.tsx`) has 16 milestones plus the College takeover; dates come from Shlok. Bakebuild is shown as May 2026 and "Summer, Grade 11" has no year because Shlok was unsure; confirm before going live. Only use facts already on the site or given by Shlok.
+
 ## Rules that will bite you
 
 1. **Do not touch the "last updated" string.** `src/main.tsx` contains `LAST UPDATED ON <b>DD MON YYYY</b>` (uppercase month). A GitHub Action rewrites it with a regex `sed`, plus `<lastmod>` in `public/sitemap.xml`, on every push to `main`. Never hand-edit those dates and never change that markup's shape, or the Action silently stops matching.
@@ -50,6 +54,12 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 ## Character Select
 
 `src/CharacterSelect.tsx` (lazy, mounted in `#characters` via `LazyMount`). Six modes shown as 3D photo cards: transparent cutouts of Shlok (`public/assets/cut-*.webp`, background removed with rembg) on a swaying layered card. A stat or Age/Height/Level of `null` renders as PLACEHOLDER. Fill them only with values Shlok gives you (stats are self-rated 1-10); never invent numbers. A smaller Side Character box (Trixie, Little Helper, Souls of the Goldfish) sits to the right of the main select; Trixie is his pet German shepherd (photo card). Keep photos of Shlok only; do not use the ID photo or group shots where he cannot be identified.
+
+## Engine Room and extras
+
+- `public/scene.glb` is ONE merged mesh (a single node from an STL export; splitting it by connectivity gives about 120,000 tiny pieces). There are no bodies named 640/576/577, so a true exploded view is impossible from it. `EngineViewer.tsx` runs a slow lengthwise cutaway instead (renderer clipping plane, studio reflections, brushed-steel material). For a real exploded view, Shlok must re-export the Fusion model as a GLB with separate named bodies.
+- `DragonCompanion` in `main.tsx` is an original SVG dragon (desktop only, decorative, motion respects reduced-motion).
+- The 6 MB Figaro overture is not preloaded (`preload = "none"`); it starts downloading on the first gesture.
 
 ## Content and voice
 

@@ -367,3 +367,48 @@ h2.small {
   color: var(--muted);
   font-size: 0.8rem;
 }
+
+.ai-note {
+  margin: 1.6rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.ai-note strong {
+  color: var(--cream);
+}
+
+.sound-btn {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 30;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(5, 7, 10, 0.85);
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sound-btn:hover {
+  border-color: var(--amber);
+}
+
+/* Small plane cursor, same as the main page */
+body,
+button,
+a,
+.photo-tile,
+.project-card,
+.cockpit-grid button,
+.lightbox {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Cg transform='rotate(-18 14 14)' fill='none' stroke='%2389d8ff' stroke-width='1.35' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 2.5C12.8 5.2 12.2 8.1 12.2 11.3L12.2 25.3L14 26.5L15.8 25.3L15.8 11.3C15.8 8.1 15.2 5.2 14 2.5Z'/%3E%3Cpath d='M12.5 11.6L3.2 15.8L2.3 14.4L11.8 9.8'/%3E%3Cpath d='M15.5 11.6L24.8 15.8L25.7 14.4L16.2 9.8'/%3E%3Cpath d='M12.3 19.2L7.5 23.5L8.8 24.5L12.8 22.5'/%3E%3Cpath d='M15.7 19.2L20.5 23.5L19.2 24.5L15.2 22.5'/%3E%3C/g%3E%3C/svg%3E") 4 4, auto !important;
+}
