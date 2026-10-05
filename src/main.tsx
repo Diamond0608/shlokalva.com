@@ -106,7 +106,6 @@ const images = {
 const nav = [
   ["NAV", "Mission", "mission"],
   ["HGR", "Projects", "projects"],
-  ["AERO", "Aerospace", "aerospace"],
   ["LOG", "Experiences", "experiences"],
   ["SYS", "Skills", "skills"],
   ["INT", "Interests", "interests"],
@@ -326,6 +325,16 @@ const skills = [
 
 const signals = [
   {
+    title: "IIT Madras Aerospace Course",
+    body: "Completed an eight-week aerospace certification course.",
+    image: images.iitmLogo
+  },
+  {
+    title: "My Flying Academy Workshop",
+    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real.",
+    image: images.planeOutline
+  },
+  {
     title: "Hack Club BEEST",
     body: "Selected as one of the 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of travel-related issues and received approximately ₹40,000 INR instead.",
     image: images.hackClubLogo
@@ -334,17 +343,6 @@ const signals = [
     title: "Cyber Competitions",
     body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
     image: images.hkuAiChallenge
-  }
-];
-
-const aerospaceNotes = [
-  {
-    title: "IIT Madras Aerospace Course",
-    body: "Completed an eight-week aerospace certification course."
-  },
-  {
-    title: "My Flying Academy Workshop",
-    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real."
   }
 ];
 
@@ -898,22 +896,6 @@ function App() {
         <div className="project-grid">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
-          ))}
-        </div>
-      </section>
-
-      <section id="aerospace" className="section aerospace">
-        <div className="section-head">
-          <p className="eyebrow">Aerospace</p>
-          <h2>Propulsion, Flight, And Systems Thinking</h2>
-          <p>The Dwello internship and the RC plane are in Project Hangar. These are the other aviation pieces.</p>
-        </div>
-        <div className="cockpit-grid cockpit-grid-two">
-          {aerospaceNotes.map((note) => (
-            <div key={note.title} className="instrument-panel">
-              <h3>{note.title}</h3>
-              <p>{note.body}</p>
-            </div>
           ))}
         </div>
       </section>

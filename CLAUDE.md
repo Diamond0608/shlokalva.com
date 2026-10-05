@@ -30,7 +30,7 @@ tools/*.py                  one-off asset prep scripts with hardcoded Windows `S
 .asset-review/              contact sheets for reviewing assets; not part of the build
 ```
 
-Page sections in order: hero, `#mission`, `#projects`, `#aerospace`, `#experiences`, scenes, `#skills`, signals, `#interests`, Engine Room (3 live 3D viewers), `#contact`. Nav anchors in the `nav` array must match these ids.
+Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `#skills`, signals, `#interests`, Engine Room (3 live 3D viewers), `#contact`. Nav anchors in the `nav` array must match these ids.
 
 ## Rules that will bite you
 
