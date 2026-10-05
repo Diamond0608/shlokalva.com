@@ -63,20 +63,17 @@ Page sections in order: hero, `#mission`, `#projects`, `#aerospace`, `#experienc
 ## Conventions
 
 - TypeScript strict, function components, hooks. Icons come from `lucide-react`, animation from `framer-motion` (respect `useReducedMotion`), 3D from `@react-three/fiber` + `drei`.
-- Vite `manualChunks` splits react / three / framer-motion / lucide. If you add a heavy dependency, add a chunk for it.
+- Vite `manualChunks` splits react / framer-motion / lucide. three is NOT in manualChunks on purpose: `EngineViewer` and `ProjectModelViewer` are `React.lazy` imports mounted via `LazyMount`, so three only loads when the Engine Room scrolls into view. Do not re-add three to `manualChunks` or import the viewers statically; that puts about 1 MB back in the initial load.
 - Use `loading="lazy"` on new below-the-fold images. Give every meaningful image real `alt` text; decorative ones get `alt=""`.
 - Prefer self-hosted assets. Existing hotlinks (Airbus cockpit image, Wikimedia Mozart `.ogg`, YouTube thumbnails) are fragile; do not add more.
 - Keep `main.tsx` content as typed data arrays at the top, components below. If asked to refactor, split data into `src/data/*.ts` and components into `src/components/*.tsx` without changing rendered output.
 
 ## Known issues (fix when asked, do not silently "improve")
 
-- 5-second forced boot loader (`window.setTimeout(..., reducedMotion ? 100 : 5000)` in `App`). Should be about 1 second or skippable.
-- Sound defaults to ON (`useState(true)`) with site-wide hover/click blips and looping Mozart. Should default off and be opt-in.
-- All three WebGL canvases (turbofan + 2 project models) mount eagerly in the Engine Room. Should mount on scroll-into-view (IntersectionObserver). `.glb` files are not Draco-compressed.
-- No favicon `<link rel="icon">` in `index.html`.
-- Lightbox (`role="dialog"`) has no Escape-key handling or focus trap.
+- Assets: `.glb` models are meshopt-compressed (`scene.glb`, `little-helper.glb`) or Draco (`trinetra.glb`). Keep node names intact (the engine viewer looks up bodies 640/576/577 by name). Keep videos small (720-1280px, crf about 28).
+
+- Sound defaults to ON (`useState(true)`) with site-wide hover/click blips and looping Mozart. This is intentional (Shlok wants it on by default); do not change it.
 - Single site-wide `og:image` (`rc-plane.jpg`); no per-project previews.
-- Stray `image_2026-09-18_*.png` files in the repo root are duplicates of assets and can be deleted.
 - `site-patches.js` patches rendered DOM from outside React via a `MutationObserver`. Fixes belong in `main.tsx` / `styles.css` instead; do not add new patches there.
 
 ## Before you finish

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -18,8 +18,8 @@ import {
   Wrench
 } from "lucide-react";
 import "./styles.css";
-import EngineViewer from "./EngineViewer";
-import ProjectModelViewer from "./ProjectModelViewer";
+const EngineViewer = lazy(() => import("./EngineViewer"));
+const ProjectModelViewer = lazy(() => import("./ProjectModelViewer"));
 
 declare global {
   interface Window {
@@ -751,7 +751,7 @@ function LazyMount({ children }: { children: React.ReactNode }) {
     observer.observe(node);
     return () => observer.disconnect();
   }, [visible]);
-  return <div ref={ref} className="lazy-mount">{visible ? children : null}</div>;
+  return <div ref={ref} className="lazy-mount">{visible ? <Suspense fallback={null}>{children}</Suspense> : null}</div>;
 }
 
 function App() {
@@ -1083,7 +1083,7 @@ function App() {
             ) : activeImage.type === "video" ? (
               <video src={activeImage.src} controls autoPlay muted loop playsInline />
             ) : activeImage.type === "model" && activeImage.modelPath ? (
-              <ProjectModelViewer src={activeImage.modelPath} />
+              <Suspense fallback={null}><ProjectModelViewer src={activeImage.modelPath} /></Suspense>
             ) : (
               <img src={activeImage.src} alt={activeImage.alt} />
             )}
