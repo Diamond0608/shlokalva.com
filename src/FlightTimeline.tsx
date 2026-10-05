@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties } from "react";
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 
@@ -6,14 +6,15 @@ type Milestone = { label: string; date: string; title: string; body: string };
 
 const milestones: Milestone[] = [
   { label: "01", date: "6 Aug 2009", title: "Born", body: "The start of the flight plan." },
-  { label: "02", date: "12 Years", title: "Montessori To Grade 12", body: "All of school at National Public School Koramangala, from Montessori to Grade 12." },
-  { label: "03", date: "Date TBD", title: "Robotics And Cyber Clubs", body: "Founded the Robotics Club, then led the Cyber Club as President and Vice President." },
-  { label: "04", date: "Date TBD", title: "CERN, Geneva", body: "A week of masterclass visits to ALICE, ISOLDE, CMS, ATLAS and the Antimatter Factory." },
-  { label: "05", date: "Date TBD", title: "Dwello Aerospace", body: "A month on aircraft propulsion: ramjet and turbofan CAD, simulation and a technical report." },
-  { label: "06", date: "Date TBD", title: "Team Dinoco At The NRL", body: "Captained the team from 92nd to second in the playoffs, then out in the quarter-finals." },
+  { label: "02", date: "15 Years", title: "Montessori To Grade 12", body: "All of school at National Public School Koramangala." },
+  { label: "03", date: "May 2025", title: "Dwello Aerospace", body: "A month on aircraft propulsion: ramjet and turbofan CAD, simulation and a report." },
+  { label: "04", date: "Grades 11 & 12", title: "Cyber Club", body: "Led the club as Vice President and President, running events and guiding juniors." },
+  { label: "05", date: "Dec 2025", title: "Team Dinoco At The NRL", body: "Captained the team from 92nd to second in the playoffs, out in the quarter-finals." },
+  { label: "06", date: "May 2026", title: "CERN, Geneva", body: "A week visiting ALICE, ISOLDE, CMS, ATLAS and the Antimatter Factory." },
   { label: "07", date: "31 May - 19 Aug 2026", title: "Little Helper", body: "Designed and built a track-based robot that carries books for teachers." },
-  { label: "08", date: "15 Jul 2026", title: "Hack Club BEEST", body: "Little Helper approved and marked golden. Could not travel, so the grants bought a printer, drill and monitor." },
-  { label: "09", date: "Next", title: "College????", body: "Aerospace engineering is the plan. Where is still being decided." }
+  { label: "08", date: "15 Jul 2026", title: "Hack Club BEEST", body: "Little Helper approved and golden. Could not travel; the grants bought a printer, drill and monitor." },
+  { label: "09", date: "21 - 23 Aug 2026", title: "Trinetra", body: "A wearable-tech CAD project: enclosure, extension mechanism and an electrical schematic." },
+  { label: "10", date: "Grade 12", title: "Robotics Club", body: "Founded the club to get more people into robotics and tech at school." }
 ];
 
 const PHASES: Array<[number, string]> = [
@@ -137,12 +138,17 @@ function StaticTimeline() {
           <p>{milestone.body}</p>
         </li>
       ))}
+      <li>
+        <span>Next</span>
+        <h3>College????</h3>
+        <p>Aerospace engineering is the plan. Where is still being decided.</p>
+      </li>
     </ol>
   );
 }
 
 // Milestone i appears once the plane has flown this far; earlier ones stay on screen.
-const appearAt = (index: number) => 0.05 + index * (0.8 / (milestones.length - 1));
+const appearAt = (index: number) => 0.04 + index * (0.78 / (milestones.length - 1));
 
 // Static night skyline at the far end of the runway: terminal blocks, a control tower and lit windows.
 const SKYLINE: Array<[number, number, number]> = [
@@ -191,6 +197,7 @@ export default function FlightTimeline() {
   const gearOpacity = useTransform(scrollYProgress, [0.56, 0.68], [1, 0]);
   const shadowY = useTransform(scrollYProgress, [0, 0.55, 1], ["0vh", "26vh", "26vh"]);
   const shadowOpacity = useTransform(scrollYProgress, [0, 0.04, 0.55, 0.8], [0, 0.55, 0.55, 0]);
+  const collegeY = useTransform(scrollYProgress, [0.88, 0.985], ["100%", "0%"]);
   const cloudsY = useTransform(scrollYProgress, [0.55, 1], ["-25%", "115%"]);
   const cloudsOpacity = useTransform(scrollYProgress, [0.5, 0.62, 1], [0, 0.9, 0.9]);
   const barWidth = useTransform(scrollYProgress, (v) => `${Math.round(v * 100)}%`);
@@ -226,7 +233,7 @@ export default function FlightTimeline() {
 
   return (
     <div className="tl-wrap" ref={wrapRef}>
-      <div className="tl-stage">
+      <div className="tl-stage" style={{ "--n": milestones.length, "--shown": shown } as CSSProperties}>
         <div className="tl-sky" aria-hidden="true">
           <i className="tl-moon" />
         </div>
@@ -243,6 +250,9 @@ export default function FlightTimeline() {
         <motion.div className="tl-plane-wrap" style={{ x: planeX, y: planeY, scale: planeScale, rotate: planeRotate, opacity: planeOpacity }}>
           <A350 gearOpacity={gearOpacity} />
         </motion.div>
+        <div className="tl-spine" aria-hidden="true">
+          <i />
+        </div>
         <div className="tl-vignette" aria-hidden="true" />
 
         <div className="tl-hud">
@@ -260,19 +270,29 @@ export default function FlightTimeline() {
           {milestones.map((milestone, i) => (
             <li
               key={milestone.label}
-              className={["tl-card", i < shown ? "shown" : "", i === shown - 1 ? "latest" : "", i % 2 === 0 ? "left" : "right"].join(" ")}
-              style={{ gridRow: Math.floor(i / 2) + 1 }}
+              className={["tl-row", i < shown ? "shown" : "", i === shown - 1 ? "latest" : "", i % 2 === 0 ? "left" : "right"].join(" ")}
+              style={{ "--i": i } as CSSProperties}
               aria-hidden={i >= shown}
             >
-              <span className="tl-card-num">{milestone.label}</span>
-              <span className="tl-card-date">{milestone.date}</span>
-              <h3>{milestone.title}</h3>
-              <p>{milestone.body}</p>
+              <span className="tl-date-side">{milestone.date}</span>
+              <span className="tl-node">{milestone.label}</span>
+              <div className="tl-card-box">
+                <span className="tl-card-date-m">{milestone.date}</span>
+                <h3>{milestone.title}</h3>
+                <p>{milestone.body}</p>
+              </div>
             </li>
           ))}
         </ol>
 
         <Milestones active={Math.max(0, shown - 1)} onPick={pick} />
+
+        <motion.div className="tl-college" style={{ y: collegeY }}>
+          <i className="tl-college-moon" aria-hidden="true" />
+          <span className="tl-college-eyebrow">Next Destination</span>
+          <h3>College????</h3>
+          <p>Aerospace engineering is the plan. Where is still being decided.</p>
+        </motion.div>
       </div>
     </div>
   );

@@ -3519,10 +3519,11 @@ h3 {
 /* Flight timeline: an A350 takes off as you scroll. Native scrolling only, never captured. */
 .tl-wrap {
   position: relative;
-  height: 540vh;
+  height: 620vh;
 }
 
 .tl-stage {
+  --card-h: 5.9rem;
   position: sticky;
   top: 1rem;
   height: calc(100vh - 2rem);
@@ -3730,7 +3731,7 @@ h3 {
 
 @media (max-width: 620px) {
   .tl-wrap {
-    height: 450vh;
+    height: 520vh;
   }
 
   .tl-stage {
@@ -3828,110 +3829,281 @@ h3 {
   75% { opacity: 0.15; }
 }
 
+/* Timeline structure: a central spine, nodes, connectors, alternating cards with dates on the opposite side */
 .tl-cards {
   position: absolute;
-  inset: 4.4rem 1.2rem auto;
+  inset: 3.8rem 1.2rem 3.6rem;
   z-index: 3;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 34%) minmax(0, 1fr);
-  gap: 0.7rem 1rem;
   margin: 0;
   padding: 0;
   list-style: none;
   pointer-events: none;
 }
 
-.tl-card {
+.tl-spine {
+  position: absolute;
+  top: calc(3.8rem + var(--card-h) / 2);
+  bottom: calc(3.6rem + var(--card-h) / 2);
+  left: 50%;
+  z-index: 1;
+  width: 2px;
+  transform: translateX(-50%);
+  background: rgba(137, 216, 255, 0.14);
+}
+
+.tl-spine i {
+  position: absolute;
+  inset: 0 0 auto;
+  height: max(0px, calc(100% * (var(--shown) - 1) / (var(--n) - 1)));
+  background: linear-gradient(180deg, var(--sky), var(--amber));
+  box-shadow: 0 0 10px rgba(137, 216, 255, 0.45);
+  transition: height 700ms cubic-bezier(0.22, 0.7, 0.2, 1);
+}
+
+.tl-row {
+  position: absolute;
+  top: calc((100% - var(--card-h)) * var(--i) / (var(--n) - 1));
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 3.4rem minmax(0, 1fr);
+  align-items: center;
+  height: var(--card-h);
+}
+
+.tl-node {
+  z-index: 2;
+  display: grid;
+  grid-column: 2;
+  width: 1.9rem;
+  height: 1.9rem;
+  place-items: center;
+  justify-self: center;
+  border: 2px solid rgba(137, 216, 255, 0.35);
+  border-radius: 50%;
+  background: #070a10;
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 950;
+  transition: border-color 400ms ease, color 400ms ease, box-shadow 400ms ease, transform 400ms ease;
+  transform: scale(0.7);
+}
+
+.tl-row.shown .tl-node {
+  border-color: var(--sky);
+  color: var(--cream);
+  transform: scale(1);
+}
+
+.tl-row.latest .tl-node {
+  border-color: var(--amber);
+  box-shadow: 0 0 0 5px rgba(255, 138, 42, 0.18), 0 0 18px rgba(255, 138, 42, 0.5);
+  color: var(--amber);
+}
+
+.tl-card-box {
   position: relative;
-  padding: 0.7rem 0.9rem 0.8rem;
+  max-width: 24rem;
+  padding: 0.65rem 0.85rem 0.7rem;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(8, 11, 16, 0.92);
-  backdrop-filter: blur(4px);
+  background: rgba(8, 11, 16, 0.94);
   text-align: center;
   opacity: 0;
   transform: translateY(14px) scale(0.97);
-  transition: opacity 420ms ease, transform 420ms ease, border-color 300ms ease, box-shadow 300ms ease;
+  transition: opacity 450ms ease, transform 450ms ease, border-color 300ms ease, box-shadow 300ms ease;
 }
 
-.tl-card.left { grid-column: 1; }
-.tl-card.right { grid-column: 3; }
+.tl-card-box::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 1.5rem;
+  height: 2px;
+  background: linear-gradient(90deg, var(--sky), var(--amber));
+  opacity: 0.8;
+}
 
-.tl-card.shown {
+.tl-row.left .tl-card-box { grid-column: 1; justify-self: end; margin-right: 1.5rem; }
+.tl-row.left .tl-card-box::after { left: 100%; }
+.tl-row.right .tl-card-box { grid-column: 3; justify-self: start; margin-left: 1.5rem; }
+.tl-row.right .tl-card-box::after { right: 100%; }
+
+.tl-row.shown .tl-card-box {
   opacity: 1;
   transform: none;
 }
 
-.tl-card.latest {
+.tl-row.latest .tl-card-box {
   border-color: var(--amber);
-  box-shadow: 0 0 22px rgba(255, 138, 42, 0.28);
+  box-shadow: 0 0 22px rgba(255, 138, 42, 0.26);
 }
 
-.tl-card-num {
-  display: inline-grid;
-  width: 1.7rem;
-  height: 1.7rem;
-  place-items: center;
-  margin-bottom: 0.25rem;
-  border: 1px solid var(--line-strong);
+.tl-date-side {
+  align-self: center;
+  color: rgba(137, 216, 255, 0.78);
+  font-size: 0.86rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 500ms ease 120ms;
+}
+
+.tl-row.left .tl-date-side { grid-column: 3; padding-left: 1.5rem; text-align: left; }
+.tl-row.right .tl-date-side { grid-column: 1; padding-right: 1.5rem; text-align: right; }
+.tl-row.shown .tl-date-side { opacity: 1; }
+
+.tl-card-date-m {
+  display: none;
+}
+
+.tl-card-box h3 {
+  margin: 0 0 0.2rem;
+  font-size: 1.04rem;
+}
+
+.tl-card-box p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.38;
+}
+
+/* The college page: a full-stage panel that scrolls up over everything */
+.tl-college {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 0.8rem;
+  padding: 2rem;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(255, 138, 42, 0.24), transparent 46%),
+    radial-gradient(circle at 20% 80%, rgba(137, 216, 255, 0.12), transparent 40%),
+    #05070a;
+}
+
+.tl-college-moon {
+  position: absolute;
+  top: 16%;
+  left: 50%;
+  width: 22rem;
+  height: 22rem;
+  border: 1px solid rgba(137, 216, 255, 0.14);
   border-radius: 50%;
-  color: var(--amber);
-  font-size: 0.62rem;
-  font-weight: 950;
+  box-shadow: 0 0 0 3rem rgba(137, 216, 255, 0.04), 0 0 0 6.5rem rgba(255, 138, 42, 0.04);
+  transform: translateX(-50%);
 }
 
-.tl-card-date {
-  display: block;
-  color: var(--sky);
-  font-size: 0.62rem;
+.tl-college-eyebrow {
+  position: relative;
+  color: var(--amber);
+  font-size: 0.8rem;
   font-weight: 950;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
 }
 
-.tl-card h3 {
-  margin: 0.15rem 0 0.2rem;
-  font-size: 1.12rem;
+.tl-college h3 {
+  position: relative;
+  margin: 0;
+  font-size: clamp(3rem, 11vw, 8.5rem);
+  padding-bottom: 0.12em;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  background: linear-gradient(180deg, var(--cream), #ffb066 70%, var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
-.tl-card p {
+.tl-college p {
+  position: relative;
+  max-width: 30rem;
   margin: 0;
   color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.4;
+  font-size: 1.05rem;
 }
 
 @media (max-width: 760px) {
   .tl-cards {
-    inset: 3.8rem 0.8rem auto;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0.35rem;
+    inset: 3.5rem 0.8rem 3.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
   }
 
-  .tl-card.left,
-  .tl-card.right {
-    grid-column: 1;
+  .tl-spine {
+    top: 0.9rem;
+    bottom: 0.9rem;
+    left: 0.9rem;
   }
 
-  .tl-card {
-    grid-row: auto !important;
+  .tl-row {
+    position: relative;
+    top: auto;
     display: grid;
-    grid-template-columns: auto 1fr;
-    align-items: center;
-    column-gap: 0.6rem;
-    padding: 0.35rem 0.6rem;
+    grid-template-columns: 1.8rem minmax(0, 1fr);
+    gap: 0.5rem;
+    height: auto;
+  }
+
+  .tl-node {
+    grid-column: 1;
+    width: 1.6rem;
+    height: 1.6rem;
+    font-size: 0.54rem;
+  }
+
+  .tl-row.left .tl-card-box,
+  .tl-row.right .tl-card-box {
+    grid-column: 2;
+    justify-self: stretch;
+    max-width: none;
+    margin: 0;
+    padding: 0.3rem 0.6rem;
     text-align: left;
   }
 
-  .tl-card-num {
-    grid-row: 1 / span 2;
-    margin: 0;
+  .tl-card-box::after,
+  .tl-date-side {
+    display: none;
   }
 
-  .tl-card-date { font-size: 0.56rem; }
-  .tl-card h3 { margin: 0; font-size: 0.92rem; }
-  .tl-card p { display: none; }
-  .tl-card.latest p { display: block; grid-column: 2; font-size: 0.74rem; }
+  .tl-card-date-m {
+    display: block;
+    color: var(--sky);
+    font-size: 0.54rem;
+    font-weight: 950;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .tl-card-box h3 { margin: 0; font-size: 0.9rem; }
+  .tl-card-box p { display: none; }
+  .tl-row.latest .tl-card-box p { display: block; font-size: 0.72rem; }
 
   .tl-skyline { bottom: 36%; }
+}
+
+.tl-plane-wrap {
+  z-index: 2;
+}
+
+.tl-shadow {
+  z-index: 1;
+}
+
+@media (max-width: 760px) {
+  .tl-spine {
+    top: calc(3.5rem + 0.9rem);
+    bottom: calc(3.4rem + 0.9rem);
+    left: calc(0.8rem + 0.9rem);
+    z-index: 3;
+  }
 }

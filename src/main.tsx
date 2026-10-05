@@ -423,7 +423,9 @@ function useMozartLoop(enabled: boolean) {
     );
     musicRef.current = music;
     music.loop = true;
-    music.preload = "auto";
+    // "none": do not pull the 6 MB overture on page load. It starts downloading when the first gesture
+    // primes playback, which is well before the synth intro hands off to it.
+    music.preload = "none";
     music.volume = 0.42;
     music.muted = true;
 
