@@ -60,7 +60,7 @@ const characters: Character[] = [
     cardHeight: 1.9,
     cutoutAlt: "Shlok speaking at a podium",
     stats: ["Leadership", "Coordination", "Public Speaking", "Crisis Handling"],
-    ultimate: { name: "Rally Call", text: "Everyone gets a role, a plan and one very loud pep talk." },
+    ultimate: { name: "Rally Call", text: "Everyone gets a plan, and maybe some angry yelling." },
     signature: "Makes the plan, then the backup plan, then the group chat",
     weakness: "Stressed.",
     quests: ["Team Dinoco", "Cyber Club", "Robotics Club"]
@@ -89,7 +89,7 @@ const characters: Character[] = [
     cutoutAlt: "Shlok sitting thoughtfully outdoors",
     stats: ["Reflection", "Wordcraft", "Overthinking", "Tweaking Out"],
     ultimate: { name: "Memento Mori", text: "Freezes the moment and turns it into a poem." },
-    signature: "Memento Mori and Magnum Opus",
+    signature: "Contemplative",
     weakness: "Questionable sleep schedule.",
     quests: ["Poems"]
   },
@@ -102,7 +102,7 @@ const characters: Character[] = [
     cardHeight: 1.7,
     cutoutAlt: "Shlok and friends piled together",
     stats: ["Loyalty", "Humour", "Gaming Skill", "Sleep Debt"],
-    ultimate: { name: "Squad Revive", text: "Brings the whole team back from the brink with one terrible joke." },
+    ultimate: { name: "Squad Revive", text: "Brings the whole team back from the brink." },
     signature: "Feeling at home",
     weakness: "Too many hours on Valorant.",
     quests: ["CERN Evenings", "Valorant, Fortnite, RDR2 and more"]
