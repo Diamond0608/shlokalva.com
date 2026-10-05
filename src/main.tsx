@@ -9,6 +9,7 @@ import {
   ExternalLink,
   Github,
   Plane,
+  Play,
   Radar,
   Rocket,
   Shield,
@@ -131,7 +132,6 @@ const projects: Project[] = [
     link: "https://github.com/Diamond0608/Little-Helper",
     stats: [
       { label: "Build Time", value: "~70 hrs" },
-      { label: "Controllers", value: "ESP32 + ESP8266" },
       { label: "Drive", value: "4WD Tracks" },
       { label: "Auth", value: "RFID + PIN" }
     ],
@@ -172,7 +172,6 @@ const projects: Project[] = [
     caution: "Team Result: Second In Bracket For Playoffs; Quarter-Final Elimination.",
     stats: [
       { label: "Role", value: "Team Captain" },
-      { label: "Playoffs", value: "Second In Bracket For Playoffs" },
       { label: "Event", value: "National Finals" },
       { label: "Focus", value: "Strategy + Build" }
     ]
@@ -252,9 +251,9 @@ const projects: Project[] = [
       { label: "Controls", value: "Ailerons" }
     ],
     gallery: [
-      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane — Never Flew" },
+      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" },
       { src: "/assets/rc-plane-detail.mp4", alt: "RC plane detail video", caption: "Plane Detail Video", type: "video" },
-      { src: "/assets/plane-video.mp4", alt: "Scratch-built RC plane ground video", caption: "Ground Test — Never Flew", type: "video" }
+      { src: "/assets/plane-video.mp4", alt: "Scratch-built RC plane ground video", caption: "Ground Test", type: "video" }
     ]
   }
 ];
@@ -272,7 +271,7 @@ const experiences = [
     subtitle: "Aircraft Propulsion Internship",
     image: images.dwelloTwo,
     body:
-      "Worked on propulsion model design, report writing, and simulation/animation work across ramjet and turbofan concepts."
+      "Ramjet and turbofan propulsion models, a technical report, and animation. The full write-up is in Project Hangar."
   },
   {
     title: "Cyber Club Leadership",
@@ -306,7 +305,7 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
   {
     title: "Cyber Club, Helios And Iris",
     body:
-      "A mix of speaking, helping younger students, and robotics-event work. It is the part of school tech where I was not just building my own things.",
+      "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris, alongside speaking and running Cyber Club events.",
     gallery: [
       { src: images.cyberPodium, alt: "Speaking at a Cyber Club or Helios event", caption: "On Stage" },
       { src: images.cyberLabOne, alt: "Running a school tech event", caption: "Running Events" },
@@ -327,16 +326,6 @@ const skills = [
 
 const signals = [
   {
-    title: "IIT Madras Aerospace Course",
-    body: "Completed an eight-week aerospace certification course. It sits neatly beside the propulsion internship and RC plane work.",
-    image: images.iitmLogo
-  },
-  {
-    title: "My Flying Academy Workshop",
-    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real.",
-    image: images.planeOutline
-  },
-  {
     title: "Hack Club BEEST",
     body: "Selected as one of the 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of travel-related issues and received approximately ₹40,000 INR instead.",
     image: images.hackClubLogo
@@ -345,11 +334,17 @@ const signals = [
     title: "Cyber Competitions",
     body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
     image: images.hkuAiChallenge
+  }
+];
+
+const aerospaceNotes = [
+  {
+    title: "IIT Madras Aerospace Course",
+    body: "Completed an eight-week aerospace certification course."
   },
   {
-    title: "Helios And Iris",
-    body: "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris.",
-    image: images.blackShirtCohorts
+    title: "My Flying Academy Workshop",
+    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real."
   }
 ];
 
@@ -596,7 +591,7 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
       </button>
       <div ref={stripRef} className="photo-strip" aria-label="Scrollable Photo Gallery">
         {gallery.map((image) => (
-          <button key={`${image.src}-${image.caption}`} className="photo-tile" onClick={() => onOpen(image)}>
+          <button key={`${image.src}-${image.caption}`} className="photo-tile" aria-label={image.youtubeId || image.type === "video" ? `${image.caption} (video)` : image.caption} onClick={() => onOpen(image)}>
             {image.type === "video" ? (
               <video src={image.src} muted loop playsInline preload="metadata" />
             ) : (
@@ -604,7 +599,7 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
             )}
             <span>{image.caption}</span>
             {image.youtubeId || image.type === "video" || image.type === "model" ? (
-              <small>{image.type === "model" ? "3D MODEL • CLICK TO OPEN" : "CLICK TO OPEN"}</small>
+              <small aria-hidden="true">{image.type === "model" ? "3D" : <Play size={14} />}</small>
             ) : null}
           </button>
         ))}
@@ -636,7 +631,6 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
         <div className="project-face project-back">
           <Icon size={28} />
           <h3>{project.title}</h3>
-          <p>{project.summary}</p>
           <span>Flight Notes</span>
         </div>
       </div>
@@ -912,24 +906,15 @@ function App() {
         <div className="section-head">
           <p className="eyebrow">Aerospace</p>
           <h2>Propulsion, Flight, And Systems Thinking</h2>
+          <p>The Dwello internship and the RC plane are in Project Hangar. These are the other aviation pieces.</p>
         </div>
-        <div className="cockpit-grid">
-          <button onClick={() => setActiveImage(projects[2].gallery[0])}>
-            <Img src={images.dwelloOne} alt="Turbofan CAD render" loading="lazy" />
-            <span>Dwello Turbofan CAD</span>
-          </button>
-          <button
-            onClick={() =>
-              setActiveImage({ src: images.rcPlane, alt: "Scratch-built RC plane", caption: "NACA 0012 RC Plane" })
-            }
-          >
-            <Img src={images.rcPlane} alt="Scratch-built RC plane" loading="lazy" />
-            <span>NACA 0012 RC Plane</span>
-          </button>
-          <div className="instrument-panel">
-            <h3>Flight Thread</h3>
-            <p>Dwello Propulsion, IIT Madras Aerospace Coursework, My Flying Academy, And The RC Plane All Sit In The Same Aviation Obsession.</p>
-          </div>
+        <div className="cockpit-grid cockpit-grid-two">
+          {aerospaceNotes.map((note) => (
+            <div key={note.title} className="instrument-panel">
+              <h3>{note.title}</h3>
+              <p>{note.body}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -1058,7 +1043,7 @@ function App() {
           <div className="section-head">
             <p className="eyebrow">Engineering Model</p>
             <h3>Little Helper — Interactive CAD Model</h3>
-            <p>Inspect the uploaded Little Helper model directly here instead of opening it from the project image gallery.</p>
+            <p>Rotate and zoom the full CAD assembly.</p>
           </div>
           <LazyMount><ProjectModelViewer src="/assets/little-helper.glb" /></LazyMount>
         </div>
@@ -1066,7 +1051,7 @@ function App() {
           <div className="section-head">
             <p className="eyebrow">Engineering Model</p>
             <h3>Trinetra — Interactive CAD Model</h3>
-            <p>Inspect the uploaded Trinetra model directly here as part of the Engine Room.</p>
+            <p>Rotate and zoom the enclosure and mechanism.</p>
           </div>
           <LazyMount><ProjectModelViewer src="/assets/trinetra.glb" /></LazyMount>
         </div>
