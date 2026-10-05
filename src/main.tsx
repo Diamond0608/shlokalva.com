@@ -922,7 +922,8 @@ function App() {
             </ul>
             <p>
               I was selected as one of the 30 participants scheduled to travel to the Netherlands for BEEST. I could not
-              go because of travel-related issues and received approximately ₹40,000 INR instead.
+              go because of travel-related issues, and instead received grants, which I used to buy a drill, a monitor, 3D
+              printing filament, a Bambu Lab A1 3D printer and a mouse to work on my projects better.
             </p>
             <p className="beest-note">Trinetra was devlogged the same way, but those logs are not published here.</p>
             <a className="primary" href="/beest/">
