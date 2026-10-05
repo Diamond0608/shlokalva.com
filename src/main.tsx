@@ -623,7 +623,21 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
           </div>
         </div>
         <div className="project-face project-back">
-          <Icon size={28} />
+          <Img
+            className="project-back-img"
+            src={(project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model") ?? project.gallery[0]).src}
+            alt=""
+            loading="lazy"
+          />
+          <div className="project-back-scrim" />
+          <div className="project-emblem" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+            <b />
+            <Icon size={30} />
+          </div>
+          <span className="project-back-eyebrow">{project.eyebrow}</span>
           <h3>{project.title}</h3>
           <span>Flight Notes</span>
         </div>
