@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect, useRef, useState } from "react";
+import React, { Suspense, lazy, useEffect, useRef, useState, type CSSProperties } from "react";
 import { createRoot } from "react-dom/client";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -58,6 +58,8 @@ type Project = {
   link?: string;
   caution?: string;
   stats: Array<{ label: string; value: string }>;
+  status: { label: string; tone: "done" | "progress" | "fail"; note: string };
+  learned: string;
 };
 
 const images = {
@@ -117,6 +119,8 @@ const nav = [
 const projects: Project[] = [
   {
     id: "little-helper",
+    status: { label: "Finished", tone: "done", note: "Built end to end and approved golden at Hack Club BEEST." },
+    learned: "CAD only gets you halfway: friction-driven tracks, burnt-out motors and wiring only worked after real debugging on the bench.",
     title: "Little Helper",
     eyebrow: "Teacher Book-Carrying Robot",
     icon: Wrench,
@@ -147,6 +151,8 @@ const projects: Project[] = [
   },
   {
     id: "team-dinoco",
+    status: { label: "Competed", tone: "done", note: "Second in the playoff bracket, out in the quarter-finals." },
+    learned: "A robot is only part of a competition: travel, documentation and your partner team decide the result as much as the build.",
     title: "Team Dinoco",
     eyebrow: "National Robotics League",
     icon: Radar,
@@ -179,6 +185,8 @@ const projects: Project[] = [
   },
   {
     id: "dwello",
+    status: { label: "Completed", tone: "done", note: "Three models, a report and an animation delivered." },
+    learned: "Writing down the method behind every model choice mattered as much as the CAD itself.",
     title: "Aircraft Propulsion Internship",
     eyebrow: "Dwello Aerospace",
     icon: Rocket,
@@ -206,6 +214,8 @@ const projects: Project[] = [
   },
   {
     id: "trinetra",
+    status: { label: "Designed", tone: "progress", note: "Complete in CAD, with an electrical schematic. Not built." },
+    learned: "Moving parts need room: most of the work was re-placing components and redoing joints until nothing collided.",
     title: "Trinetra",
     eyebrow: "Wearable Tech CAD Project",
     icon: Shield,
@@ -232,6 +242,8 @@ const projects: Project[] = [
   },
   {
     id: "rc-plane",
+    status: { label: "Didn't fly", tone: "fail", note: "Built and ground-tested, never flew." },
+    learned: "A plan on paper and a plane that flies are different things, so test each system before trusting the whole.",
     title: "Self-Made RC Plane",
     eyebrow: "Scratch-Built Attempt",
     icon: Boxes,
@@ -564,78 +576,68 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
   );
 }
 
-// Hybrid: the original flip-card look (image front, radar emblem back, stat cards) with the detail folded away.
-function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: GalleryImage) => void }) {
+// Each project is a boxed panel with its own star colour: media beside the text, quick-glance stat boxes,
+// tech chips, status and lesson on show, and the full detail behind a button.
+const projectStars: Record<string, string> = {
+  "little-helper": "#ff9a4a",
+  "team-dinoco": "#7aa8ff",
+  dwello: "#4fd1c5",
+  trinetra: "#c79bff",
+  "rc-plane": "#ffd166"
+};
+
+function ProjectRow({ project, index, onOpen }: { project: Project; index: number; onOpen: (image: GalleryImage) => void }) {
   const [open, setOpen] = useState(false);
   const Icon = project.icon;
+  const hero = project.gallery[0];
   return (
     <motion.article
-      className="project-card"
+      className={index % 2 === 1 ? "proj proj-rev" : "proj"}
+      style={{ "--pc": projectStars[project.id] ?? "#89d8ff" } as CSSProperties}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.16 }}
+      viewport={{ once: true, amount: 0.12 }}
     >
-      <div className="project-flip">
-        <div className="project-face project-front">
-          <Img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
-          <div className="project-overlay">
-            <span>{project.eyebrow}</span>
-            <h3>{project.title}</h3>
-          </div>
-        </div>
-        <div className="project-face project-back">
-          <Img
-            className="project-back-img"
-            src={(project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model") ?? project.gallery[0]).src}
-            alt=""
-            loading="lazy"
-          />
-          <div className="project-back-scrim" />
-          <div className="project-emblem" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-            <b />
-            <Icon size={30} />
-          </div>
-          <span className="project-back-eyebrow">{project.eyebrow}</span>
-          <h3>{project.title}</h3>
-          <span>Flight Notes</span>
-        </div>
-      </div>
-      <div className="project-copy">
-        <p>{project.summary}</p>
+      <button className="proj-media" onClick={() => onOpen(hero)} aria-label={`Open image: ${hero.caption}`}>
+        <Img src={hero.src} alt={hero.alt} loading="lazy" />
+        <span className="proj-index">{String(index + 1).padStart(2, "0")}</span>
+      </button>
+      <div className="proj-body">
+        <span className="proj-eyebrow">
+          <Icon size={16} /> {project.eyebrow}
+        </span>
+        <h3 className="proj-title">{project.title}</h3>
+        <p className={`proj-status proj-status-${project.status.tone}`}>
+          <b>Status: {project.status.label}</b> {project.status.note}
+        </p>
+        <p className="proj-sum">{project.summary}</p>
         {project.caution && <p className="caution">{project.caution}</p>}
+        <p className="proj-learned">
+          <span>What I learned</span> {project.learned}
+        </p>
         <div className="chip-row">
           {project.stack.map((item) => (
             <span key={item}>{item}</span>
           ))}
         </div>
-      </div>
-      <div className="project-stats" aria-label={`${project.title} project statistics`}>
-        {project.stats.map((stat) => (
-          <motion.div
-            key={stat.label}
-            className="stat-card"
-            initial={{ opacity: 0, y: 8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.35 }}
-          >
-            <span>{stat.label}</span>
-            <strong>{stat.value}</strong>
-          </motion.div>
-        ))}
-      </div>
-      <div className="proj-actions">
-        <button className="proj-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
-          {open ? "Hide Details" : "Details And Media"} <ChevronRight size={16} className={open ? "proj-chev open" : "proj-chev"} />
-        </button>
-        {project.link && (
-          <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
-            Open Source Link <ExternalLink size={15} />
-          </a>
-        )}
+        <div className="proj-statboxes" aria-label={`${project.title} at a glance`}>
+          {project.stats.map((stat) => (
+            <div key={stat.label} className="proj-statbox">
+              <span>{stat.label}</span>
+              <strong>{stat.value}</strong>
+            </div>
+          ))}
+        </div>
+        <div className="proj-actions">
+          <button className="proj-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+            {open ? "Hide Details" : "Details And Media"} <ChevronRight size={16} className={open ? "proj-chev open" : "proj-chev"} />
+          </button>
+          {project.link && (
+            <a className="text-link" href={project.link} target="_blank" rel="noreferrer">
+              Open Source Link <ExternalLink size={15} />
+            </a>
+          )}
+        </div>
       </div>
       {open && (
         <div className="proj-more">
@@ -660,44 +662,50 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
   );
 }
 
-// An original friendly dragon: sleek teal body, ember-amber wings and crest, a tucked tail with a spade tip.
+// An original sleek black dragon: dark scales with a teal rim light, big glowing green eyes, swept crest and a spade tail.
 function DragonCompanion() {
   return (
     <div className="dragon" aria-hidden="true">
       <svg viewBox="0 0 230 150" className="dragon-svg">
         <defs>
           <linearGradient id="dgBody" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#7fe3d4" />
-            <stop offset="1" stopColor="#2a8fa8" />
+            <stop offset="0" stopColor="#2b3342" />
+            <stop offset="1" stopColor="#07090e" />
           </linearGradient>
           <linearGradient id="dgWing" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#ffb066" />
-            <stop offset="1" stopColor="#e0642a" stopOpacity="0.55" />
+            <stop offset="0" stopColor="#222a3a" />
+            <stop offset="1" stopColor="#0a0d14" stopOpacity="0.85" />
           </linearGradient>
+          <radialGradient id="dgEye" cx="0.4" cy="0.4" r="0.7">
+            <stop offset="0" stopColor="#d9ff9a" />
+            <stop offset="0.6" stopColor="#5fe06a" />
+            <stop offset="1" stopColor="#1d8f45" />
+          </radialGradient>
         </defs>
         <g className="dragon-bob">
           <g className="dragon-wing dragon-wing-far">
-            <path d="M126 78 C112 44 86 30 58 34 C68 44 74 52 80 60 C88 58 96 60 102 64 C112 66 120 72 126 78 Z" fill="#b24a22" opacity="0.7" />
+            <path d="M126 78 C112 44 86 30 58 34 C68 44 74 52 80 60 C88 58 96 60 102 64 C112 66 120 72 126 78 Z" fill="#10141d" opacity="0.9" />
           </g>
           <path className="dragon-tail" d="M26 120 C46 130 74 122 96 100 L108 108 C80 138 46 142 20 130 Z" fill="url(#dgBody)" />
-          <path d="M14 126 L26 118 L30 132 Z" fill="#ffb066" />
-          <path d="M88 94 C104 72 146 70 164 86 C172 94 166 110 146 114 C124 120 96 114 88 94 Z" fill="url(#dgBody)" />
-          <path d="M120 112 C122 124 130 128 138 122" stroke="#2a8fa8" strokeWidth="6" strokeLinecap="round" fill="none" />
-          <path d="M156 84 C166 68 176 60 188 58" stroke="url(#dgBody)" strokeWidth="14" strokeLinecap="round" fill="none" />
-          <path d="M178 52 C188 46 204 48 212 56 C218 62 216 68 206 70 C198 72 188 68 182 64 Z" fill="url(#dgBody)" />
-          <path d="M184 50 L178 34 L192 46 Z" fill="#ffb066" />
-          <path d="M194 49 L192 33 L202 47 Z" fill="#ffb066" />
-          <g fill="#ffb066">
-            <path d="M104 78 L110 66 L116 78 Z" />
-            <path d="M122 74 L128 62 L134 74 Z" />
-            <path d="M140 76 L146 64 L152 77 Z" />
+          <path d="M12 126 L26 117 L31 133 Z" fill="#1e3a44" stroke="#58d6c2" strokeWidth="1.2" />
+          <path d="M88 94 C104 72 146 70 164 86 C172 94 166 110 146 114 C124 120 96 114 88 94 Z" fill="url(#dgBody)" stroke="#2f8f8a" strokeWidth="0.8" />
+          <path d="M120 112 C122 124 130 128 138 122" stroke="#10141d" strokeWidth="6" strokeLinecap="round" fill="none" />
+          <path d="M156 84 C166 68 176 60 188 58" stroke="url(#dgBody)" strokeWidth="15" strokeLinecap="round" fill="none" />
+          <path d="M176 50 C187 43 205 46 213 55 C218 61 216 67 207 69 C198 71 187 67 181 63 Z" fill="url(#dgBody)" stroke="#2f8f8a" strokeWidth="0.8" />
+          <path d="M184 47 L168 40 L180 52 Z" fill="#161c28" stroke="#58d6c2" strokeWidth="0.8" />
+          <path d="M192 46 L178 34 L188 50 Z" fill="#161c28" stroke="#58d6c2" strokeWidth="0.8" />
+          <g fill="#161c28" stroke="#58d6c2" strokeWidth="0.7">
+            <path d="M104 78 L109 67 L116 78 Z" />
+            <path d="M122 74 L127 63 L134 74 Z" />
+            <path d="M140 76 L145 65 L152 77 Z" />
           </g>
-          <circle cx="200" cy="57" r="3.6" fill="#fff" />
-          <circle cx="201" cy="57.4" r="1.9" fill="#0f2330" />
-          <path d="M203 65 Q208 68 212 63" stroke="#0f2330" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+          <ellipse cx="199" cy="56" rx="6" ry="5.4" fill="url(#dgEye)" />
+          <ellipse cx="200" cy="56" rx="1.6" ry="4.2" fill="#04060a" />
+          <circle cx="197.4" cy="53.8" r="1.4" fill="#fff" />
+          <path d="M203 65 Q208 68 212 63" stroke="#58d6c2" strokeWidth="1.4" fill="none" strokeLinecap="round" />
           <g className="dragon-wing dragon-wing-near">
-            <path d="M132 80 C118 38 88 18 50 22 C62 34 70 46 78 58 C88 54 98 54 106 58 C114 62 124 70 132 80 Z" fill="url(#dgWing)" />
-            <path d="M132 80 L50 22 M132 80 L78 58 M132 80 L106 58" stroke="#ffd2a6" strokeWidth="1.4" fill="none" opacity="0.7" />
+            <path d="M132 80 C118 38 88 18 50 22 C62 34 70 46 78 58 C88 54 98 54 106 58 C114 62 124 70 132 80 Z" fill="url(#dgWing)" stroke="#2f8f8a" strokeWidth="0.8" />
+            <path d="M132 80 L50 22 M132 80 L78 58 M132 80 L106 58" stroke="#58d6c2" strokeWidth="1.1" fill="none" opacity="0.55" />
           </g>
         </g>
       </svg>
@@ -953,9 +961,9 @@ function App() {
           <h2>Project Hangar</h2>
           <p>Things I Built, Helped Build, Or Learned From The Hard Way.</p>
         </div>
-        <div className="project-grid">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
+        <div className="proj-list">
+          {projects.map((project, index) => (
+            <ProjectRow key={project.id} project={project} index={index} onOpen={setActiveImage} />
           ))}
         </div>
       </section>
