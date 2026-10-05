@@ -5637,7 +5637,7 @@ h3 {
   z-index: 40;
   pointer-events: none;
   opacity: 0;
-  animation: plasmaFly 6.4s cubic-bezier(0.45, 0.05, 0.4, 1) 2.4s 1 both;
+  animation: plasmaFly 7.5s linear 2.4s 1 both;
 }
 
 .plasma-core {
@@ -5647,7 +5647,8 @@ h3 {
   border: 1px solid #e3c8ff;
   border-radius: 999px;
   background: radial-gradient(ellipse at 50% 50%, #f3e4ff 0%, #b86bff 45%, #6a1fd6 100%);
-  color: #1d0a3a;
+  color: #fff;
+  text-shadow: 0 0 6px rgba(60, 10, 120, 0.9), 0 1px 2px rgba(60, 10, 120, 0.9);
   font-size: 0.95rem;
   font-weight: 950;
   letter-spacing: 0.12em;
@@ -5675,11 +5676,15 @@ h3 {
 }
 
 @keyframes plasmaFly {
-  0% { opacity: 0; transform: translate(calc(100vw - 9rem), calc(100vh - 7.2rem)) scale(0.3); }
-  6% { opacity: 1; transform: translate(calc(100vw - 9.6rem), calc(100vh - 9rem)) scale(1); }
-  46% { opacity: 1; transform: translate(calc(100vw - 7.5rem), 7vh) scale(1); }
-  50% { opacity: 1; transform: translate(calc(100vw - 7.8rem), 4vh) scale(1.45); }
-  54% { opacity: 1; transform: translate(calc(100vw - 9rem), 7vh) scale(1); }
+  /* 0-44%: the dragon slowly spools the pulse up at its mouth */
+  0% { opacity: 0; transform: translate(calc(100vw - 5.4rem), calc(100vh - 5.7rem)) scale(0.08); animation-timing-function: ease-in; }
+  10% { opacity: 0.85; transform: translate(calc(100vw - 5.4rem), calc(100vh - 5.7rem)) scale(0.22); animation-timing-function: ease-in; }
+  30% { opacity: 1; transform: translate(calc(100vw - 5.6rem), calc(100vh - 5.9rem)) scale(0.6); animation-timing-function: ease-in-out; }
+  44% { opacity: 1; transform: translate(calc(100vw - 5.8rem), calc(100vh - 6rem)) scale(1.2); animation-timing-function: cubic-bezier(0.6, 0, 1, 0.6); }
+  /* then it fires fast up the right side, reflects off the top and streaks left */
+  58% { opacity: 1; transform: translate(calc(100vw - 8rem), 6vh) scale(1); animation-timing-function: linear; }
+  60% { opacity: 1; transform: translate(calc(100vw - 8.6rem), 3vh) scale(1.4); animation-timing-function: linear; }
+  62% { opacity: 1; transform: translate(calc(100vw - 10rem), 6vh) scale(1); animation-timing-function: linear; }
   96% { opacity: 1; transform: translate(-14rem, 62vh) scale(1); }
   100% { opacity: 0; transform: translate(-18rem, 66vh) scale(0.6); }
 }
@@ -5706,4 +5711,29 @@ h3 {
   padding-bottom: 0.16em;
   margin-bottom: 0.84rem;
   line-height: 1.12;
+}
+
+/* Character Select: only the outline takes the class colour; the fills go back to the original dark look */
+.cs-stage {
+  background:
+    radial-gradient(circle at 50% 78%, rgba(137, 216, 255, 0.14), transparent 46%),
+    radial-gradient(circle at 50% 30%, rgba(255, 138, 42, 0.08), transparent 55%),
+    #070a0f;
+}
+
+.cs-side-stage {
+  background:
+    radial-gradient(circle at 50% 78%, rgba(199, 155, 255, 0.12), transparent 50%),
+    #070a0f;
+}
+
+.cs-panel {
+  background: var(--panel);
+}
+
+.cs-stage,
+.cs-side-stage,
+.cs-panel {
+  border: 2px solid var(--cc);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--cc) 35%, transparent);
 }
