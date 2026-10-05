@@ -596,6 +596,8 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
   const [open, setOpen] = useState(false);
   const Icon = project.icon;
   const hero = project.gallery[0];
+  const backImage =
+    project.gallery.find((item, i) => i > 0 && !item.youtubeId && item.type !== "video" && item.type !== "model") ?? hero;
   return (
     <motion.article
       className={index % 2 === 1 ? "proj proj-rev" : "proj"}
@@ -604,9 +606,25 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.12 }}
     >
-      <button className="proj-media" onClick={() => onOpen(hero)} aria-label={`Open image: ${hero.caption}`}>
-        <Img src={hero.src} alt={hero.alt} loading="lazy" />
-        <span className="proj-index">{String(index + 1).padStart(2, "0")}</span>
+      <button className="proj-media proj-media-flip" onClick={() => onOpen(hero)} aria-label={`Open image: ${hero.caption}`}>
+        <span className="project-face project-front">
+          <Img src={hero.src} alt={hero.alt} loading="lazy" />
+          <span className="proj-index">{String(index + 1).padStart(2, "0")}</span>
+        </span>
+        <span className="project-face project-back" aria-hidden="true">
+          <Img className="project-back-img" src={backImage.src} alt="" loading="lazy" />
+          <span className="project-back-scrim" />
+          <span className="project-emblem">
+            <i />
+            <i />
+            <i />
+            <b />
+            <Icon size={30} />
+          </span>
+          <span className="project-back-eyebrow">{project.eyebrow}</span>
+          <strong className="pf-title">{project.title}</strong>
+          <span className="pf-note">Flight Notes</span>
+        </span>
       </button>
       <div className="proj-body">
         <span className="proj-eyebrow">
@@ -677,7 +695,18 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
 
 // An original sleek black dragon: dark scales with a teal rim light, big glowing green eyes, swept crest and a spade tail.
 function DragonCompanion() {
+  // One plasma blast with the greeting: it flies up the right side, bounces off the top and heads left. It never repeats.
+  const reduced = useReducedMotion();
+  const [blast, setBlast] = useState(true);
   return (
+    <>
+    {blast && !reduced && (
+      <div className="plasma" aria-hidden="true" onAnimationEnd={(event) => {
+        if (event.animationName === "plasmaFly") setBlast(false);
+      }}>
+        <span className="plasma-core">Welcome</span>
+      </div>
+    )}
     <div className="dragon" aria-hidden="true">
       <svg viewBox="0 0 230 150" className="dragon-svg">
         <defs>
@@ -723,6 +752,7 @@ function DragonCompanion() {
         </g>
       </svg>
     </div>
+    </>
   );
 }
 

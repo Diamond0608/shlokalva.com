@@ -123,7 +123,7 @@
         if (!(target instanceof Element)) return;
 
         const interactive = target.closest(
-          "a, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
+          "a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel, .skills-grid article, .proj-media, .tl-card-box, .glance > div, .poem-card, .cs-panel"
         );
         if (!interactive || interactive === lastHoverTarget) return;
 
@@ -138,7 +138,7 @@
         const target = event.target;
         if (!(target instanceof Element)) return;
         const interactive = target.closest(
-          "a, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel"
+          "a, button, summary, .photo-tile, .project-card, .experience-card, .signal-grid article, .interest-grid article, .engine-panel, .skills-grid article, .proj-media, .tl-card-box, .glance > div, .poem-card, .cs-panel"
         );
         if (interactive === lastHoverTarget) lastHoverTarget = null;
       }, true);

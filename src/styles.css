@@ -5474,3 +5474,236 @@ h3 {
   display: flex;
   flex-direction: column;
 }
+
+/* Character Select: every class and side character colours its own boxes */
+.cs,
+.cs-side {
+  --cc: #89d8ff;
+}
+
+.cs-stage,
+.cs-side-stage,
+.cs-panel {
+  border-color: color-mix(in srgb, var(--cc) 62%, transparent);
+  box-shadow: inset 0 0 44px color-mix(in srgb, var(--cc) 14%, transparent), 0 0 24px color-mix(in srgb, var(--cc) 12%, transparent);
+  transition: border-color 400ms ease, box-shadow 400ms ease;
+}
+
+.cs-stage,
+.cs-side-stage {
+  background:
+    radial-gradient(circle at 50% 78%, color-mix(in srgb, var(--cc) 24%, transparent), transparent 52%),
+    radial-gradient(circle at 50% 24%, color-mix(in srgb, var(--cc) 10%, transparent), transparent 58%),
+    #070a0f;
+}
+
+.cs-panel {
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--cc) 14%, #0b0f16), rgba(8, 11, 16, 0.96) 70%);
+}
+
+.cs-panel .eyebrow,
+.cs-info dt,
+.cs-lore span,
+.cs-stage-tag {
+  color: var(--cc);
+}
+
+.cs-dots button.active {
+  background: var(--cc);
+  border-color: var(--cc);
+  box-shadow: 0 0 10px var(--cc);
+}
+
+.cs-arrow:hover {
+  border-color: var(--cc);
+  background: color-mix(in srgb, var(--cc) 18%, transparent);
+}
+
+/* Project rows: the photo flips on hover again, and details never push the photo out of place */
+.proj-media-flip {
+  perspective: 1100px;
+  overflow: visible;
+  border: 0;
+  background: transparent;
+}
+
+.proj-media-flip .project-front,
+.proj-media-flip .project-back {
+  border-radius: 6px;
+  border: 1px solid color-mix(in srgb, var(--pc) 55%, transparent);
+}
+
+.proj-media-flip:hover .project-front,
+.proj-media-flip:focus-visible .project-front {
+  transform: rotateY(-180deg);
+}
+
+.proj-media-flip:hover .project-back,
+.proj-media-flip:focus-visible .project-back {
+  transform: rotateY(0deg);
+}
+
+.proj-media-flip:hover img {
+  transform: none;
+}
+
+.proj-media-flip .project-back-img {
+  transform: scale(1.06);
+}
+
+.proj-media-flip:hover .project-emblem b {
+  animation-play-state: running;
+}
+
+.proj-media-flip .pf-title {
+  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
+  color: var(--cream);
+}
+
+.proj-media-flip .pf-note {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.proj-media-flip .project-back {
+  cursor: zoom-in;
+}
+
+@media (min-width: 861px) {
+  .proj > .proj-media { grid-column: 1; grid-row: 1; }
+  .proj > .proj-body { grid-column: 2; grid-row: 1; }
+  .proj-rev { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  .proj-rev > .proj-media { grid-column: 2; }
+  .proj-rev > .proj-body { grid-column: 1; }
+  .proj > .proj-more { grid-row: 2; }
+}
+
+/* Cutaway depth slider: slim amber track with a round handle */
+.cut-slider input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1.1rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cut-slider input[type="range"]::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--amber), rgba(137, 216, 255, 0.45));
+}
+
+.cut-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: 2px solid #05070a;
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: 0 0 0 1px var(--amber), 0 0 8px rgba(255, 138, 42, 0.7);
+}
+
+.cut-slider input[type="range"]::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--amber), rgba(137, 216, 255, 0.45));
+}
+
+.cut-slider input[type="range"]::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #05070a;
+  border-radius: 50%;
+  background: var(--cream);
+  box-shadow: 0 0 0 1px var(--amber), 0 0 8px rgba(255, 138, 42, 0.7);
+}
+
+.cut-slider input[type="range"]:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+/* Dragon plasma blast: a purple pulse reading "Welcome" fires up the right side, reflects off the top and flies left */
+.plasma {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  pointer-events: none;
+  opacity: 0;
+  animation: plasmaFly 6.4s cubic-bezier(0.45, 0.05, 0.4, 1) 2.4s 1 both;
+}
+
+.plasma-core {
+  position: relative;
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid #e3c8ff;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 50% 50%, #f3e4ff 0%, #b86bff 45%, #6a1fd6 100%);
+  color: #1d0a3a;
+  font-size: 0.95rem;
+  font-weight: 950;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow: 0 0 16px 4px rgba(184, 107, 255, 0.85), 0 0 46px 12px rgba(138, 59, 255, 0.55), 0 0 90px 24px rgba(106, 31, 214, 0.3);
+  animation: plasmaPulse 0.5s ease-in-out infinite alternate;
+}
+
+.plasma-core::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 7rem;
+  height: 0.7rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(184, 107, 255, 0.7));
+  filter: blur(4px);
+  transform: translateY(-50%);
+}
+
+@keyframes plasmaPulse {
+  from { transform: scale(0.96); filter: brightness(1); }
+  to { transform: scale(1.06); filter: brightness(1.3); }
+}
+
+@keyframes plasmaFly {
+  0% { opacity: 0; transform: translate(calc(100vw - 9rem), calc(100vh - 7.2rem)) scale(0.3); }
+  6% { opacity: 1; transform: translate(calc(100vw - 9.6rem), calc(100vh - 9rem)) scale(1); }
+  46% { opacity: 1; transform: translate(calc(100vw - 7.5rem), 7vh) scale(1); }
+  50% { opacity: 1; transform: translate(calc(100vw - 7.8rem), 4vh) scale(1.45); }
+  54% { opacity: 1; transform: translate(calc(100vw - 9rem), 7vh) scale(1); }
+  96% { opacity: 1; transform: translate(-14rem, 62vh) scale(1); }
+  100% { opacity: 0; transform: translate(-18rem, 66vh) scale(0.6); }
+}
+
+@media (max-width: 980px) {
+  .plasma { display: none; }
+}
+
+/* Character Select: the whole box carries the class colour, not just the floor glow */
+.cs-stage,
+.cs-side-stage {
+  background:
+    radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--cc) 34%, transparent), transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--cc) 30%, #070a0f) 0%, color-mix(in srgb, var(--cc) 16%, #05070a) 100%);
+}
+
+.cs-panel {
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--cc) 24%, #0b0f16), color-mix(in srgb, var(--cc) 9%, #080b10) 80%);
+}
+
+/* Gradient-filled section titles must not clip descenders (j, p, g, y) */
+.section-head h2 {
+  padding-bottom: 0.16em;
+  margin-bottom: 0.84rem;
+  line-height: 1.12;
+}
