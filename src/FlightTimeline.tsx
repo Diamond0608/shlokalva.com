@@ -90,6 +90,10 @@ function A350({ gearOpacity }: { gearOpacity: MotionValue<number> }) {
         </g>
       ))}
 
+      {/* navigation lights: red on the left winglet, green on the right */}
+      <circle className="tl-navlight tl-navlight-red" cx="52" cy="148" r="5" fill="#ff4d4d" />
+      <circle className="tl-navlight tl-navlight-green" cx="848" cy="148" r="5" fill="#4dff88" />
+
       {/* fuselage, nose and cockpit */}
       <ellipse cx="450" cy="222" rx="76" ry="86" fill="url(#tlBody)" />
       <path d="M374 232 Q450 330 526 232 L526 262 Q450 350 374 262 Z" fill="#9aa5b6" opacity="0.35" />
@@ -135,31 +139,63 @@ function StaticTimeline() {
   );
 }
 
+// Milestone i appears once the plane has flown this far; earlier ones stay on screen.
+const appearAt = (index: number) => 0.06 + index * 0.15;
+
+// Static night skyline at the far end of the runway: terminal blocks, a control tower and lit windows.
+const SKYLINE: Array<[number, number, number]> = [
+  [20, 70, 40], [96, 54, 62], [156, 80, 34], [244, 46, 74], [296, 90, 44], [392, 38, 90],
+  [436, 64, 36], [506, 100, 52], [612, 52, 30], [670, 76, 66], [752, 60, 40], [818, 94, 56], [918, 62, 34]
+];
+
+function Skyline() {
+  return (
+    <svg className="tl-skyline" viewBox="0 0 1000 120" preserveAspectRatio="none" aria-hidden="true">
+      <g fill="#0a0e15">
+        {SKYLINE.map(([x, w, h], k) => (
+          <rect key={k} x={x} y={120 - h} width={w} height={h} />
+        ))}
+        <rect x="470" y="30" width="10" height="90" />
+        <path d="M455 34 L495 34 L488 22 L462 22 Z" />
+      </g>
+      <g fill="#ffcf8a">
+        {SKYLINE.flatMap(([x, w, h], k) =>
+          Array.from({ length: Math.floor(w / 12) * Math.floor(h / 14) }, (_, n) => {
+            const cols = Math.floor(w / 12);
+            const cx = x + 5 + (n % cols) * 12;
+            const cy = 120 - h + 6 + Math.floor(n / cols) * 14;
+            return (k * 7 + n * 3) % 5 === 0 ? <rect key={`${k}-${n}`} x={cx} y={cy} width="3" height="3" opacity="0.8" /> : null;
+          })
+        )}
+        <rect x="464" y="25" width="26" height="5" fill="#89d8ff" opacity="0.9" />
+      </g>
+    </svg>
+  );
+}
+
 export default function FlightTimeline() {
   const reduced = useReducedMotion();
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
+  const [shown, setShown] = useState(0);
   const [phase, setPhase] = useState("TAXI");
   const { scrollYProgress } = useScroll({ target: wrapRef, offset: ["start start", "end end"] });
 
-  // Plane path: roll along the runway, rotate, then climb out toward the viewer.
+  // The runway and scenery stay still: only the plane moves. It rolls toward you, rotates, then climbs out over you.
   const planeX = useTransform(scrollYProgress, [0, 0.55, 1], ["0vw", "0vw", "34vw"]);
   const planeY = useTransform(scrollYProgress, [0, 0.55, 1], ["0vh", "26vh", "-46vh"]);
   const planeScale = useTransform(scrollYProgress, [0, 0.55, 1], [0.2, 0.95, 2.2]);
   const planeRotate = useTransform(scrollYProgress, [0, 0.45, 0.62, 0.8, 1], [0, 0, 2, -3, 4]);
   const planeOpacity = useTransform(scrollYProgress, [0, 0.04, 0.92, 1], [0, 1, 1, 0]);
   const gearOpacity = useTransform(scrollYProgress, [0.56, 0.68], [1, 0]);
-  const dashY = useTransform(scrollYProgress, (v) => (v * 4200) % 120);
-  const dashOpacity = useTransform(scrollYProgress, [0, 0.6, 0.72], [1, 1, 0.15]);
-  const skyShift = useTransform(scrollYProgress, [0, 1], ["0%", "-26%"]);
-  const cloudsY = useTransform(scrollYProgress, [0.5, 1], ["-10%", "120%"]);
+  const shadowY = useTransform(scrollYProgress, [0, 0.55, 1], ["0vh", "26vh", "26vh"]);
+  const shadowOpacity = useTransform(scrollYProgress, [0, 0.04, 0.55, 0.8], [0, 0.55, 0.55, 0]);
+  const cloudsY = useTransform(scrollYProgress, [0.55, 1], ["-25%", "115%"]);
+  const cloudsOpacity = useTransform(scrollYProgress, [0.5, 0.62, 1], [0, 0.9, 0.9]);
   const barWidth = useTransform(scrollYProgress, (v) => `${Math.round(v * 100)}%`);
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
-    setActive((current) => {
-      const next = Math.min(milestones.length - 1, Math.max(0, Math.floor(value * milestones.length)));
-      return next === current ? current : next;
-    });
+    const count = milestones.reduce((total, _m, index) => (value >= appearAt(index) ? index + 1 : total), 0);
+    setShown((current) => (current === count ? current : count));
     setPhase((current) => {
       const next = phaseFor(value);
       return next === current ? current : next;
@@ -175,7 +211,7 @@ export default function FlightTimeline() {
     if (!wrap) return;
     const top = wrap.getBoundingClientRect().top + window.scrollY;
     const travel = wrap.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: top + ((index + 0.5) / milestones.length) * travel, behavior: reduced ? "auto" : "smooth" });
+    window.scrollTo({ top: top + (appearAt(index) + 0.02) * travel, behavior: reduced ? "auto" : "smooth" });
   };
 
   if (reduced) {
@@ -186,25 +222,26 @@ export default function FlightTimeline() {
     );
   }
 
-  const current = milestones[active];
-
   return (
     <div className="tl-wrap" ref={wrapRef}>
       <div className="tl-stage">
-        <motion.div className="tl-sky" style={{ y: skyShift }} aria-hidden="true" />
-        <motion.div className="tl-clouds" style={{ y: cloudsY }} aria-hidden="true">
+        <div className="tl-sky" aria-hidden="true">
+          <i className="tl-moon" />
+        </div>
+        <motion.div className="tl-clouds" style={{ y: cloudsY, opacity: cloudsOpacity }} aria-hidden="true">
           <i />
           <i />
           <i />
         </motion.div>
 
-        <div className="tl-runway" aria-hidden="true">
-          <motion.div className="tl-dashes" style={{ y: dashY, opacity: dashOpacity }} />
-        </div>
+        <Skyline />
+        <div className="tl-runway" aria-hidden="true" />
 
+        <motion.div className="tl-shadow" style={{ y: shadowY, scale: planeScale, opacity: shadowOpacity }} aria-hidden="true" />
         <motion.div className="tl-plane-wrap" style={{ x: planeX, y: planeY, scale: planeScale, rotate: planeRotate, opacity: planeOpacity }}>
           <A350 gearOpacity={gearOpacity} />
         </motion.div>
+        <div className="tl-vignette" aria-hidden="true" />
 
         <div className="tl-hud">
           <span className="tl-phase">{phase}</span>
@@ -217,13 +254,23 @@ export default function FlightTimeline() {
           Skip Timeline <ArrowDown size={15} />
         </button>
 
-        <div className="tl-card" key={current.label} aria-live="polite">
-          <span className="tl-card-date">{current.date}</span>
-          <h3>{current.title}</h3>
-          <p>{current.body}</p>
-        </div>
+        <ol className="tl-cards" aria-live="polite">
+          {milestones.map((milestone, i) => (
+            <li
+              key={milestone.label}
+              className={["tl-card", i < shown ? "shown" : "", i === shown - 1 ? "latest" : "", i % 2 === 0 ? "left" : "right"].join(" ")}
+              style={{ gridRow: Math.floor(i / 2) + 1 }}
+              aria-hidden={i >= shown}
+            >
+              <span className="tl-card-num">{milestone.label}</span>
+              <span className="tl-card-date">{milestone.date}</span>
+              <h3>{milestone.title}</h3>
+              <p>{milestone.body}</p>
+            </li>
+          ))}
+        </ol>
 
-        <Milestones active={active} onPick={pick} />
+        <Milestones active={Math.max(0, shown - 1)} onPick={pick} />
       </div>
     </div>
   );
