@@ -2940,3 +2940,120 @@ h3 {
     grid-template-columns: 5.4rem minmax(0, 1fr);
   }
 }
+
+/* Press X: ability activated */
+.cs-pop {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-content: center;
+  gap: 0.4rem;
+  text-align: center;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 50%, rgba(5, 7, 10, 0.82) 0, rgba(5, 7, 10, 0.7) 26%, rgba(255, 138, 42, 0.22) 52%, transparent 74%);
+  animation: csPop 2.4s ease both;
+}
+
+.cs-pop span {
+  color: var(--amber);
+  font-size: clamp(0.7rem, 1.6vw, 0.95rem);
+  font-weight: 950;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(255, 138, 42, 0.8);
+}
+
+.cs-pop strong {
+  color: var(--cream);
+  font-size: clamp(1.2rem, 3.4vw, 2.1rem);
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 22px rgba(255, 138, 42, 0.7), 0 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+@keyframes csPop {
+  0% { opacity: 0; transform: scale(0.6); }
+  12% { opacity: 1; transform: scale(1.08); }
+  22% { transform: scale(1); }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.04); }
+}
+
+.cs-ult[data-fired="true"] {
+  animation: csUltPulse 1.2s ease both;
+}
+
+.cs-ult[data-fired="true"] kbd {
+  animation: csKeyPress 0.5s ease both;
+}
+
+@keyframes csUltPulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 138, 42, 0.8); }
+  100% { box-shadow: 0 0 0 22px rgba(255, 138, 42, 0); }
+}
+
+@keyframes csKeyPress {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(3px); border-bottom-width: 1px; }
+  100% { transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-pop { animation: csPopFade 2.4s ease both; }
+  .cs-ult[data-fired="true"],
+  .cs-ult[data-fired="true"] kbd { animation: none; }
+  @keyframes csPopFade {
+    0%, 100% { opacity: 0; }
+    15%, 80% { opacity: 1; }
+  }
+}
+
+/* Character select layout: big stage over its panel on the left, side box on the right; equal heights, filled edge to edge */
+.cs-wrap {
+  align-items: stretch;
+}
+
+.cs {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
+}
+
+.cs-stage {
+  height: clamp(24rem, 34vw, 31rem);
+  min-height: 0;
+}
+
+.cs-side {
+  grid-template-rows: auto 1fr;
+}
+
+.cs-side-stage {
+  height: clamp(18rem, 24vw, 22rem);
+  min-height: 0;
+}
+
+.cs-panel,
+.cs-side-panel {
+  align-content: start;
+}
+
+@media (min-width: 1280px), (min-width: 760px) and (max-width: 1100px) {
+  .cs > .cs-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    column-gap: 1.4rem;
+    grid-auto-flow: row;
+  }
+
+  .cs > .cs-panel .cs-head { grid-column: 1; grid-row: 1; }
+  .cs > .cs-panel .cs-info { grid-column: 1; grid-row: 2; }
+  .cs > .cs-panel .cs-lore { grid-column: 1; grid-row: 3; }
+  .cs > .cs-panel .chip-row { grid-column: 1; grid-row: 4; }
+  .cs > .cs-panel .cs-stats { grid-column: 2; grid-row: 1 / span 2; align-content: center; }
+  .cs > .cs-panel .cs-ult { grid-column: 2; grid-row: 3 / span 2; align-self: start; }
+}
+
+.cs-side-stage .cs-stage-tag strong {
+  font-size: 0.95rem;
+  max-width: 12rem;
+  line-height: 1.2;
+}

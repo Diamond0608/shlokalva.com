@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF, useTexture } from "@react-three/drei";
+import { OrbitControls, Trail, useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -231,9 +231,18 @@ function StatBar({ label, colour }: { label: string; colour: string }) {
   );
 }
 
-function MainSelect() {
+function AbilityPop({ fire, name }: { fire: number; name: string }) {
+  if (!fire) return null;
+  return (
+    <div className="cs-pop" key={fire} role="status">
+      <span>Ability Activated</span>
+      <strong>{name}</strong>
+    </div>
+  );
+}
+
+function MainSelect({ index, setIndex, fire }: { index: number; setIndex: (value: number | ((v: number) => number)) => void; fire: number }) {
   const reduced = useReducedMotion();
-  const [index, setIndex] = useState(0);
   const [inView, setInView] = useState(true);
   const stageRef = useRef<HTMLDivElement>(null);
   const current = characters[index];
@@ -307,6 +316,7 @@ function MainSelect() {
             />
           ))}
         </div>
+        <AbilityPop fire={fire} name={current.ultimate.name} />
         <div className="cs-stage-hint">Drag To Turn • Arrow Keys To Switch</div>
       </div>
 
@@ -342,7 +352,7 @@ function MainSelect() {
           ))}
         </div>
 
-        <div className="cs-ult">
+        <div className="cs-ult" key={`ult-${fire}`} data-fired={fire > 0 ? "true" : undefined}>
           <kbd>X</kbd>
           <div>
             <span>Ultimate Ability (Press X)</span>
@@ -387,9 +397,9 @@ const sideCharacters: SideCharacter[] = [
   {
     id: "trixie",
     name: "Trixie",
-    tagline: "German shepherd. Professional sunglasses wearer.",
+    tagline: "German shepherd. Fat sunglasses wearer.",
     stats: ["Loyalty", "Fluff", "Bark"],
-    ultimate: { name: "Guard Mode", text: "Barks first, asks questions never." },
+    ultimate: { name: "Asks For Treats", text: "Sits, stares, and wins every single time." },
     signature: "Sunglasses",
     weakness: "Treats.",
     ring: "#c79bff",
@@ -407,7 +417,7 @@ const sideCharacters: SideCharacter[] = [
   },
   {
     id: "goldfish",
-    name: "souls of my childhood goldfish",
+    name: "Souls Of My Childhood Goldfish",
     tagline: "Still swimming, just not in water.",
     stats: ["Ghost Glow", "Bubble Count", "Memory"],
     ultimate: { name: "Final Splash", text: "One dramatic bubble, right on cue." },
@@ -444,81 +454,161 @@ function HelperModel() {
   );
 }
 
-const FISH_SPECS = [
-  { r: 0.85, y: 1.0, speed: 0.7, phase: 0, scale: 1 },
-  { r: 0.6, y: 1.45, speed: -0.9, phase: 2.1, scale: 0.8 },
-  { r: 1.0, y: 0.7, speed: 0.55, phase: 4.2, scale: 0.9 }
+const FISH = [
+  { r: 0.95, y: 1.2, speed: 0.6, phase: 0, scale: 1 },
+  { r: 0.72, y: 1.65, speed: -0.8, phase: 2.2, scale: 0.8 },
+  { r: 1.05, y: 0.95, speed: 0.5, phase: 4.1, scale: 0.9 }
 ];
-const BUBBLES = 48;
+const SPARKS = 56;
+
+function fanShape(points: Array<[number, number]>) {
+  const shape = new THREE.Shape();
+  shape.moveTo(points[0][0], points[0][1]);
+  for (let i = 1; i < points.length; i++) shape.lineTo(points[i][0], points[i][1]);
+  shape.closePath();
+  return new THREE.ShapeGeometry(shape);
+}
+
+// A glowing goldfish spirit: round body, big eyes, flowing forked tail and fins, a halo, and a light trail.
+function GhostFish({ spec, index, setRef }: { spec: (typeof FISH)[number]; index: number; setRef: (node: THREE.Group | null) => void }) {
+  const tail = useRef<THREE.Group>(null);
+  const finL = useRef<THREE.Mesh>(null);
+  const finR = useRef<THREE.Mesh>(null);
+  const geoms = useRef<{ tail: THREE.ShapeGeometry; dorsal: THREE.ShapeGeometry; fin: THREE.ShapeGeometry } | null>(null);
+  if (!geoms.current) {
+    geoms.current = {
+      tail: fanShape([[0, 0], [-0.2, 0.05], [-0.42, 0.24], [-0.56, 0.2], [-0.5, 0.08], [-0.58, 0], [-0.5, -0.08], [-0.56, -0.2], [-0.42, -0.24], [-0.2, -0.05]]),
+      dorsal: fanShape([[-0.12, 0.17], [-0.04, 0.38], [0.06, 0.34], [0.16, 0.16]]),
+      fin: fanShape([[0, 0], [-0.14, 0.05], [-0.2, -0.04], [-0.08, -0.08]])
+    };
+  }
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime * 6 + index * 1.7;
+    if (tail.current) tail.current.rotation.y = Math.sin(t) * 0.55;
+    const flap = Math.sin(t * 0.8) * 0.4;
+    if (finL.current) finL.current.rotation.x = 0.5 + flap;
+    if (finR.current) finR.current.rotation.x = -0.5 - flap;
+  });
+  const glow = { transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, side: THREE.DoubleSide } as const;
+  return (
+    <group ref={setRef} scale={spec.scale}>
+      <mesh scale={[1.55, 1.05, 0.8]}>
+        <sphereGeometry args={[0.2, 24, 16]} />
+        <meshBasicMaterial color="#ff8a2a" opacity={0.85} {...glow} />
+      </mesh>
+      <mesh scale={[1.25, 0.8, 0.62]} position={[0.03, 0.02, 0]}>
+        <sphereGeometry args={[0.2, 20, 14]} />
+        <meshBasicMaterial color="#ffe0a8" opacity={0.7} {...glow} />
+      </mesh>
+      <group ref={tail} position={[-0.28, 0, 0]}>
+        <mesh geometry={geoms.current.tail}>
+          <meshBasicMaterial color="#ff9a3c" opacity={0.6} {...glow} />
+        </mesh>
+        <Trail width={0.7} length={7} color="#ffb15a" attenuation={(t) => t * t}>
+          <mesh position={[-0.48, 0, 0]}>
+            <sphereGeometry args={[0.01, 4, 4]} />
+            <meshBasicMaterial visible={false} />
+          </mesh>
+        </Trail>
+      </group>
+      <mesh geometry={geoms.current.dorsal}>
+        <meshBasicMaterial color="#ff9a3c" opacity={0.6} {...glow} />
+      </mesh>
+      <mesh ref={finL} geometry={geoms.current.fin} position={[0.08, -0.07, 0.12]}>
+        <meshBasicMaterial color="#ffc27a" opacity={0.6} {...glow} />
+      </mesh>
+      <mesh ref={finR} geometry={geoms.current.fin} position={[0.08, -0.07, -0.12]}>
+        <meshBasicMaterial color="#ffc27a" opacity={0.6} {...glow} />
+      </mesh>
+      {[0.13, -0.13].map((z) => (
+        <group key={z} position={[0.25, 0.07, z]}>
+          <mesh>
+            <sphereGeometry args={[0.05, 12, 12]} />
+            <meshBasicMaterial color="#ffffff" />
+          </mesh>
+          <mesh position={[0.025, 0, z > 0 ? 0.02 : -0.02]}>
+            <sphereGeometry args={[0.024, 8, 8]} />
+            <meshBasicMaterial color="#10131a" />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[0.02, 0.4, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.11, 0.016, 8, 24]} />
+        <meshBasicMaterial color="#fff2b0" {...glow} />
+      </mesh>
+    </group>
+  );
+}
 
 function GoldfishSouls() {
   const fish = useRef<Array<THREE.Group | null>>([]);
-  const bubbles = useRef<THREE.Points>(null);
-  const bubbleData = useRef<Float32Array | null>(null);
-  if (!bubbleData.current) {
-    const arr = new Float32Array(BUBBLES * 3);
-    for (let i = 0; i < BUBBLES; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 2.6;
-      arr[i * 3 + 1] = Math.random() * 2.2;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 2.6;
+  const sparks = useRef<THREE.Points>(null);
+  const sparkData = useRef<Float32Array | null>(null);
+  if (!sparkData.current) {
+    const arr = new Float32Array(SPARKS * 3);
+    for (let i = 0; i < SPARKS; i++) {
+      const a = Math.random() * Math.PI * 2;
+      const r = Math.random() * 0.45;
+      arr[i * 3] = Math.cos(a) * r;
+      arr[i * 3 + 1] = 0.8 + Math.random() * 1.6;
+      arr[i * 3 + 2] = Math.sin(a) * r;
     }
-    bubbleData.current = arr;
+    sparkData.current = arr;
   }
   useFrame(({ clock }) => {
     const t = clock.elapsedTime;
-    FISH_SPECS.forEach((spec, i) => {
+    FISH.forEach((spec, i) => {
       const node = fish.current[i];
       if (!node) return;
       const a = t * spec.speed + spec.phase;
-      node.position.set(Math.cos(a) * spec.r, spec.y + Math.sin(t * 1.3 + i) * 0.08, Math.sin(a) * spec.r);
+      node.position.set(Math.cos(a) * spec.r, spec.y + Math.sin(t * 1.1 + i * 2) * 0.14, Math.sin(a) * spec.r);
+      // swim along the circle (nose follows the direction of travel)
       node.rotation.y = -a + (spec.speed > 0 ? 0 : Math.PI);
-      node.rotation.z = Math.sin(t * 2 + i) * 0.08;
+      node.rotation.z = Math.sin(t * 1.5 + i) * 0.1;
     });
-    const pts = bubbles.current;
-    const data = bubbleData.current;
+    const pts = sparks.current;
+    const data = sparkData.current;
     if (pts && data) {
-      for (let i = 0; i < BUBBLES; i++) {
-        data[i * 3 + 1] += 0.004 + (i % 5) * 0.0008;
-        if (data[i * 3 + 1] > 2.3) data[i * 3 + 1] = 0;
+      for (let i = 0; i < SPARKS; i++) {
+        data[i * 3 + 1] += 0.006 + (i % 5) * 0.001;
+        if (data[i * 3 + 1] > 2.5) data[i * 3 + 1] = 0.8;
       }
       pts.geometry.attributes.position.needsUpdate = true;
     }
   });
   return (
     <group>
-      {FISH_SPECS.map((spec, i) => (
-        <group key={i} ref={(node) => (fish.current[i] = node)} scale={spec.scale}>
-          <mesh scale={[1.6, 1, 0.7]}>
-            <sphereGeometry args={[0.2, 20, 14]} />
-            <meshStandardMaterial color="#ffd9a8" emissive="#ff9a3c" emissiveIntensity={0.9} transparent opacity={0.62} />
-          </mesh>
-          <mesh position={[-0.38, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-            <coneGeometry args={[0.16, 0.3, 4]} />
-            <meshStandardMaterial color="#ffd9a8" emissive="#ff9a3c" emissiveIntensity={0.9} transparent opacity={0.5} />
-          </mesh>
-          <mesh position={[0.2, 0.05, 0.1]}>
-            <sphereGeometry args={[0.03, 8, 8]} />
-            <meshStandardMaterial color="#10131a" />
-          </mesh>
-          <mesh position={[0.02, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[0.1, 0.014, 8, 20]} />
-            <meshStandardMaterial color="#fff2b0" emissive="#ffe27a" emissiveIntensity={1.6} />
-          </mesh>
-        </group>
+      {/* the childhood goldfish bowl, glass and open at the top */}
+      <mesh position={[0, 0.62, 0]}>
+        <sphereGeometry args={[0.58, 36, 24, 0, Math.PI * 2, 0.5, Math.PI - 0.5]} />
+        <meshBasicMaterial color="#bfe9ff" transparent opacity={0.13} depthWrite={false} side={THREE.DoubleSide} />
+      </mesh>
+      <mesh position={[0, 1.07, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.4, 0.012, 8, 40]} />
+        <meshBasicMaterial color="#d8f2ff" transparent opacity={0.7} />
+      </mesh>
+      {FISH.map((spec, i) => (
+        <GhostFish
+          key={i}
+          spec={spec}
+          index={i}
+          setRef={(node) => {
+            fish.current[i] = node;
+          }}
+        />
       ))}
-      <points ref={bubbles}>
+      <points ref={sparks}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position" args={[bubbleData.current, 3]} />
+          <bufferAttribute attach="attributes-position" args={[sparkData.current, 3]} />
         </bufferGeometry>
-        <pointsMaterial color="#bfe9ff" size={0.045} transparent opacity={0.7} sizeAttenuation />
+        <pointsMaterial color="#ffd9a0" size={0.05} transparent opacity={0.85} sizeAttenuation depthWrite={false} blending={THREE.AdditiveBlending} />
       </points>
     </group>
   );
 }
 
-function SideSelect() {
+function SideSelect({ index, setIndex, fire }: { index: number; setIndex: (value: number | ((v: number) => number)) => void; fire: number }) {
   const reduced = useReducedMotion();
-  const [index, setIndex] = useState(1);
   const [inView, setInView] = useState(true);
   const stageRef = useRef<HTMLDivElement>(null);
   const current = sideCharacters[index];
@@ -548,9 +638,9 @@ function SideSelect() {
         <Canvas
           frameloop={inView ? "always" : "never"}
           dpr={[1, 1.5]}
-          camera={{ position: [0, 1.15, 4.4], fov: 32 }}
+          camera={{ position: [0, 1.2, 6.2], fov: 32 }}
           gl={{ antialias: true, alpha: true }}
-          onCreated={({ camera }) => camera.lookAt(0, 1.0, 0)}
+          onCreated={({ camera }) => camera.lookAt(0, 1.1, 0)}
           aria-label={`3D scene: ${current.name}`}
         >
           <ambientLight intensity={0.8} />
@@ -573,6 +663,7 @@ function SideSelect() {
           <span>SIDE CHARACTER</span>
           <strong>{current.name}</strong>
         </div>
+        <AbilityPop fire={fire} name={current.ultimate.name} />
         <div className="cs-dots" role="group" aria-label="Choose a side character">
           {sideCharacters.map((side, i) => (
             <button
@@ -597,7 +688,7 @@ function SideSelect() {
             <StatBar key={label} label={label} colour={STAT_COLOURS[i % STAT_COLOURS.length]} />
           ))}
         </div>
-        <div className="cs-ult">
+        <div className="cs-ult" key={`ult-${fire}`} data-fired={fire > 0 ? "true" : undefined}>
           <kbd>X</kbd>
           <div>
             <span>Ultimate Ability (Press X)</span>
@@ -619,10 +710,26 @@ function SideSelect() {
 }
 
 export default function CharacterSelect() {
+  const [index, setIndex] = useState(0);
+  const [sideIndex, setSideIndex] = useState(1);
+  const [fire, setFire] = useState(0);
+
+  // Easter egg: pressing X triggers both ultimate abilities.
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key.toLowerCase() !== "x" || event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
+      const target = event.target as HTMLElement | null;
+      if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+      setFire((value) => value + 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
   return (
     <div className="cs-wrap">
-      <MainSelect />
-      <SideSelect />
+      <MainSelect index={index} setIndex={setIndex} fire={fire} />
+      <SideSelect index={sideIndex} setIndex={setSideIndex} fire={fire} />
     </div>
   );
 }
