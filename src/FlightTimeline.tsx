@@ -34,84 +34,152 @@ function phaseFor(progress: number) {
   return (PHASES.find(([limit]) => progress < limit) ?? PHASES[PHASES.length - 1])[1];
 }
 
-// Original front-view A350-style airliner drawn in SVG: swept wings with upturned winglets,
-// two large engines, a swept tail fin above the fuselage and landing gear that retracts after liftoff.
+// Original front-view A350-900 style airliner: swept wings with blended winglets, two big Trent-style engines
+// with spinners and 24-blade fans, the A350's black wrap-around windscreen mask, a swept fin, and landing gear
+// that retracts after liftoff. Drawn from scratch in SVG (no third-party artwork).
 function A350({ gearOpacity }: { gearOpacity: MotionValue<number> }) {
+  const mirror = (x: number) => 1000 - x;
   return (
-    <svg className="tl-plane" viewBox="0 0 900 420" role="img" aria-label="An A350-style airliner heading toward you">
+    <svg className="tl-plane" viewBox="0 0 1000 460" role="img" aria-label="An A350-style airliner heading toward you">
       <defs>
-        <linearGradient id="tlBody" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="a3Body" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#ffffff" />
-          <stop offset="0.55" stopColor="#e3e9f1" />
-          <stop offset="1" stopColor="#a9b4c4" />
+          <stop offset="0.5" stopColor="#e9eef5" />
+          <stop offset="1" stopColor="#a4afbf" />
         </linearGradient>
-        <linearGradient id="tlWing" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#dfe6ef" />
-          <stop offset="1" stopColor="#8e99ab" />
+        <radialGradient id="a3Sheen" cx="0.36" cy="0.2" r="0.75">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.9" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient id="a3WingTop" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#f2f5f9" />
+          <stop offset="1" stopColor="#cfd7e2" />
         </linearGradient>
-        <linearGradient id="tlTail" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#ffa24a" />
-          <stop offset="1" stopColor="#d9601a" />
+        <linearGradient id="a3WingEdge" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#c3ccd8" />
+          <stop offset="1" stopColor="#6c788b" />
         </linearGradient>
-        <radialGradient id="tlEngine" cx="0.5" cy="0.4" r="0.7">
+        <linearGradient id="a3Fin" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#ffb25a" />
+          <stop offset="1" stopColor="#d6591a" />
+        </linearGradient>
+        <radialGradient id="a3Nacelle" cx="0.42" cy="0.32" r="0.8">
           <stop offset="0" stopColor="#ffffff" />
-          <stop offset="1" stopColor="#aeb9c9" />
+          <stop offset="0.6" stopColor="#dde4ed" />
+          <stop offset="1" stopColor="#8f9bad" />
+        </radialGradient>
+        <radialGradient id="a3Fan" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#4a5262" />
+          <stop offset="1" stopColor="#12161d" />
+        </radialGradient>
+        <radialGradient id="a3Spinner" cx="0.35" cy="0.3" r="0.8">
+          <stop offset="0" stopColor="#ffffff" />
+          <stop offset="1" stopColor="#9aa6b8" />
+        </radialGradient>
+        <radialGradient id="a3Glow" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0" />
         </radialGradient>
       </defs>
 
       {/* tail fin and stabilisers behind the fuselage */}
-      <path d="M300 168 L600 168 L594 180 L306 180 Z" fill="#8e99ab" />
-      <path d="M426 150 L444 34 L482 34 L476 150 Z" fill="url(#tlTail)" />
+      <path d="M332 192 L668 192 L654 212 L346 212 Z" fill="#8a96a8" />
+      <path d="M322 190 L338 186 L346 212 L330 214 Z" fill="#a6b0bf" />
+      <path d="M678 190 L662 186 L654 212 L670 214 Z" fill="#a6b0bf" />
+      <path d="M470 196 L486 26 L526 26 L534 196 Z" fill="url(#a3Fin)" />
+      <path d="M486 26 L526 26 L524 40 L488 40 Z" fill="#ffd9a6" opacity="0.85" />
 
-      {/* landing gear: nose and two main legs, fades out after liftoff */}
+      {/* landing gear: nose leg with taxi light, two main bogies; fades out after liftoff */}
       <motion.g style={{ opacity: gearOpacity }}>
-        <rect x="446" y="292" width="8" height="46" fill="#5b6574" />
-        <rect x="436" y="332" width="9" height="22" rx="3" fill="#10141b" />
-        <rect x="455" y="332" width="9" height="22" rx="3" fill="#10141b" />
-        <rect x="334" y="262" width="8" height="82" fill="#5b6574" />
-        <rect x="324" y="338" width="9" height="24" rx="3" fill="#10141b" />
-        <rect x="343" y="338" width="9" height="24" rx="3" fill="#10141b" />
-        <rect x="558" y="262" width="8" height="82" fill="#5b6574" />
-        <rect x="548" y="338" width="9" height="24" rx="3" fill="#10141b" />
-        <rect x="567" y="338" width="9" height="24" rx="3" fill="#10141b" />
+        <rect x="495" y="316" width="10" height="60" fill="#6b7585" />
+        <rect x="481" y="372" width="14" height="32" rx="4" fill="#0d1117" />
+        <rect x="505" y="372" width="14" height="32" rx="4" fill="#0d1117" />
+        <circle cx="500" cy="338" r="9" fill="url(#a3Glow)" />
+        {[374, 626].map((x) => (
+          <g key={x}>
+            <rect x={x - 5} y="292" width="10" height="76" fill="#6b7585" />
+            <rect x={x - 22} y="360" width="14" height="38" rx="4" fill="#0d1117" />
+            <rect x={x - 6} y="360" width="14" height="38" rx="4" fill="#0d1117" />
+            <rect x={x + 10} y="360" width="14" height="38" rx="4" fill="#0d1117" />
+          </g>
+        ))}
       </motion.g>
 
-      {/* wings with dihedral and upturned winglets */}
-      <path d="M392 226 L64 188 L72 208 L394 252 Z" fill="url(#tlWing)" />
-      <path d="M508 226 L836 188 L828 208 L506 252 Z" fill="url(#tlWing)" />
-      <path d="M64 188 L48 146 L70 156 L80 190 Z" fill="#cfd8e4" />
-      <path d="M836 188 L852 146 L830 156 L820 190 Z" fill="#cfd8e4" />
-      <path d="M394 252 L72 208 L74 214 L396 258 Z" fill="#6f7a8c" opacity="0.7" />
-      <path d="M506 252 L828 208 L826 214 L504 258 Z" fill="#6f7a8c" opacity="0.7" />
+      {/* wings: swept leading edge, thin trailing edge with flap lines, blended winglets */}
+      {[false, true].map((flip) => {
+        const X = (x: number) => (flip ? mirror(x) : x);
+        return (
+          <g key={flip ? "r" : "l"}>
+            <path d={`M${X(436)} 246 L${X(72)} 204 L${X(88)} 232 L${X(440)} 294 Z`} fill="url(#a3WingTop)" />
+            <path d={`M${X(440)} 294 L${X(88)} 232 L${X(92)} 240 L${X(444)} 304 Z`} fill="url(#a3WingEdge)" />
+            <path d={`M${X(436)} 246 L${X(72)} 204`} stroke="#ffffff" strokeWidth="3" opacity="0.7" fill="none" />
+            {[0.2, 0.42, 0.64, 0.84].map((t, k) => (
+              <path
+                key={k}
+                d={`M${X(436 - 364 * t)} ${246 - 42 * t} L${X(440 - 352 * t)} ${294 - 62 * t}`}
+                stroke="#aab4c3"
+                strokeWidth="1.6"
+                fill="none"
+                opacity="0.8"
+              />
+            ))}
+            <path d={`M${X(72)} 204 C${X(60)} 178 ${X(56)} 146 ${X(62)} 110 L${X(78)} 118 C${X(82)} 148 ${X(90)} 178 ${X(98)} 208 Z`} fill="#dfe6ef" />
+            <path d={`M${X(62)} 110 L${X(78)} 118 L${X(74)} 128 L${X(64)} 124 Z`} fill="#b7c2d0" />
+          </g>
+        );
+      })}
 
-      {/* engines on pylons */}
-      {[280, 620].map((x) => (
+      {/* engines on pylons: nacelle lip, dark intake, 24 fan blades and a spinner */}
+      {[300, 700].map((x) => (
         <g key={x}>
-          <rect x={x - 7} y="226" width="14" height="36" fill="#8e99ab" />
-          <circle cx={x} cy="278" r="48" fill="url(#tlEngine)" />
-          <circle cx={x} cy="278" r="36" fill="#2b323e" />
-          <circle cx={x} cy="278" r="30" fill="#161b24" />
-          {Array.from({ length: 14 }, (_, k) => {
-            const a = (k / 14) * Math.PI * 2;
-            return <line key={k} x1={x} y1={278} x2={x + Math.cos(a) * 28} y2={278 + Math.sin(a) * 28} stroke="#3b4455" strokeWidth="3" />;
+          <path d={`M${x - 9} 262 L${x + 9} 262 L${x + 14} 296 L${x - 14} 296 Z`} fill="#8793a6" />
+          <circle cx={x} cy="316" r="66" fill="#6c788b" opacity="0.5" transform="translate(5 8)" />
+          <circle cx={x} cy="316" r="64" fill="url(#a3Nacelle)" />
+          <circle cx={x} cy="316" r="52" fill="#1a1f29" />
+          <circle cx={x} cy="316" r="50" fill="url(#a3Fan)" />
+          {Array.from({ length: 24 }, (_, k) => {
+            const a = (k / 24) * Math.PI * 2;
+            return (
+              <path
+                key={k}
+                d={`M${x + Math.cos(a) * 12} ${316 + Math.sin(a) * 12} Q${x + Math.cos(a + 0.35) * 32} ${316 + Math.sin(a + 0.35) * 32} ${x + Math.cos(a + 0.16) * 49} ${316 + Math.sin(a + 0.16) * 49}`}
+                stroke="#5a6477"
+                strokeWidth="3.4"
+                fill="none"
+              />
+            );
           })}
-          <circle cx={x} cy="278" r="9" fill="#a3aebf" />
+          <circle cx={x} cy="316" r="14" fill="url(#a3Spinner)" />
+          <path d={`M${x - 8} ${316 + 2} Q${x} ${316 - 12} ${x + 9} ${316 - 2}`} stroke="#ffffff" strokeWidth="2" fill="none" opacity="0.9" />
+          <path d={`M${x - 58} ${316 - 18} A60 60 0 0 1 ${x - 10} ${316 - 60}`} stroke="#ffffff" strokeWidth="4" fill="none" opacity="0.8" strokeLinecap="round" />
         </g>
       ))}
 
-      {/* navigation lights: red on the left winglet, green on the right */}
-      <circle className="tl-navlight tl-navlight-red" cx="52" cy="148" r="5" fill="#ff4d4d" />
-      <circle className="tl-navlight tl-navlight-green" cx="848" cy="148" r="5" fill="#4dff88" />
+      {/* navigation lights on the winglet tips */}
+      <circle className="tl-navlight tl-navlight-red" cx="64" cy="112" r="6" fill="#ff4d4d" />
+      <circle className="tl-navlight tl-navlight-green" cx="936" cy="112" r="6" fill="#4dff88" />
 
-      {/* fuselage, nose and cockpit */}
-      <ellipse cx="450" cy="222" rx="76" ry="86" fill="url(#tlBody)" />
-      <path d="M374 232 Q450 330 526 232 L526 262 Q450 350 374 262 Z" fill="#9aa5b6" opacity="0.35" />
-      <path d="M396 178 Q450 156 504 178 L498 206 Q450 190 402 206 Z" fill="#111721" />
-      <path d="M450 168 L450 198" stroke="#2b3444" strokeWidth="3" />
-      <path d="M408 184 Q430 176 446 178" stroke="#5a6b86" strokeWidth="2" fill="none" opacity="0.7" />
-      <circle cx="450" cy="244" r="20" fill="#e8edf4" />
-      <circle cx="450" cy="244" r="12" fill="#c5cedb" />
-      <path d="M376 236 Q450 330 524 236" stroke="#ff8a2a" strokeWidth="5" fill="none" opacity="0.9" />
+      {/* fuselage: sheen, belly shading, panel lines, black windscreen mask, nose radome and livery line */}
+      <ellipse cx="500" cy="254" rx="98" ry="114" fill="url(#a3Body)" />
+      <ellipse cx="500" cy="254" rx="98" ry="114" fill="url(#a3Sheen)" />
+      <path d="M404 262 Q500 400 596 262 L596 300 Q500 420 404 300 Z" fill="#8f9bad" opacity="0.4" />
+      <path d="M420 236 Q500 214 580 236" stroke="#c4cdd9" strokeWidth="1.4" fill="none" />
+      <path d="M414 262 Q500 244 586 262" stroke="#c4cdd9" strokeWidth="1.2" fill="none" />
+      <path d="M418 188 C440 164 470 156 500 156 C530 156 560 164 582 188 L576 228 C550 216 526 212 500 212 C474 212 450 216 424 228 Z" fill="#0c1018" />
+      <path d="M426 228 L418 188 L412 200 L418 238 Z" fill="#161c28" />
+      <path d="M574 228 L582 188 L588 200 L582 238 Z" fill="#161c28" />
+      <path d="M468 158 L474 212 M500 156 L500 212 M532 158 L526 212" stroke="#2a3446" strokeWidth="3.4" />
+      <path d="M432 186 Q466 168 494 170" stroke="#9fb3d1" strokeWidth="2.4" fill="none" opacity="0.65" strokeLinecap="round" />
+      <path d="M510 170 Q536 168 566 184" stroke="#9fb3d1" strokeWidth="2" fill="none" opacity="0.35" strokeLinecap="round" />
+      <ellipse cx="500" cy="262" rx="30" ry="24" fill="#d5dce6" />
+      <ellipse cx="500" cy="262" rx="18" ry="14" fill="#b3bdcb" />
+      <path d="M488 246 L486 238 M512 246 L514 238" stroke="#59657a" strokeWidth="2" />
+      <path d="M404 296 Q500 372 596 296" stroke="#ff8a2a" strokeWidth="7" fill="none" strokeLinecap="round" />
+      <path d="M410 306 Q500 380 590 306" stroke="#1a2030" strokeWidth="2" fill="none" opacity="0.5" />
+
+      {/* landing lights at the wing roots */}
+      <circle cx="456" cy="290" r="20" fill="url(#a3Glow)" opacity="0.8" />
+      <circle cx="544" cy="290" r="20" fill="url(#a3Glow)" opacity="0.8" />
     </svg>
   );
 }
