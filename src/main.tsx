@@ -29,6 +29,7 @@ function Img(props: React.ImgHTMLAttributes<HTMLImageElement> & { src: string })
 const EngineViewer = lazy(() => import("./EngineViewer"));
 const ProjectModelViewer = lazy(() => import("./ProjectModelViewer"));
 const CharacterSelect = lazy(() => import("./CharacterSelect"));
+import FlightTimeline from "./FlightTimeline";
 
 declare global {
   interface Window {
@@ -881,6 +882,14 @@ function App() {
             <em>Status: In Progress</em>
           </div>
         </div>
+      </section>
+
+      <section id="timeline" className="section timeline-section" aria-label="Flight timeline">
+        <div className="section-head">
+          <p className="eyebrow">Timeline</p>
+          <h2>Flight Timeline</h2>
+        </div>
+        <FlightTimeline />
       </section>
 
       <section id="characters" className="section character-section">

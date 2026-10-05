@@ -57,6 +57,8 @@ button {
 .shell {
   padding-left: 8.2rem;
   overflow: hidden;
+  /* clip (not hidden) so position: sticky works inside, e.g. the flight timeline */
+  overflow: clip;
 }
 
 .flight-background {
@@ -3213,5 +3215,278 @@ h3 {
 @media (max-width: 860px) {
   .beest-tiles figure {
     min-height: 9rem;
+  }
+}
+
+/* Flight timeline: an A350 takes off as you scroll. Native scrolling only, never captured. */
+.tl-wrap {
+  position: relative;
+  height: 430vh;
+}
+
+.tl-stage {
+  position: sticky;
+  top: 1rem;
+  height: calc(100vh - 2rem);
+  min-height: 28rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #05070a;
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.6), 0 24px 60px rgba(0, 0, 0, 0.32);
+}
+
+.tl-sky {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 150%;
+  background: linear-gradient(180deg, #05070a 0%, #0b1118 38%, #1a1422 58%, #4a2310 72%, #8a3d16 80%, #1a0e08 82%, #05070a 100%);
+}
+
+.tl-clouds {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.tl-clouds i {
+  position: absolute;
+  height: 5rem;
+  border-radius: 50%;
+  background: rgba(190, 200, 215, 0.12);
+  filter: blur(18px);
+}
+
+.tl-clouds i:nth-child(1) { left: -6%; top: 8%; width: 46%; }
+.tl-clouds i:nth-child(2) { right: -8%; top: 34%; width: 52%; }
+.tl-clouds i:nth-child(3) { left: 24%; top: 58%; width: 40%; }
+
+.tl-runway {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 260%;
+  height: 1800px;
+  overflow: hidden;
+  transform: translateX(-50%) perspective(1400px) rotateX(66deg);
+  transform-origin: 50% 100%;
+  border-top: 2px solid rgba(255, 138, 42, 0.55);
+  background:
+    linear-gradient(90deg, transparent 38%, rgba(255, 241, 223, 0.4) 38.15% 38.4%, transparent 38.55% 61.45%, rgba(255, 241, 223, 0.4) 61.6% 61.85%, transparent 62%),
+    linear-gradient(180deg, #151a22, #0a0d12);
+}
+
+.tl-dashes {
+  position: absolute;
+  top: -120px;
+  bottom: 0;
+  left: calc(50% - 0.9rem);
+  width: 1.8rem;
+  background: repeating-linear-gradient(180deg, #f1e6d6 0 60px, transparent 60px 120px);
+}
+
+.tl-plane-wrap {
+  position: absolute;
+  right: 0;
+  bottom: 35%;
+  left: 0;
+  width: min(54vw, 640px);
+  margin: 0 auto;
+  transform-origin: 50% 90%;
+  will-change: transform;
+  filter: drop-shadow(0 14px 26px rgba(0, 0, 0, 0.55));
+}
+
+.tl-plane {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.tl-hud {
+  position: absolute;
+  top: 1rem;
+  left: 1.2rem;
+  z-index: 3;
+  display: grid;
+  gap: 0.45rem;
+  width: min(16rem, 50%);
+}
+
+.tl-phase {
+  color: var(--amber);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.22em;
+}
+
+.tl-progress {
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tl-progress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--amber), var(--sky));
+}
+
+.tl-skip {
+  position: absolute;
+  top: 0.9rem;
+  right: 1rem;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.82);
+  color: var(--cream);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.tl-skip:hover {
+  background: rgba(255, 138, 42, 0.18);
+}
+
+.tl-card {
+  position: absolute;
+  top: 4.6rem;
+  left: 1.2rem;
+  z-index: 3;
+  width: min(23rem, calc(100% - 2.4rem));
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: rgba(8, 11, 16, 0.82);
+  backdrop-filter: blur(4px);
+  animation: tlCardIn 380ms ease both;
+}
+
+.tl-card-date {
+  color: var(--sky);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tl-card h3 {
+  margin: 0.25rem 0 0.35rem;
+  font-size: 1.35rem;
+}
+
+.tl-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@keyframes tlCardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.tl-rail {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 50%;
+  z-index: 4;
+  display: flex;
+  gap: 0.45rem;
+  transform: translateX(-50%);
+}
+
+.tl-dot {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--muted);
+  font-size: 0.62rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.tl-dot.active,
+.tl-dot:hover {
+  border-color: var(--amber);
+  color: var(--cream);
+  box-shadow: 0 0 12px rgba(255, 138, 42, 0.35);
+}
+
+/* Reduced motion: a plain list, no sticky stage */
+.tl-static {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tl-static li {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.tl-static span {
+  color: var(--sky);
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.tl-static h3 {
+  margin: 0.25rem 0;
+}
+
+.tl-static p {
+  margin: 0;
+  color: var(--muted);
+}
+
+@media (max-width: 620px) {
+  .tl-wrap {
+    height: 360vh;
+  }
+
+  .tl-stage {
+    height: calc(100svh - 7.5rem);
+  }
+
+  .tl-plane-wrap {
+    width: 82vw;
+    bottom: 32%;
+  }
+
+  .tl-card {
+    top: 4rem;
+  }
+
+  .tl-rail {
+    gap: 0.3rem;
+  }
+
+  .tl-dot {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
+}
+
+@media (max-width: 980px) {
+  .tl-stage {
+    height: calc(100svh - 8.2rem);
   }
 }
