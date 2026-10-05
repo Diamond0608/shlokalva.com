@@ -45,7 +45,7 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 
 ## Character Select
 
-`src/CharacterSelect.tsx` (lazy, mounted in `#characters` via `LazyMount`). Six modes shown as 3D photo cards: transparent cutouts of Shlok (`public/assets/cut-*.webp`, background removed with rembg) on a swaying layered card. A stat or Age/Height/Level of `null` renders as PLACEHOLDER. Fill them only with values Shlok gives you (stats are self-rated 1-10); never invent numbers. Keep photos of Shlok only; do not use the ID photo or group shots where he cannot be identified.
+`src/CharacterSelect.tsx` (lazy, mounted in `#characters` via `LazyMount`). Six modes shown as 3D photo cards: transparent cutouts of Shlok (`public/assets/cut-*.webp`, background removed with rembg) on a swaying layered card. A stat or Age/Height/Level of `null` renders as PLACEHOLDER. Fill them only with values Shlok gives you (stats are self-rated 1-10); never invent numbers. A smaller Side Character box (Trixie, Little Helper, Souls of the Goldfish) sits to the right of the main select; Trixie is still a "Classified" placeholder until Shlok describes her. Keep photos of Shlok only; do not use the ID photo or group shots where he cannot be identified.
 
 ## Content and voice
 

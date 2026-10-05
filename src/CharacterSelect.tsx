@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, useTexture } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { OrbitControls, useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -131,16 +131,20 @@ function PhotoCard({ character, ring, still }: { character: Character; ring: str
   const [pw, ph] = character.cutoutSize;
   const height = character.cardHeight;
   const width = (height * pw) / ph;
+  // Shrink wide cards so they always fit the stage, whatever its width.
+  const viewportWidth = useThree((state) => state.viewport.width);
+  const fit = Math.min(1, (viewportWidth * 0.86) / width);
 
   useEffect(() => {
-    if (group.current) group.current.scale.setScalar(0.55);
+    if (group.current) group.current.scale.setScalar(0.55 * fit);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [character.id]);
 
   useFrame(({ clock }, delta) => {
     const node = group.current;
     if (!node) return;
-    node.scale.setScalar(THREE.MathUtils.damp(node.scale.x, 1, 7, delta));
-    node.position.y = height / 2 + 0.06 + Math.sin(clock.elapsedTime * 1.4) * 0.03;
+    node.scale.setScalar(THREE.MathUtils.damp(node.scale.x, fit, 7, delta));
+    node.position.y = (height * node.scale.x) / 2 + 0.06 + Math.sin(clock.elapsedTime * 1.4) * 0.03;
     // Sway through a front-facing arc instead of a full turn, so the flat card never goes edge-on.
     node.rotation.y = still ? 0 : Math.sin(clock.elapsedTime * 0.7) * 0.75;
   });
@@ -225,7 +229,7 @@ function StatBar({ label, colour }: { label: string; colour: string }) {
   );
 }
 
-export default function CharacterSelect() {
+function MainSelect() {
   const reduced = useReducedMotion();
   const [index, setIndex] = useState(0);
   const [inView, setInView] = useState(true);
@@ -359,6 +363,301 @@ export default function CharacterSelect() {
           ))}
         </div>
       </div>
+    </div>
+  );
+}
+
+type SideId = "trixie" | "helper" | "goldfish";
+
+type SideCharacter = {
+  id: SideId;
+  name: string;
+  tagline: string;
+  stats: string[];
+  ultimate: { name: string; text: string };
+  signature: string;
+  weakness: string;
+  ring: string;
+};
+
+const sideCharacters: SideCharacter[] = [
+  {
+    id: "trixie",
+    name: "Trixie",
+    tagline: "Classified.",
+    stats: ["Mystery", "Presence", "Charm"],
+    ultimate: { name: "Classified", text: "Details unlock later." },
+    signature: "Classified",
+    weakness: "Classified",
+    ring: "#c79bff"
+  },
+  {
+    id: "helper",
+    name: "Little Helper",
+    tagline: "Carries the teachers’ books so nobody else has to.",
+    stats: ["Traction", "Carrying", "Safety"],
+    ultimate: { name: "Emergency Stop", text: "The ultrasonic sensor halts everything before the wall does." },
+    signature: "RFID and PIN lock",
+    weakness: "Needs its PS3 controller.",
+    ring: "#ff8a2a"
+  },
+  {
+    id: "goldfish",
+    name: "Souls of the Goldfish",
+    tagline: "Still swimming, just not in water.",
+    stats: ["Ghost Glow", "Bubble Count", "Memory"],
+    ultimate: { name: "Final Splash", text: "One dramatic bubble, right on cue." },
+    signature: "Glowing",
+    weakness: "About three seconds of memory.",
+    ring: "#ffb15a"
+  }
+];
+
+function HelperModel() {
+  const { scene } = useGLTF("/assets/little-helper.glb");
+  const group = useRef<THREE.Group>(null);
+  const model = useRef<THREE.Object3D | null>(null);
+  if (!model.current) {
+    const copy = scene.clone(true);
+    const box = new THREE.Box3().setFromObject(copy);
+    const size = box.getSize(new THREE.Vector3());
+    const centre = box.getCenter(new THREE.Vector3());
+    const scale = 1.7 / Math.max(size.x, size.y, size.z);
+    copy.position.sub(centre);
+    const wrap = new THREE.Group();
+    wrap.add(copy);
+    wrap.scale.setScalar(scale);
+    wrap.position.y = (size.y * scale) / 2 + 0.1;
+    model.current = wrap;
+  }
+  useFrame((_, delta) => {
+    if (group.current) group.current.rotation.y += delta * 0.7;
+  });
+  return (
+    <group ref={group}>
+      <primitive object={model.current} />
+    </group>
+  );
+}
+
+const FISH_SPECS = [
+  { r: 0.85, y: 1.0, speed: 0.7, phase: 0, scale: 1 },
+  { r: 0.6, y: 1.45, speed: -0.9, phase: 2.1, scale: 0.8 },
+  { r: 1.0, y: 0.7, speed: 0.55, phase: 4.2, scale: 0.9 }
+];
+const BUBBLES = 48;
+
+function GoldfishSouls() {
+  const fish = useRef<Array<THREE.Group | null>>([]);
+  const bubbles = useRef<THREE.Points>(null);
+  const bubbleData = useRef<Float32Array | null>(null);
+  if (!bubbleData.current) {
+    const arr = new Float32Array(BUBBLES * 3);
+    for (let i = 0; i < BUBBLES; i++) {
+      arr[i * 3] = (Math.random() - 0.5) * 2.6;
+      arr[i * 3 + 1] = Math.random() * 2.2;
+      arr[i * 3 + 2] = (Math.random() - 0.5) * 2.6;
+    }
+    bubbleData.current = arr;
+  }
+  useFrame(({ clock }) => {
+    const t = clock.elapsedTime;
+    FISH_SPECS.forEach((spec, i) => {
+      const node = fish.current[i];
+      if (!node) return;
+      const a = t * spec.speed + spec.phase;
+      node.position.set(Math.cos(a) * spec.r, spec.y + Math.sin(t * 1.3 + i) * 0.08, Math.sin(a) * spec.r);
+      node.rotation.y = -a + (spec.speed > 0 ? 0 : Math.PI);
+      node.rotation.z = Math.sin(t * 2 + i) * 0.08;
+    });
+    const pts = bubbles.current;
+    const data = bubbleData.current;
+    if (pts && data) {
+      for (let i = 0; i < BUBBLES; i++) {
+        data[i * 3 + 1] += 0.004 + (i % 5) * 0.0008;
+        if (data[i * 3 + 1] > 2.3) data[i * 3 + 1] = 0;
+      }
+      pts.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+  return (
+    <group>
+      {FISH_SPECS.map((spec, i) => (
+        <group key={i} ref={(node) => (fish.current[i] = node)} scale={spec.scale}>
+          <mesh scale={[1.6, 1, 0.7]}>
+            <sphereGeometry args={[0.2, 20, 14]} />
+            <meshStandardMaterial color="#ffd9a8" emissive="#ff9a3c" emissiveIntensity={0.9} transparent opacity={0.62} />
+          </mesh>
+          <mesh position={[-0.38, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+            <coneGeometry args={[0.16, 0.3, 4]} />
+            <meshStandardMaterial color="#ffd9a8" emissive="#ff9a3c" emissiveIntensity={0.9} transparent opacity={0.5} />
+          </mesh>
+          <mesh position={[0.2, 0.05, 0.1]}>
+            <sphereGeometry args={[0.03, 8, 8]} />
+            <meshStandardMaterial color="#10131a" />
+          </mesh>
+          <mesh position={[0.02, 0.3, 0]} rotation={[Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[0.1, 0.014, 8, 20]} />
+            <meshStandardMaterial color="#fff2b0" emissive="#ffe27a" emissiveIntensity={1.6} />
+          </mesh>
+        </group>
+      ))}
+      <points ref={bubbles}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position" args={[bubbleData.current, 3]} />
+        </bufferGeometry>
+        <pointsMaterial color="#bfe9ff" size={0.045} transparent opacity={0.7} sizeAttenuation />
+      </points>
+    </group>
+  );
+}
+
+function ClassifiedCard() {
+  const mesh = useRef<THREE.Group>(null);
+  const texture = useRef<THREE.CanvasTexture | null>(null);
+  if (!texture.current) {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.fillStyle = "#c79bff";
+      ctx.font = "bold 200px sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.shadowColor = "#c79bff";
+      ctx.shadowBlur = 24;
+      ctx.fillText("?", 128, 140);
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    texture.current = tex;
+  }
+  useFrame(({ clock }) => {
+    const node = mesh.current;
+    if (!node) return;
+    node.position.y = 1.0 + Math.sin(clock.elapsedTime * 1.4) * 0.06;
+    node.rotation.y = Math.sin(clock.elapsedTime * 0.7) * 0.7;
+  });
+  return (
+    <group ref={mesh}>
+      <mesh>
+        <planeGeometry args={[1.5, 1.5]} />
+        <meshBasicMaterial map={texture.current} transparent toneMapped={false} />
+      </mesh>
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.75, 0.01, 8, 48]} />
+        <meshStandardMaterial color="#c79bff" emissive="#c79bff" emissiveIntensity={1.2} />
+      </mesh>
+    </group>
+  );
+}
+
+function SideSelect() {
+  const [index, setIndex] = useState(1);
+  const [inView, setInView] = useState(true);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const current = sideCharacters[index];
+  const go = (delta: number) => setIndex((value) => (value + delta + sideCharacters.length) % sideCharacters.length);
+
+  useEffect(() => {
+    const node = stageRef.current;
+    if (!node || !("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  const onKey = (event: React.KeyboardEvent) => {
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      go(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      go(-1);
+    }
+  };
+
+  return (
+    <div className="cs-side" onKeyDown={onKey}>
+      <div className="cs-side-stage" ref={stageRef}>
+        <Canvas
+          frameloop={inView ? "always" : "never"}
+          dpr={[1, 1.5]}
+          camera={{ position: [0, 1.15, 4.4], fov: 32 }}
+          gl={{ antialias: true, alpha: true }}
+          aria-label={`3D scene: ${current.name}`}
+        >
+          <ambientLight intensity={0.8} />
+          <directionalLight position={[3, 5, 4]} intensity={1.5} />
+          <pointLight position={[0, 0.4, 2]} intensity={0.9} color={current.ring} />
+          <Suspense fallback={null}>
+            {current.id === "helper" && <HelperModel />}
+            {current.id === "goldfish" && <GoldfishSouls />}
+            {current.id === "trixie" && <ClassifiedCard />}
+          </Suspense>
+          <Platform ring={current.ring} />
+        </Canvas>
+        <button className="cs-arrow cs-arrow-left" onClick={() => go(-1)} aria-label="Previous side character">
+          <ChevronLeft size={18} />
+        </button>
+        <button className="cs-arrow cs-arrow-right" onClick={() => go(1)} aria-label="Next side character">
+          <ChevronRight size={18} />
+        </button>
+        <div className="cs-stage-tag">
+          <span>SIDE CHARACTER</span>
+          <strong>{current.name}</strong>
+        </div>
+        <div className="cs-dots" role="group" aria-label="Choose a side character">
+          {sideCharacters.map((side, i) => (
+            <button
+              key={side.id}
+              className={i === index ? "active" : ""}
+              onClick={() => setIndex(i)}
+              aria-label={side.name}
+              aria-pressed={i === index}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="cs-panel cs-side-panel" key={current.id} aria-live="polite">
+        <div>
+          <p className="eyebrow">Side Character</p>
+          <h3>{current.name}</h3>
+          <p className="cs-tagline">{current.tagline}</p>
+        </div>
+        <div className="cs-stats">
+          {current.stats.map((label, i) => (
+            <StatBar key={label} label={label} colour={STAT_COLOURS[i % STAT_COLOURS.length]} />
+          ))}
+        </div>
+        <div className="cs-ult">
+          <kbd>X</kbd>
+          <div>
+            <span>Ultimate Ability (Press X)</span>
+            <strong>{current.ultimate.name}</strong>
+            <p>{current.ultimate.text}</p>
+          </div>
+        </div>
+        <div className="cs-lore">
+          <p>
+            <span>Signature</span> {current.signature}
+          </p>
+          <p>
+            <span>Weakness</span> {current.weakness}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function CharacterSelect() {
+  return (
+    <div className="cs-wrap">
+      <MainSelect />
+      <SideSelect />
     </div>
   );
 }
