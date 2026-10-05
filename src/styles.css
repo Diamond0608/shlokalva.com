@@ -3519,7 +3519,7 @@ h3 {
 /* Flight timeline: an A350 takes off as you scroll. Native scrolling only, never captured. */
 .tl-wrap {
   position: relative;
-  height: 430vh;
+  height: 540vh;
 }
 
 .tl-stage {
@@ -3730,7 +3730,7 @@ h3 {
 
 @media (max-width: 620px) {
   .tl-wrap {
-    height: 360vh;
+    height: 450vh;
   }
 
   .tl-stage {

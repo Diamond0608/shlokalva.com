@@ -4,14 +4,16 @@ import { ArrowDown } from "lucide-react";
 
 type Milestone = { label: string; date: string; title: string; body: string };
 
-// Placeholder content: Shlok will supply the real milestones, dates and text.
 const milestones: Milestone[] = [
-  { label: "01", date: "Date TBD", title: "Milestone One", body: "Placeholder. The real milestone goes here." },
-  { label: "02", date: "Date TBD", title: "Milestone Two", body: "Placeholder. The real milestone goes here." },
-  { label: "03", date: "Date TBD", title: "Milestone Three", body: "Placeholder. The real milestone goes here." },
-  { label: "04", date: "Date TBD", title: "Milestone Four", body: "Placeholder. The real milestone goes here." },
-  { label: "05", date: "Date TBD", title: "Milestone Five", body: "Placeholder. The real milestone goes here." },
-  { label: "06", date: "Date TBD", title: "Milestone Six", body: "Placeholder. The real milestone goes here." }
+  { label: "01", date: "6 Aug 2009", title: "Born", body: "The start of the flight plan." },
+  { label: "02", date: "12 Years", title: "Montessori To Grade 12", body: "All of school at National Public School Koramangala, from Montessori to Grade 12." },
+  { label: "03", date: "Date TBD", title: "Robotics And Cyber Clubs", body: "Founded the Robotics Club, then led the Cyber Club as President and Vice President." },
+  { label: "04", date: "Date TBD", title: "CERN, Geneva", body: "A week of masterclass visits to ALICE, ISOLDE, CMS, ATLAS and the Antimatter Factory." },
+  { label: "05", date: "Date TBD", title: "Dwello Aerospace", body: "A month on aircraft propulsion: ramjet and turbofan CAD, simulation and a technical report." },
+  { label: "06", date: "Date TBD", title: "Team Dinoco At The NRL", body: "Captained the team from 92nd to second in the playoffs, then out in the quarter-finals." },
+  { label: "07", date: "31 May - 19 Aug 2026", title: "Little Helper", body: "Designed and built a track-based robot that carries books for teachers." },
+  { label: "08", date: "15 Jul 2026", title: "Hack Club BEEST", body: "Little Helper approved and marked golden. Could not travel, so the grants bought a printer, drill and monitor." },
+  { label: "09", date: "Next", title: "College????", body: "Aerospace engineering is the plan. Where is still being decided." }
 ];
 
 const PHASES: Array<[number, string]> = [
@@ -140,7 +142,7 @@ function StaticTimeline() {
 }
 
 // Milestone i appears once the plane has flown this far; earlier ones stay on screen.
-const appearAt = (index: number) => 0.06 + index * 0.15;
+const appearAt = (index: number) => 0.05 + index * (0.8 / (milestones.length - 1));
 
 // Static night skyline at the far end of the runway: terminal blocks, a control tower and lit windows.
 const SKYLINE: Array<[number, number, number]> = [

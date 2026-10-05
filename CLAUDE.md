@@ -34,7 +34,7 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 
 ## Branching
 
-Work happens on one branch, `dev`, which holds everything not yet live. Push to `main` only when Shlok says so, then merge `dev` into `main` in one go. The Flight Timeline (`src/FlightTimeline.tsx`) still has placeholder milestones; do not merge `dev` to `main` until Shlok has supplied the real ones.
+Work happens on one branch, `dev`, which holds everything not yet live. Push to `main` only when Shlok says so, then merge `dev` into `main` in one go. The Flight Timeline (`src/FlightTimeline.tsx`) has nine drafted milestones; four still say "Date TBD" and need real dates from Shlok before `dev` goes to `main`. Only use facts already on the site or given by Shlok.
 
 ## Rules that will bite you
 
