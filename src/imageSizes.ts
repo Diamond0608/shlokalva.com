@@ -38,27 +38,27 @@ export const imageSizes: Record<string, [number, number]> = {
     219
   ],
   "/assets/cut-captain.webp": [
-    520,
-    800
+    523,
+    1000
   ],
   "/assets/cut-engineer.webp": [
-    1097,
-    1000
+    520,
+    800
   ],
   "/assets/cut-explorer.webp": [
     449,
     1000
   ],
   "/assets/cut-friend.webp": [
-    1200,
-    900
+    796,
+    1000
   ],
   "/assets/cut-philosopher.webp": [
     559,
     1000
   ],
   "/assets/cut-pilot.webp": [
-    523,
+    1097,
     1000
   ],
   "/assets/cyber-lab-1.jpg": [
