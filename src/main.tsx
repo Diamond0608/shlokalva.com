@@ -284,12 +284,6 @@ const experiences = [
     body: "A one-week school masterclass where we visited ALICE, ISOLDE, CMS, ATLAS, the Antimatter Factory, and a lot of places I had only read about before."
   },
   {
-    title: "Dwello Aerospace",
-    subtitle: "Aircraft Propulsion Internship",
-    image: images.dwelloTwo,
-    body: "Ramjet and turbofan propulsion models, a technical report, and animation. The full write-up is in Project Hangar."
-  },
-  {
     title: "Cyber Club Leadership",
     subtitle: "President And Vice President",
     image: images.pcBuilding,
@@ -300,6 +294,12 @@ const experiences = [
     subtitle: "Founder And Committee Member",
     image: images.blackShirtCohorts,
     body: "I helped get more people into robotics and tech at school, while learning that explaining a build can be harder than building it."
+  },
+  {
+    title: "Helios And Iris",
+    subtitle: "Robotics Fest Volunteer And Event Head",
+    image: images.cyberRoboticsOne,
+    body: "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris."
   }
 ];
 
@@ -318,11 +318,6 @@ const signals = [
     title: "Cyber Competitions",
     body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
     image: images.hkuAiChallenge
-  },
-  {
-    title: "Helios And Iris",
-    body: "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris.",
-    image: images.blackShirtCohorts
   }
 ];
 
@@ -758,18 +753,8 @@ function ProjectRow({ project, index, onOpen }: { project: Project; index: numbe
 
 // An original sleek black dragon: dark scales with a teal rim light, big glowing green eyes, swept crest and a spade tail.
 function DragonCompanion() {
-  // One plasma blast with the greeting: it flies up the right side, bounces off the top and heads left. It never repeats.
-  const reduced = useReducedMotion();
-  const [blast, setBlast] = useState(true);
   return (
     <>
-    {blast && !reduced && (
-      <div className="plasma" aria-hidden="true" onAnimationEnd={(event) => {
-        if (event.animationName === "plasmaFly") setBlast(false);
-      }}>
-        <span className="plasma-core">Welcome</span>
-      </div>
-    )}
     <div className="dragon" aria-hidden="true">
       <svg viewBox="0 0 230 150" className="dragon-svg">
         <defs>
@@ -781,6 +766,11 @@ function DragonCompanion() {
             <stop offset="0" stopColor="#222a3a" />
             <stop offset="1" stopColor="#0a0d14" stopOpacity="0.85" />
           </linearGradient>
+          <radialGradient id="dgPlasma" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stopColor="#e9d2ff" />
+            <stop offset="0.45" stopColor="#b86bff" stopOpacity="0.85" />
+            <stop offset="1" stopColor="#6a1fd6" stopOpacity="0" />
+          </radialGradient>
           <radialGradient id="dgEye" cx="0.4" cy="0.4" r="0.7">
             <stop offset="0" stopColor="#d9ff9a" />
             <stop offset="0.6" stopColor="#5fe06a" />
@@ -811,6 +801,10 @@ function DragonCompanion() {
           <g className="dragon-wing dragon-wing-near">
             <path d="M132 80 C118 38 88 18 50 22 C62 34 70 46 78 58 C88 54 98 54 106 58 C114 62 124 70 132 80 Z" fill="url(#dgWing)" stroke="#2f8f8a" strokeWidth="0.8" />
             <path d="M132 80 L50 22 M132 80 L78 58 M132 80 L106 58" stroke="#58d6c2" strokeWidth="1.1" fill="none" opacity="0.55" />
+          </g>
+          <g className="dragon-charge">
+            <circle cx="216" cy="63" r="11" fill="url(#dgPlasma)" />
+            <circle cx="216" cy="63" r="4.2" fill="#f6ebff" />
           </g>
         </g>
       </svg>
