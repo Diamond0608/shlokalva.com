@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Little Helper Devlog | Hack Club BEEST | Shlok Alva</title>
+    <meta
+      name="description"
+      content="The full devlog for Little Helper, my Hack Club BEEST project: {{COUNT}} entries from {{FIRST}} to {{LAST}}, covering CAD, electronics, documentation and the physical build."
+    />
+    <meta name="author" content="Shlok Alva" />
+    <meta name="theme-color" content="#0c1017" />
+    <link rel="canonical" href="https://shlokalva.com/beest/" />
+    <link rel="icon" type="image/svg+xml" href="/assets/plane-outline.svg" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Shlok Alva" />
+    <meta property="og:title" content="Little Helper Devlog | Hack Club BEEST" />
+    <meta property="og:description" content="{{COUNT}} devlog entries from design to physical build." />
+    <meta property="og:url" content="https://shlokalva.com/beest/" />
+    <meta property="og:image" content="https://shlokalva.com/assets/little-helper-real.jpg" />
+    <meta property="og:image:alt" content="Little Helper, the track-based book-carrying robot" />
+    <link rel="stylesheet" href="./beest.css" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="back" href="/">&larr; Back To Portfolio</a>
+      <span class="code">VT-PLN / BEEST LOG</span>
+    </header>
+
+    <main class="wrap">
+      <section class="intro">
+        <p class="eyebrow">Hack Club BEEST</p>
+        <h1>Little Helper Devlog</h1>
+        <p class="lede">
+          Little Helper is my track-based 4WD robot that carries books and papers for teachers. It was my Hack Club BEEST
+          project, and it had to be shipped to Hack Club&rsquo;s standards. This is the full log, in order.
+        </p>
+
+        <div class="intro-grid">
+          <figure class="card-shot">
+            <img
+              src="/assets/beest-project-card.webp"
+              alt="The Little Helper project card on Hack Club BEEST, marked Hardware, Approved and Golden"
+              width="684"
+              height="230"
+            />
+            <figcaption>The project on Hack Club BEEST: Hardware, Approved, Golden.</figcaption>
+          </figure>
+          <dl class="facts">
+            <div><dt>Devlogs</dt><dd>{{COUNT}}</dd></div>
+            <div><dt>First entry</dt><dd>{{FIRST}}</dd></div>
+            <div><dt>Last entry</dt><dd>{{LAST}}</dd></div>
+            <div><dt>Status</dt><dd>Approved, Golden</dd></div>
+          </dl>
+        </div>
+
+        <h2 class="small">The Shipping Standards</h2>
+        <ul class="standards">
+          <li>Electrical schematics for the whole build, drawn in KiCad.</li>
+          <li>Full CAD of every part and the assembly in Fusion 360.</li>
+          <li>A devlog every hour of work.</li>
+          <li>Every hour screen-recorded, with timelapses.</li>
+          <li>Extensive documentation: a repo README, a bill of materials and build instructions.</li>
+        </ul>
+
+        <blockquote class="review">
+          <p>
+            twin this is like amazing congratulations on such a cool project (and thank you for not submitting slop from
+            the review team)
+          </p>
+          <footer>Hack Club reviewer, Jul 15, 2026</footer>
+        </blockquote>
+
+        <p class="note">
+          Trinetra was devlogged to the same standard, but those logs are not published here. The full Little Helper
+          journal is also on
+          <a href="https://github.com/Diamond0608/Little-Helper/blob/main/little-helper-journal.md" target="_blank" rel="noreferrer">GitHub</a>,
+          alongside the <a href="https://github.com/Diamond0608/Little-Helper" target="_blank" rel="noreferrer">repo</a>.
+        </p>
+      </section>
+
+      <div class="toolbar" role="group" aria-label="Devlog controls">
+        <button type="button" id="expand">Expand All</button>
+        <button type="button" id="collapse">Collapse All</button>
+      </div>
+
+      {{SECTIONS}}
+
+      <p class="foot"><a class="back" href="/">&larr; Back To Portfolio</a></p>
+    </main>
+
+    <script>
+      (function () {
+        var all = function () { return document.querySelectorAll("details.entry"); };
+        document.getElementById("expand").addEventListener("click", function () { all().forEach(function (d) { d.open = true; }); });
+        document.getElementById("collapse").addEventListener("click", function () { all().forEach(function (d) { d.open = false; }); });
+        if (location.hash) {
+          var target = document.querySelector(location.hash);
+          if (target && target.tagName === "DETAILS") target.open = true;
+        }
+      })();
+    </script>
+  </body>
+</html>

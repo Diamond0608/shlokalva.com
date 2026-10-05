@@ -336,11 +336,6 @@ const signals = [
     image: images.planeOutline
   },
   {
-    title: "Hack Club BEEST",
-    body: "Selected as one of the 30 participants scheduled to travel to the Netherlands for Hack Club BEEST. I could not go because of travel-related issues and received approximately ₹40,000 INR instead.",
-    image: images.hackClubLogo
-  },
-  {
     title: "Cyber Competitions",
     body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
     image: images.hkuAiChallenge
@@ -906,6 +901,35 @@ function App() {
             <ProjectCard key={project.id} project={project} onOpen={setActiveImage} />
           ))}
         </div>
+      </section>
+
+      <section id="beest" className="section">
+        <article className="beest-card">
+          <Img src="/assets/beest-project-card.webp" alt="The Little Helper project card on Hack Club BEEST, marked Hardware, Approved and Golden" loading="lazy" />
+          <div>
+            <p className="eyebrow">Hack Club BEEST</p>
+            <h3>Shipped To Hack Club&apos;s Standards</h3>
+            <p>
+              Little Helper was my Hack Club BEEST project, and shipping it meant following Hack Club&apos;s standards
+              meticulously:
+            </p>
+            <ul>
+              <li>Electrical schematics for the whole build.</li>
+              <li>Full CAD of every part and the assembly.</li>
+              <li>A devlog every hour of work.</li>
+              <li>Every hour recorded, with timelapses.</li>
+              <li>Extensive documentation of the whole project.</li>
+            </ul>
+            <p>
+              I was selected as one of the 30 participants scheduled to travel to the Netherlands for BEEST. I could not
+              go because of travel-related issues and received approximately ₹40,000 INR instead.
+            </p>
+            <p className="beest-note">Trinetra was devlogged the same way, but those logs are not published here.</p>
+            <a className="primary" href="/beest/">
+              Read The Full Devlog <ChevronRight size={17} />
+            </a>
+          </div>
+        </article>
       </section>
 
       <section id="experiences" className="section">

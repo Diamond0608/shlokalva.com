@@ -7,6 +7,10 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: true,
     rollupOptions: {
+      input: {
+        main: "index.html",
+        beest: "beest/index.html"
+      },
       output: {
         manualChunks: {
           react: ["react", "react-dom"],

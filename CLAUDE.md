@@ -43,6 +43,10 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 7. **Style layering:** `src/styles.css` is the source of truth. `portfolio-overrides.css` loads separately from `<head>` and can win on specificity. Make new styling changes in `styles.css`; touch the overrides file only to fix a conflict, and note why.
 8. `pnpm-workspace.yaml` contains a placeholder (`esbuild: set this to true or false`). Leave it alone unless asked; do not switch the project to pnpm.
 
+## BEEST devlog page
+
+`/beest/` is a separate static page (Vite multi-page input in `vite.config.ts`), not part of the React app. Source: `beest/devlogs.json` (70 entries: 34 early journal entries with original dates and tracked time, 36 August build logs) + `beest/template.html` + `beest/beest.css`. Regenerate `beest/index.html` with `python tools/build_beest_page.py` after editing the JSON or template. The main-page BEEST card (`#beest` in `main.tsx`) links to it. Trinetra was also devlogged but those logs are deliberately NOT published. Only publish text Shlok wrote; the Sep 15 reviewer comment is unconfirmed and not used.
+
 ## Character Select
 
 `src/CharacterSelect.tsx` (lazy, mounted in `#characters` via `LazyMount`). Six modes shown as 3D photo cards: transparent cutouts of Shlok (`public/assets/cut-*.webp`, background removed with rembg) on a swaying layered card. A stat or Age/Height/Level of `null` renders as PLACEHOLDER. Fill them only with values Shlok gives you (stats are self-rated 1-10); never invent numbers. A smaller Side Character box (Trixie, Little Helper, Souls of the Goldfish) sits to the right of the main select; Trixie is his pet German shepherd (photo card). Keep photos of Shlok only; do not use the ID photo or group shots where he cannot be identified.
