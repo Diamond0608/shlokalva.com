@@ -28,5 +28,6 @@ https://shlokalva.com/
 ## External Profile
 
 https://github.com/Diamond0608
+https://www.linkedin.com/in/shlok-alva-031041351
 
 Authorship: this website was built with AI assistance (Claude, by Anthropic). The projects, devlogs, photos and results it describes are Shlok Alva's own work.

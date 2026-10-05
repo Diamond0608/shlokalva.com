@@ -1215,6 +1215,9 @@ function App() {
           <a href="https://github.com/Diamond0608" target="_blank" rel="noreferrer">
             GitHub <ExternalLink size={17} />
           </a>
+          <a href="https://www.linkedin.com/in/shlok-alva-031041351" target="_blank" rel="noreferrer">
+            LinkedIn <ExternalLink size={17} />
+          </a>
           <a href="https://www.instagram.com/teamdinoco_nrl?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer">
             Team Dinoco Instagram <ExternalLink size={17} />
           </a>
