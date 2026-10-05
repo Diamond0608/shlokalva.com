@@ -64,6 +64,8 @@ Page sections in order: hero, `#mission`, `#projects`, `#aerospace`, `#experienc
 
 - TypeScript strict, function components, hooks. Icons come from `lucide-react`, animation from `framer-motion` (respect `useReducedMotion`), 3D from `@react-three/fiber` + `drei`.
 - Vite `manualChunks` splits react / framer-motion / lucide. three is NOT in manualChunks on purpose: `EngineViewer` and `ProjectModelViewer` are `React.lazy` imports mounted via `LazyMount`, so three only loads when the Engine Room scrolls into view. Do not re-add three to `manualChunks` or import the viewers statically; that puts about 1 MB back in the initial load.
+- Images in `main.tsx` go through the `Img` component, which sets `width`/`height` from `src/imageSizes.ts` so the layout does not jump on load. When you add a raster to `public/assets/`, add its entry to `imageSizes.ts` (width, height in pixels). Prefer .webp/.jpg over large .png.
+- Looping CSS animations on panels listed in the `anim-off` effect in `App` are paused while off-screen; add new always-running animated panels to that selector list.
 - Use `loading="lazy"` on new below-the-fold images. Give every meaningful image real `alt` text; decorative ones get `alt=""`.
 - Prefer self-hosted assets. Existing hotlinks (Airbus cockpit image, Wikimedia Mozart `.ogg`, YouTube thumbnails) are fragile; do not add more.
 - Keep `main.tsx` content as typed data arrays at the top, components below. If asked to refactor, split data into `src/data/*.ts` and components into `src/components/*.tsx` without changing rendered output.

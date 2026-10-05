@@ -18,6 +18,13 @@ import {
   Wrench
 } from "lucide-react";
 import "./styles.css";
+import { imageSizes } from "./imageSizes";
+
+function Img(props: React.ImgHTMLAttributes<HTMLImageElement> & { src: string }) {
+  const size = imageSizes[props.src];
+  return <img decoding="async" width={size?.[0]} height={size?.[1]} {...props} />;
+}
+
 const EngineViewer = lazy(() => import("./EngineViewer"));
 const ProjectModelViewer = lazy(() => import("./ProjectModelViewer"));
 
@@ -77,9 +84,9 @@ const images = {
   planeOutline: "/assets/outline.svg",
   hackClubLogo: "/assets/hackclub-2026.png",
   hkuAiChallenge: "/assets/hku-ai-challenge.jpg",
-  blackShirtCohorts: "/assets/black-shirt-cohorts.png",
-  pcBuilding: "/assets/pc-building.png",
-  nrlDiscussion: "/assets/nrl-discussion.png",
+  blackShirtCohorts: "/assets/black-shirt-cohorts.webp",
+  pcBuilding: "/assets/pc-building.webp",
+  nrlDiscussion: "/assets/nrl-discussion.webp",
   concordePhoto: "/assets/concorde-photo.png",
   cernGeneva: "/assets/cern-geneva.jpg",
   cernLab: "/assets/cern-lab.jpg",
@@ -560,7 +567,7 @@ function FlightMascot() {
     <div className="mascot-card" aria-label="Animated Concorde Flight Board">
       <p className="concorde-line">Concorde Raced The Sun And Won, And I'm Racing Against The Universe And Hoping To Win Too.</p>
       <div className="concorde-photo-wrap">
-        <img src={images.concordePhoto} alt="Air France Concorde taking off" />
+        <Img src={images.concordePhoto} alt="Air France Concorde taking off" />
       </div>
       <div className="mini-runway">
         <i />
@@ -593,7 +600,7 @@ function PhotoStrip({ gallery, onOpen }: { gallery: GalleryImage[]; onOpen: (ima
             {image.type === "video" ? (
               <video src={image.src} muted loop playsInline preload="metadata" />
             ) : (
-              <img src={image.src} alt={image.alt} loading="lazy" />
+              <Img src={image.src} alt={image.alt} loading="lazy" />
             )}
             <span>{image.caption}</span>
             {image.youtubeId || image.type === "video" || image.type === "model" ? (
@@ -620,7 +627,7 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: (image: Ga
     >
       <div className="project-flip">
         <div className="project-face project-front">
-          <img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
+          <Img src={project.gallery[0].src} alt={project.gallery[0].alt} loading="lazy" />
           <div className="project-overlay">
             <span>{project.eyebrow}</span>
             <h3>{project.title}</h3>
@@ -770,6 +777,27 @@ function App() {
   };
 
   useEffect(() => {
+    if (!activeImage) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setActiveImage(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [activeImage]);
+
+  // Pause looping CSS animations on panels that are scrolled out of view.
+  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle("anim-off", !entry.isIntersecting));
+    });
+    document
+      .querySelectorAll(".aviation-compass, .concorde-photo-wrap, .mini-runway, .flight-card, .engine-visual")
+      .forEach((node) => observer.observe(node));
+    return () => observer.disconnect();
+  }, [booted]);
+
+  useEffect(() => {
     const timeout = window.setTimeout(() => setBooted(true), reducedMotion ? 100 : 1200);
     return () => window.clearTimeout(timeout);
   }, [reducedMotion]);
@@ -887,7 +915,7 @@ function App() {
         </div>
         <div className="cockpit-grid">
           <button onClick={() => setActiveImage(projects[2].gallery[0])}>
-            <img src={images.dwelloOne} alt="Turbofan CAD render" loading="lazy" />
+            <Img src={images.dwelloOne} alt="Turbofan CAD render" loading="lazy" />
             <span>Dwello Turbofan CAD</span>
           </button>
           <button
@@ -895,7 +923,7 @@ function App() {
               setActiveImage({ src: images.rcPlane, alt: "Scratch-built RC plane", caption: "NACA 0012 RC Plane" })
             }
           >
-            <img src={images.rcPlane} alt="Scratch-built RC plane" loading="lazy" />
+            <Img src={images.rcPlane} alt="Scratch-built RC plane" loading="lazy" />
             <span>NACA 0012 RC Plane</span>
           </button>
           <div className="instrument-panel">
@@ -913,7 +941,7 @@ function App() {
         <div className="experience-grid">
           {experiences.map((experience) => (
             <article key={experience.title} className="experience-card">
-              <img src={experience.image} alt="" loading="lazy" />
+              <Img src={experience.image} alt="" loading="lazy" />
               <div>
                 <span>{experience.subtitle}</span>
                 <h3>{experience.title}</h3>
@@ -968,7 +996,7 @@ function App() {
         <div className="signal-grid">
           {signals.map((signal) => (
             <article key={signal.title}>
-              <img src={signal.image} alt="" loading="lazy" />
+              <Img src={signal.image} alt="" loading="lazy" />
               <div>
                 <Radar size={18} />
                 <h3>{signal.title}</h3>
@@ -1048,7 +1076,7 @@ function App() {
         <div>
           <p className="eyebrow">Contact</p>
           <div className="final-boarding-image">
-            <img
+            <Img
               src="https://www.aircraft.airbus.com/sites/g/files/jlcbta126/files/2021-10/A350%20MSN3%20COCKPIT%20WHILE%20DUSK.jpg"
               alt="Airbus A350 cockpit"
               loading="lazy"
@@ -1085,7 +1113,7 @@ function App() {
             ) : activeImage.type === "model" && activeImage.modelPath ? (
               <Suspense fallback={null}><ProjectModelViewer src={activeImage.modelPath} /></Suspense>
             ) : (
-              <img src={activeImage.src} alt={activeImage.alt} />
+              <Img src={activeImage.src} alt={activeImage.alt} />
             )}
             <figcaption>{activeImage.caption}</figcaption>
           </figure>

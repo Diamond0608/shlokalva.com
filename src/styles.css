@@ -2479,3 +2479,8 @@ h3 {
 .engine-stage .lazy-mount {
   min-height: clamp(30rem, 62vw, 46rem);
 }
+
+.anim-off,
+.anim-off * {
+  animation-play-state: paused !important;
+}
