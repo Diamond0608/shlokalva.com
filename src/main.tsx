@@ -183,7 +183,8 @@ const projects: Project[] = [
     stats: [
       { label: "Role", value: "Team Captain" },
       { label: "Event", value: "National Finals" },
-      { label: "Focus", value: "Strategy + Build" }
+      { label: "Focus", value: "Strategy + Build" },
+      { label: "Playoffs", value: "Second In Bracket For Playoffs" }
     ]
   },
   {
@@ -268,10 +269,60 @@ const projects: Project[] = [
       { label: "Controls", value: "Ailerons" }
     ],
     gallery: [
-      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane" },
+      { src: images.rcPlane, alt: "Scratch-built RC plane on a table", caption: "Scratch-Built RC Plane — Never Flew" },
       { src: "/assets/rc-plane-detail.mp4", alt: "RC plane detail video", caption: "Plane Detail Video", type: "video" },
-      { src: "/assets/plane-video.mp4", alt: "Scratch-built RC plane ground video", caption: "Ground Test", type: "video" }
+      { src: "/assets/plane-video.mp4", alt: "Scratch-built RC plane ground video", caption: "Ground Test — Never Flew", type: "video" }
     ]
+  }
+];
+
+const experiences = [
+  {
+    title: "CERN Visit",
+    subtitle: "Geneva Learning Experience",
+    image: images.cernGroup,
+    body: "A one-week school masterclass where we visited ALICE, ISOLDE, CMS, ATLAS, the Antimatter Factory, and a lot of places I had only read about before."
+  },
+  {
+    title: "Dwello Aerospace",
+    subtitle: "Aircraft Propulsion Internship",
+    image: images.dwelloTwo,
+    body: "Ramjet and turbofan propulsion models, a technical report, and animation. The full write-up is in Project Hangar."
+  },
+  {
+    title: "Cyber Club Leadership",
+    subtitle: "President And Vice President",
+    image: images.pcBuilding,
+    body: "I helped run events, guide juniors through hands-on tech work, and make the cyber side of school life feel active instead of just theoretical."
+  },
+  {
+    title: "Robotics Club",
+    subtitle: "Founder And Committee Member",
+    image: images.blackShirtCohorts,
+    body: "I helped get more people into robotics and tech at school, while learning that explaining a build can be harder than building it."
+  }
+];
+
+const signals = [
+  {
+    title: "IIT Madras Aerospace Course",
+    body: "Completed an eight-week aerospace certification course. It sits neatly beside the propulsion internship and RC plane work.",
+    image: images.iitmLogo
+  },
+  {
+    title: "My Flying Academy Workshop",
+    body: "A one-day aviation workshop that made the pilot-career side of aviation feel less abstract and more real.",
+    image: images.planeOutline
+  },
+  {
+    title: "Cyber Competitions",
+    body: "Cybernautica, Odyssey Caipher, and the HKU AI+ Challenge are the competition/problem-solving side of the portfolio.",
+    image: images.hkuAiChallenge
+  },
+  {
+    title: "Helios And Iris",
+    body: "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris.",
+    image: images.blackShirtCohorts
   }
 ];
 
@@ -1089,6 +1140,22 @@ function App() {
       </section>
 
       <section id="experiences" className="section band">
+        <div className="section-head">
+          <p className="eyebrow">Experiences</p>
+          <h2>Flight Log</h2>
+        </div>
+        <div className="experience-grid">
+          {experiences.map((experience) => (
+            <article key={experience.title} className="experience-card">
+              <Img src={experience.image} alt="" loading="lazy" />
+              <div>
+                <span>{experience.subtitle}</span>
+                <h3>{experience.title}</h3>
+                <p>{experience.body}</p>
+              </div>
+            </article>
+          ))}
+        </div>
         <article id="beest" className="beest-card beest-solo">
           <div className="beest-gallery">
             <img
@@ -1189,6 +1256,26 @@ function App() {
               <BadgeInfo size={20} />
               <h3>{skill.title}</h3>
               <p>{skill.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="section">
+        <div className="section-head">
+          <p className="eyebrow">Signals</p>
+          <h2>Other Stuff Worth Keeping On The Radar</h2>
+          <p>A few more pieces of the story that still matter, even when they do not need a giant project card.</p>
+        </div>
+        <div className="signal-grid">
+          {signals.map((signal) => (
+            <article key={signal.title}>
+              <Img src={signal.image} alt="" loading="lazy" />
+              <div>
+                <Radar size={18} />
+                <h3>{signal.title}</h3>
+                <p>{signal.body}</p>
+              </div>
             </article>
           ))}
         </div>
