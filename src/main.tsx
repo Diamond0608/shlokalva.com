@@ -903,39 +903,6 @@ function App() {
         </div>
       </section>
 
-      <section id="beest" className="section">
-        <article className="beest-card">
-          <Img src="/assets/beest-project-card.webp" alt="The Little Helper project card on Hack Club BEEST, marked Hardware, Approved and Golden" loading="lazy" />
-          <div>
-            <p className="eyebrow">Hack Club BEEST</p>
-            <h3>Shipped To Hack Club&apos;s Standards</h3>
-            <p>
-              Little Helper was my Hack Club BEEST project, and shipping it meant following Hack Club&apos;s standards
-              meticulously:
-            </p>
-            <ul>
-              <li>Electrical schematics for the whole build.</li>
-              <li>Full CAD of every part and the assembly.</li>
-              <li>A devlog every hour of work.</li>
-              <li>Every hour recorded, with timelapses.</li>
-              <li>Extensive documentation of the whole project.</li>
-            </ul>
-            <p>
-              I was selected as one of the 30 participants scheduled to travel to the Netherlands for BEEST. I could not
-              go because of travel-related issues, and instead received grants, which I used to buy a drill, a monitor, 3D
-              printing filament, a Bambu Lab A1 3D printer and a mouse to work on my projects better.
-            </p>
-            <p className="beest-note">
-              The hourly recordings and timelapses exist too. The devlog page has the written logs and the photos from each
-              one. Trinetra was devlogged the same way, but those logs are not published here.
-            </p>
-            <a className="primary" href="/beest/">
-              Read The Full Devlog <ChevronRight size={17} />
-            </a>
-          </div>
-        </article>
-      </section>
-
       <section id="experiences" className="section">
         <div className="section-head">
           <p className="eyebrow">Experiences</p>
@@ -953,6 +920,75 @@ function App() {
             </article>
           ))}
         </div>
+
+        <article id="beest" className="beest-card">
+          <div className="beest-gallery">
+            <img
+              className="beest-hero"
+              src="/assets/beest-project-card.webp"
+              alt="The Little Helper project card on Hack Club BEEST, marked Hardware, Approved and Golden"
+              width={684}
+              height={230}
+              loading="lazy"
+            />
+            <div className="beest-tiles">
+              <figure>
+                <img src="/assets/beest/log24-3.webp" alt="CAD render of Little Helper with its book box" width={728} height={500} loading="lazy" />
+                <figcaption>CAD</figcaption>
+              </figure>
+              <figure>
+                <img src="/assets/beest/log27-2.webp" alt="KiCad electrical schematic for Little Helper" width={820} height={551} loading="lazy" />
+                <figcaption>Schematic</figcaption>
+              </figure>
+              <figure>
+                <img src="/assets/beest/log38-1.webp" alt="3D printed and painted panels for Little Helper's chassis" width={1100} height={828} loading="lazy" />
+                <figcaption>Panels</figcaption>
+              </figure>
+              <figure>
+                <img src="/assets/beest/log65-1.webp" alt="Little Helper's electronics mounted inside the chassis" width={1100} height={828} loading="lazy" />
+                <figcaption>Electronics</figcaption>
+              </figure>
+              <figure>
+                <img src="/assets/beest/log65-3.webp" alt="Little Helper mid-build with its LED lit" width={1100} height={828} loading="lazy" />
+                <figcaption>Mid-build</figcaption>
+              </figure>
+              <figure>
+                <img src="/assets/beest/log69-1.webp" alt="The finished Little Helper build" width={1100} height={828} loading="lazy" />
+                <figcaption>Finished build</figcaption>
+              </figure>
+            </div>
+          </div>
+          <div>
+            <p className="eyebrow">Hack Club</p>
+            <h3 className="beest-title">Hack Club BEEST</h3>
+            <p className="beest-sub">Shipped To Hack Club&apos;s Standards</p>
+            <p>
+              Little Helper was my Hack Club BEEST project, and shipping it meant following Hack Club&apos;s standards
+              meticulously:
+            </p>
+            <ul>
+              <li>Electrical schematics for the whole build.</li>
+              <li>Full CAD of every part and the assembly.</li>
+              <li>A devlog every hour of work.</li>
+              <li>Every hour recorded, with timelapses.</li>
+              <li>Extensive documentation of the whole project.</li>
+            </ul>
+            <p>
+              I had been planning to go to Hack Club Fallout, but realised my visa would not come in time, so I tried
+              for BEEST again. I was selected as one of the 30 participants scheduled to travel to the Netherlands. I
+              could not go because of travel-related issues, and instead received grants, which I used to buy a drill, a
+              monitor, 3D printing filament, a Bambu Lab A1 3D printer and a mouse to work on my projects better.
+            </p>
+            <p>I also submitted a project to Hack Club Bakebuild and received a grant for cookies.</p>
+            <p className="beest-note">
+              The hourly recordings and timelapses exist too. The devlog page has the written logs and the photos from each
+              one. Trinetra was devlogged the same way, but those logs are not published here.
+            </p>
+            <a className="primary" href="/beest/">
+              Read The Full Devlog <ChevronRight size={17} />
+            </a>
+          </div>
+        </article>
       </section>
 
       <section className="section">

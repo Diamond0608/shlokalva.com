@@ -3108,3 +3108,110 @@ h3 {
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+/* BEEST card: now inside the Flight Log, with a real gallery and a large title */
+#experiences .beest-card {
+  margin-top: 1rem;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.25fr);
+  align-items: start;
+}
+
+.beest-gallery {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.beest-gallery .beest-hero {
+  width: 100%;
+  height: auto;
+}
+
+.beest-tiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.beest-tiles figure {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #0a0d12;
+}
+
+.beest-tiles img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border: 0;
+  border-radius: 0;
+}
+
+.beest-tiles figcaption {
+  position: absolute;
+  right: 0.4rem;
+  bottom: 0.4rem;
+  left: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  background: rgba(5, 7, 10, 0.78);
+  color: var(--cream);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.beest-card .beest-title {
+  margin: 0.1rem 0 0.2rem;
+  font-size: clamp(2.2rem, 5.4vw, 3.6rem);
+  line-height: 1.02;
+}
+
+.beest-card .beest-sub {
+  margin: 0 0 0.9rem;
+  color: var(--sky);
+  font-size: 1.05rem;
+  font-weight: 850;
+}
+
+@media (max-width: 860px) {
+  #experiences .beest-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Let the gallery fill the card's height so there is no empty space under it */
+#experiences .beest-card {
+  align-items: stretch;
+}
+
+.beest-gallery {
+  grid-template-rows: auto 1fr;
+}
+
+.beest-tiles {
+  grid-auto-rows: 1fr;
+  height: 100%;
+}
+
+.beest-tiles figure {
+  min-height: 7rem;
+}
+
+.beest-tiles img {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  aspect-ratio: auto;
+}
+
+@media (max-width: 860px) {
+  .beest-tiles figure {
+    min-height: 9rem;
+  }
+}
