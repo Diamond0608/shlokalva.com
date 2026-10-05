@@ -28,6 +28,7 @@ function Img(props: React.ImgHTMLAttributes<HTMLImageElement> & { src: string })
 
 const EngineViewer = lazy(() => import("./EngineViewer"));
 const ProjectModelViewer = lazy(() => import("./ProjectModelViewer"));
+const CharacterSelect = lazy(() => import("./CharacterSelect"));
 
 declare global {
   interface Window {
@@ -885,6 +886,15 @@ function App() {
             <em>Status: In Progress</em>
           </div>
         </div>
+      </section>
+
+      <section id="characters" className="section character-section">
+        <div className="section-head">
+          <p className="eyebrow">Character Select</p>
+          <h2>Choose Your Shlok</h2>
+          <p>Same person, different modes. Stats are self-rated.</p>
+        </div>
+        <LazyMount><CharacterSelect /></LazyMount>
       </section>
 
       <section id="projects" className="section">

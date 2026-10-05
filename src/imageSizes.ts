@@ -33,6 +33,22 @@ export const imageSizes: Record<string, [number, number]> = {
     1395,
     1050
   ],
+  "/assets/char-captain.webp": [
+    640,
+    800
+  ],
+  "/assets/char-explorer.webp": [
+    640,
+    800
+  ],
+  "/assets/char-friend.webp": [
+    640,
+    800
+  ],
+  "/assets/char-philosopher.webp": [
+    640,
+    800
+  ],
   "/assets/concorde-photo.png": [
     388,
     219

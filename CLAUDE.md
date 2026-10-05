@@ -43,6 +43,10 @@ Page sections in order: hero, `#mission`, `#projects`, `#experiences`, scenes, `
 7. **Style layering:** `src/styles.css` is the source of truth. `portfolio-overrides.css` loads separately from `<head>` and can win on specificity. Make new styling changes in `styles.css`; touch the overrides file only to fix a conflict, and note why.
 8. `pnpm-workspace.yaml` contains a placeholder (`esbuild: set this to true or false`). Leave it alone unless asked; do not switch the project to pnpm.
 
+## Character Select
+
+`src/CharacterSelect.tsx` (lazy, mounted in `#characters` via `LazyMount`). Six modes; each has stats in the `characters` array. A stat or Age/Height/Level of `null` renders as PLACEHOLDER. Fill them only with values Shlok gives you (stats are self-rated 1-10); never invent numbers. Portraits are `public/assets/char-*.webp` plus two existing project images.
+
 ## Content and voice
 
 - First person, plain, a little dry. Headings and `h2/h3` copy are written in Title Case; keep that.
