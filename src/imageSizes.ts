@@ -42,8 +42,8 @@ export const imageSizes: Record<string, [number, number]> = {
     1000
   ],
   "/assets/cut-engineer.webp": [
-    1200,
-    675
+    1000,
+    937
   ],
   "/assets/cut-explorer.webp": [
     720,

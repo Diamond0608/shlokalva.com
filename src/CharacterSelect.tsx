@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -15,12 +15,8 @@ type Character = {
   cutoutSize: [number, number]; // pixel size of the cutout
   cardHeight: number; // world units
   cutoutAlt: string;
-  // Generic RPG fields. null renders as PLACEHOLDER until Shlok supplies the value.
-  age: string | null;
-  height: string | null;
-  level: string | null;
-  alignment: string;
-  stats: Array<{ label: string; value: number | null }>; // value is 1-10 (self-rated) or null
+  stats: string[]; // stat names; every bar is shown full, each in its own colour
+  ultimate: { name: string; text: string }; // "press X" move
   signature: string;
   weakness: string;
   quests: string[];
@@ -32,20 +28,12 @@ const characters: Character[] = [
     name: "The Engineer",
     tagline: "Sketch it, CAD it, print it, break it, fix it.",
     cutout: "/assets/cut-engineer.webp",
-    cutoutSize: [1200, 675],
-    cardHeight: 1.5,
-    cutoutAlt: "Shlok and teammates wiring a robot at school",
-    age: null,
-    height: null,
-    level: null,
-    alignment: "Lawful Tinkerer",
-    stats: [
-      { label: "CAD", value: null },
-      { label: "Electronics", value: null },
-      { label: "Debugging", value: null },
-      { label: "Patience", value: null }
-    ],
-    signature: "Fusion 360 to a working robot",
+    cutoutSize: [1000, 937],
+    cardHeight: 1.9,
+    cutoutAlt: "Shlok wiring a robot with tools on the table",
+    stats: ["CAD", "Electronics", "Debugging", "Patience"],
+    ultimate: { name: "Overclock Build", text: "Time slows, the wires sort themselves out, and the prototype is suddenly done." },
+    signature: "Tunnel-visioned",
     weakness: "“Yeah, this should work.”",
     quests: ["Little Helper", "Trinetra", "Dwello Turbofan"]
   },
@@ -56,19 +44,11 @@ const characters: Character[] = [
     cutout: "/assets/cut-pilot.webp",
     cutoutSize: [1100, 1000],
     cardHeight: 2.0,
-    cutoutAlt: "Shlok in a pilot cap, sitting on an ice formation",
-    age: null,
-    height: null,
-    level: null,
-    alignment: "Neutral Aviator",
-    stats: [
-      { label: "Aerodynamics", value: null },
-      { label: "Propulsion", value: null },
-      { label: "Ambition", value: null },
-      { label: "Persistence", value: null }
-    ],
-    signature: "NACA 0012 sizing in MotoCalc",
-    weakness: "The RC plane has not flown yet.",
+    cutoutAlt: "Shlok in a black airline pilot cap, sitting on an ice formation",
+    stats: ["Aerodynamics", "Propulsion", "Ambition", "Persistence"],
+    ultimate: { name: "V1 Rotate", text: "Pulls the nose up and climbs straight into the clouds. Landing not included." },
+    signature: "Obsessed with planes",
+    weakness: "Just thinks of planes.",
     quests: ["Self-Made RC Plane", "IIT Madras Aerospace Course", "Flying Academy Workshop"]
   },
   {
@@ -79,18 +59,10 @@ const characters: Character[] = [
     cutoutSize: [1097, 1000],
     cardHeight: 1.9,
     cutoutAlt: "Shlok speaking at a podium",
-    age: null,
-    height: null,
-    level: null,
-    alignment: "Lawful Organiser",
-    stats: [
-      { label: "Leadership", value: null },
-      { label: "Coordination", value: null },
-      { label: "Public Speaking", value: null },
-      { label: "Crisis Handling", value: null }
-    ],
-    signature: "Climbing from 92nd to second in the playoffs",
-    weakness: "Brands everything when stressed.",
+    stats: ["Leadership", "Coordination", "Public Speaking", "Crisis Handling"],
+    ultimate: { name: "Rally Call", text: "Everyone gets a role, a plan and one very loud pep talk." },
+    signature: "Makes the plan, then the backup plan, then the group chat",
+    weakness: "Stressed.",
     quests: ["Team Dinoco", "Cyber Club", "Robotics Club"]
   },
   {
@@ -101,19 +73,11 @@ const characters: Character[] = [
     cutoutSize: [720, 1201],
     cardHeight: 2.4,
     cutoutAlt: "Shlok checking a compass and a trail map in Chamonix",
-    age: null,
-    height: null,
-    level: null,
-    alignment: "Chaotic Curious",
-    stats: [
-      { label: "Curiosity", value: null },
-      { label: "Adaptability", value: null },
-      { label: "Cold Tolerance", value: null },
-      { label: "Travel Stamina", value: null }
-    ],
-    signature: "A week at CERN",
+    stats: ["Curiosity", "Adaptability", "Cold Tolerance", "Travel Stamina"],
+    ultimate: { name: "Trailhead Teleport", text: "Follows a compass and a vague hunch straight to the next peak." },
+    signature: "CERN and IIT Mumbai",
     weakness: "Cancelled flights.",
-    quests: ["CERN Visit", "Hack Club BEEST (selected)"]
+    quests: ["CERN Visit", "IIT Mumbai"]
   },
   {
     id: "philosopher",
@@ -123,16 +87,8 @@ const characters: Character[] = [
     cutoutSize: [559, 1000],
     cardHeight: 2.3,
     cutoutAlt: "Shlok sitting thoughtfully outdoors",
-    age: null,
-    height: null,
-    level: null,
-    alignment: "Neutral Thinker",
-    stats: [
-      { label: "Reflection", value: null },
-      { label: "Wordcraft", value: null },
-      { label: "Overthinking", value: null },
-      { label: "Empathy", value: null }
-    ],
+    stats: ["Reflection", "Wordcraft", "Overthinking", "Tweaking Out"],
+    ultimate: { name: "Memento Mori", text: "Freezes the moment and turns it into a poem." },
     signature: "Memento Mori and Magnum Opus",
     weakness: "Questionable sleep schedule.",
     quests: ["Poems"]
@@ -145,18 +101,10 @@ const characters: Character[] = [
     cutoutSize: [1200, 782],
     cardHeight: 1.7,
     cutoutAlt: "Shlok and friends piled together",
-    age: null,
-    height: null,
-    level: null,
-    alignment: "Chaotic Good",
-    stats: [
-      { label: "Loyalty", value: null },
-      { label: "Humour", value: null },
-      { label: "Gaming Skill", value: null },
-      { label: "Sleep Debt", value: null }
-    ],
-    signature: "Chamonix, Carouge and Geneva Old Town",
-    weakness: "Whatever game is stealing the sleep this week.",
+    stats: ["Loyalty", "Humour", "Gaming Skill", "Sleep Debt"],
+    ultimate: { name: "Squad Revive", text: "Brings the whole team back from the brink with one terrible joke." },
+    signature: "Feeling at home",
+    weakness: "Too many hours on Valorant.",
     quests: ["CERN Evenings", "Valorant, Fortnite, RDR2 and more"]
   }
 ];
@@ -241,20 +189,38 @@ function Platform({ ring }: { ring: string }) {
   );
 }
 
-function StatBar({ label, value }: { label: string; value: number | null }) {
+const STAT_COLOURS = ["#ff8a2a", "#89d8ff", "#7dff9a", "#ff5a8a"];
+const GLYPHS = "!<>-_\/[]{}=+*^?#%&$@01";
+
+// Endlessly scrambling text for values that are deliberately not revealed.
+function Garble({ length, className }: { length: number; className?: string }) {
+  const reduced = useReducedMotion();
+  const make = () =>
+    Array.from({ length }, () => GLYPHS[Math.floor(Math.random() * GLYPHS.length)]).join("");
+  const [text, setText] = useState(make);
+  useEffect(() => {
+    if (reduced) return;
+    const id = window.setInterval(() => setText(make()), 90);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduced, length]);
   return (
-    <div className="cs-stat">
+    <span className={className} aria-hidden="true">
+      {text}
+    </span>
+  );
+}
+
+function StatBar({ label, colour }: { label: string; colour: string }) {
+  return (
+    <div className="cs-stat" style={{ "--c": colour } as CSSProperties}>
       <span className="cs-stat-label">{label}</span>
-      <div
-        className={value === null ? "cs-bar cs-bar-empty" : "cs-bar"}
-        role="img"
-        aria-label={value === null ? `${label}: placeholder` : `${label}: ${value} out of 10, self-rated`}
-      >
+      <div className="cs-bar cs-bar-full" role="img" aria-label={`${label}: maxed out`}>
         {Array.from({ length: 10 }, (_, i) => (
-          <i key={i} className={value !== null && i < value ? "on" : ""} />
+          <i key={i} />
         ))}
       </div>
-      <span className="cs-stat-value">{value === null ? "PLACEHOLDER" : `${value}/10`}</span>
+      <Garble className="cs-stat-value" length={9} />
     </div>
   );
 }
@@ -350,26 +316,33 @@ export default function CharacterSelect() {
         <dl className="cs-info">
           <div>
             <dt>Age</dt>
-            <dd className={current.age === null ? "cs-ph" : ""}>{current.age ?? "PLACEHOLDER"}</dd>
+            <dd>17</dd>
           </div>
           <div>
             <dt>Height</dt>
-            <dd className={current.height === null ? "cs-ph" : ""}>{current.height ?? "PLACEHOLDER"}</dd>
+            <dd>5&apos;6&quot;</dd>
           </div>
           <div>
             <dt>Level</dt>
-            <dd className={current.level === null ? "cs-ph" : ""}>{current.level ?? "PLACEHOLDER"}</dd>
-          </div>
-          <div>
-            <dt>Alignment</dt>
-            <dd>{current.alignment}</dd>
+            <dd>
+              <Garble className="cs-garble" length={7} />
+            </dd>
           </div>
         </dl>
 
         <div className="cs-stats">
-          {current.stats.map((stat) => (
-            <StatBar key={stat.label} label={stat.label} value={stat.value} />
+          {current.stats.map((label, i) => (
+            <StatBar key={label} label={label} colour={STAT_COLOURS[i % STAT_COLOURS.length]} />
           ))}
+        </div>
+
+        <div className="cs-ult">
+          <kbd>X</kbd>
+          <div>
+            <span>Ultimate Ability (Press X)</span>
+            <strong>{current.ultimate.name}</strong>
+            <p>{current.ultimate.text}</p>
+          </div>
         </div>
 
         <div className="cs-lore">

@@ -890,9 +890,7 @@ function App() {
 
       <section id="characters" className="section character-section">
         <div className="section-head">
-          <p className="eyebrow">Character Select</p>
-          <h2>Choose Your Shlok</h2>
-          <p>Same person, different modes. Stats are self-rated.</p>
+          <h2>Character Select</h2>
         </div>
         <LazyMount><CharacterSelect /></LazyMount>
       </section>
