@@ -1,6 +1,6 @@
-import { Suspense, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { Bounds, Center, OrbitControls, useGLTF } from "@react-three/drei";
+import { Bounds, Center, OrbitControls, useBounds, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { Maximize2, Pause, Play, RotateCcw } from "lucide-react";
 
@@ -14,32 +14,69 @@ function ProjectModel({ src }: { src: string }) {
   );
 }
 
+type BoundsApi = ReturnType<typeof useBounds>;
+
+// Exposes the Bounds fit() so Reset can re-frame the model instead of
+// returning to the pre-fit camera, which sits inside the model.
+function BoundsHandle({ apiRef }: { apiRef: { current: BoundsApi | null } }) {
+  apiRef.current = useBounds();
+  return null;
+}
+
 export default function ProjectModelViewer({ src }: { src: string }) {
   const controlsRef = useRef<any>(null);
+  const boundsRef = useRef<BoundsApi | null>(null);
   const viewerRef = useRef<HTMLDivElement>(null);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [expanded, setExpanded] = useState(false);
 
   const resetView = () => {
     const controls = controlsRef.current;
     if (!controls) return;
     controls.reset();
+    boundsRef.current?.refresh().clip().fit();
   };
 
+  // Native fullscreen where the browser allows it (not iPhone Safari, embedded
+  // panes or restrictive policies); otherwise fall back to a fixed full-window view.
   const toggleFullscreen = async () => {
-    if (!viewerRef.current) return;
+    const node = viewerRef.current;
+    if (!node) return;
+    if (expanded) {
+      setExpanded(false);
+      return;
+    }
+    if (document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => undefined);
+      return;
+    }
     try {
-      if (document.fullscreenElement) {
-        await document.exitFullscreen();
-      } else {
-        await viewerRef.current.requestFullscreen();
-      }
+      if (!node.requestFullscreen) throw new Error("unsupported");
+      // Some embedded browsers neither enter nor reject; don't wait on them forever.
+      await Promise.race([
+        node.requestFullscreen(),
+        new Promise((_, reject) => window.setTimeout(reject, 600))
+      ]);
+      if (!document.fullscreenElement) setExpanded(true);
     } catch {
-      // Fullscreen is optional and can be unavailable on some mobile browsers.
+      if (!document.fullscreenElement) setExpanded(true);
     }
   };
 
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopImmediatePropagation();
+        setExpanded(false);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [expanded]);
+
   return (
-    <div ref={viewerRef} className="project-model-viewer">
+    <div ref={viewerRef} className={expanded ? "project-model-viewer is-expanded" : "project-model-viewer"}>
       <Canvas
         camera={{ position: [4, 3, 5], fov: 38 }}
         dpr={[1, 1.5]}
@@ -57,6 +94,7 @@ export default function ProjectModelViewer({ src }: { src: string }) {
         <Suspense fallback={null}>
           <Bounds fit clip margin={1.25}>
             <ProjectModel src={src} />
+            <BoundsHandle apiRef={boundsRef} />
           </Bounds>
         </Suspense>
 

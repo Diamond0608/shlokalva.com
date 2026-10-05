@@ -1080,7 +1080,7 @@ h3 {
   background: rgba(2, 3, 5, 0.86);
 }
 
-.lightbox button {
+.lightbox > button {
   position: fixed;
   top: 1rem;
   right: 1rem;
@@ -2492,4 +2492,19 @@ h3 {
   min-height: 2.2rem;
   padding: 0.4rem;
   transform: translate(-50%, -50%);
+}
+
+.project-model-viewer.is-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  width: 100vw;
+  height: 100dvh;
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.project-model-viewer.is-expanded canvas {
+  height: 100% !important;
 }
