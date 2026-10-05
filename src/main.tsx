@@ -814,7 +814,7 @@ function CockpitPanel() {
   );
 }
 
-const contactEmail = atob("YWx2YXNob2tAZ21haWwuY29t");
+const contactEmail = atob("YWx2YXNobG9rQGdtYWlsLmNvbQ==");
 const contactPhone = atob("KzkxIDk4NDUzOTQ4ODU=");
 
 function LazyMount({ children }: { children: React.ReactNode }) {
