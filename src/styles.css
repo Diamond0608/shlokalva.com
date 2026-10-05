@@ -5455,3 +5455,22 @@ h3 {
 .flight-nav .seat-brand {
   color: var(--amber) !important;
 }
+
+/* Hero: both columns start at the same top edge and end at the same bottom edge */
+.hero {
+  align-items: stretch;
+  align-content: center;
+}
+
+.hero-copy {
+  align-self: start;
+}
+
+.hero-board {
+  grid-template-rows: auto 1fr;
+}
+
+.hero-board .mascot-card {
+  display: flex;
+  flex-direction: column;
+}
