@@ -5421,3 +5421,33 @@ h3 {
   mask-size: 760px 560px;
   opacity: 0.95;
 }
+
+/* Top-left monogram: a big white SA with the two letters overlapping */
+.seat-brand {
+  color: #fff !important;
+}
+
+.flight-nav .sa-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Arial Black", Impact, Arial, sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.flight-nav .sa-mark b {
+  font-weight: 900;
+}
+
+.flight-nav .sa-mark b + b {
+  margin-left: -0.42em;
+}
+
+@media (max-width: 980px) {
+  .flight-nav .sa-mark {
+    font-size: 1.7rem;
+  }
+}

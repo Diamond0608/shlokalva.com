@@ -11,7 +11,7 @@
     <meta name="author" content="Shlok Alva" />
     <meta name="theme-color" content="#0c1017" />
     <link rel="canonical" href="https://shlokalva.com/beest/" />
-    <link rel="icon" type="image/svg+xml" href="/assets/plane-outline.svg" />
+    <link rel="icon" type="image/svg+xml" href="/assets/sa-icon.svg" />
     <meta property="og:type" content="article" />
     <meta property="og:site_name" content="Shlok Alva" />
     <meta property="og:title" content="Little Helper Devlog | Hack Club BEEST" />
@@ -179,6 +179,10 @@
     <button type="button" id="sound" class="sound-btn" aria-pressed="true">Sound: On</button>
 
     <script>
+      var originalTitle = document.title;
+      document.addEventListener("visibilitychange", function () {
+        document.title = document.hidden ? "I'll wait for you! ✈" : originalTitle;
+      });
       // External links (GitHub, Instagram and so on) always open in a new tab so the portfolio stays open.
       document.addEventListener("click", function (event) {
         var link = event.target && event.target.closest ? event.target.closest("a[href]") : null;
