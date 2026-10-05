@@ -694,9 +694,13 @@ function CockpitPanel() {
       </div>
       <div className="cockpit-instruments">
         <div className="pfd-mini">
-          <div className="pfd-sky" />
-          <div className="pfd-ground" />
-          <div className="pfd-horizon" />
+          <div className="pfd-attitude">
+            <div className="pfd-sky" />
+            <div className="pfd-ground" />
+            <div className="pfd-horizon" />
+          </div>
+          <div className="pfd-tape pfd-tape-l" aria-hidden="true"><i /></div>
+          <div className="pfd-tape pfd-tape-r" aria-hidden="true"><i /></div>
           <div className="pfd-aircraft"><i /><i /><i /></div>
           <div className="pfd-label pfd-alt">ALT <strong>PORTFOLIO</strong></div>
           <div className="pfd-label pfd-spd">SPD <strong>BUILD</strong></div>
@@ -704,6 +708,7 @@ function CockpitPanel() {
         </div>
         <div className="nd-mini">
           <div className="nd-grid" />
+          <div className="nd-sweep" aria-hidden="true" />
           <div className="nd-compass">N <span>3</span> <b>E</b> <span>6</span> S <span>12</span> W</div>
           <div className="nd-track">▲</div>
           <div className="nd-readout"><span>HDG</span><strong>VT-PLN</strong></div>
@@ -718,7 +723,7 @@ function CockpitPanel() {
       </div>
       <div className="cockpit-readouts">
         <span><b>FLT</b> PORTFOLIO</span>
-        <span><b>PHASE</b> BUILDING</span>
+        <span><b>PHASE</b> BUILDING<span className="phase-dots" aria-hidden="true" /></span>
         <span><b>STATUS</b> <em>NORMAL</em></span>
       </div>
     </div>
@@ -780,7 +785,7 @@ function App() {
       entries.forEach((entry) => entry.target.classList.toggle("anim-off", !entry.isIntersecting));
     });
     document
-      .querySelectorAll(".aviation-compass, .concorde-photo-wrap, .mini-runway, .flight-card, .engine-visual")
+      .querySelectorAll(".aviation-compass, .concorde-photo-wrap, .mini-runway, .flight-card, .engine-visual, .cockpit-panel")
       .forEach((node) => observer.observe(node));
     return () => observer.disconnect();
   }, [booted]);

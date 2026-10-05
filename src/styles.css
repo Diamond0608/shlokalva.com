@@ -3215,3 +3215,151 @@ h3 {
     min-height: 9rem;
   }
 }
+
+/* Flight deck instruments: slow, subtle motion (transform/opacity only) */
+.pfd-attitude {
+  position: absolute;
+  inset: -22%;
+}
+
+.pfd-tape {
+  position: absolute;
+  top: 18%;
+  bottom: 18%;
+  width: 0.55rem;
+  overflow: hidden;
+  border-left: 1px solid rgba(217, 244, 255, 0.22);
+  border-right: 1px solid rgba(217, 244, 255, 0.22);
+  background: rgba(5, 8, 11, 0.35);
+}
+
+.pfd-tape-l { left: 0.5rem; }
+.pfd-tape-r { right: 0.5rem; }
+
+.pfd-tape i {
+  position: absolute;
+  inset: -16px 0 0;
+  background: repeating-linear-gradient(180deg, rgba(217, 244, 255, 0.55) 0 1px, transparent 1px 8px);
+}
+
+.nd-sweep {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 170%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, rgba(104, 224, 160, 0.26), transparent 22%, transparent);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.phase-dots {
+  display: inline-block;
+  width: 1.2em;
+  text-align: left;
+}
+
+.phase-dots::after {
+  content: "...";
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pfd-attitude {
+    animation: pfdAttitude 9s ease-in-out infinite;
+  }
+
+  .pfd-tape-l i { animation: pfdTapeUp 1.6s linear infinite; }
+  .pfd-tape-r i { animation: pfdTapeDown 2.4s linear infinite; }
+
+  .pfd-vsi {
+    animation: pfdVsi 3.2s ease-in-out infinite;
+  }
+
+  .pfd-spd strong,
+  .pfd-alt strong {
+    animation: cockpitStatusPulse 3.4s ease-in-out infinite;
+  }
+
+  .pfd-alt strong { animation-delay: 1.2s; }
+
+  .nd-sweep {
+    animation: ndSweep 6s linear infinite;
+  }
+
+  .nd-compass {
+    animation: ndHeading 11s ease-in-out infinite;
+  }
+
+  .nd-track {
+    animation: ndTrack 5s ease-in-out infinite;
+  }
+
+  .ecam-mini i {
+    animation: ecamBlink 4.8s ease-in-out infinite;
+  }
+
+  .ecam-mini div:nth-of-type(2) i { animation-delay: 1.2s; }
+  .ecam-mini div:nth-of-type(3) i { animation-delay: 2.4s; }
+  .ecam-mini div:nth-of-type(4) i { animation-delay: 3.6s; }
+
+  .cockpit-readouts em {
+    animation: cockpitStatusPulse 2.4s ease-in-out infinite;
+  }
+
+  .phase-dots::after {
+    display: inline-block;
+    width: 0;
+    overflow: hidden;
+    vertical-align: bottom;
+    animation: phaseDots 1.6s steps(4, end) infinite;
+  }
+
+  .phase-dots::after {
+    content: "...";
+  }
+}
+
+@keyframes pfdAttitude {
+  0%, 100% { transform: rotate(-3.5deg) translateY(-3px); }
+  50% { transform: rotate(3.5deg) translateY(4px); }
+}
+
+@keyframes pfdTapeUp {
+  from { transform: translateY(0); }
+  to { transform: translateY(8px); }
+}
+
+@keyframes pfdTapeDown {
+  from { transform: translateY(8px); }
+  to { transform: translateY(0); }
+}
+
+@keyframes pfdVsi {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes ndSweep {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes ndHeading {
+  0%, 100% { transform: translateX(calc(-50% - 7px)); }
+  50% { transform: translateX(calc(-50% + 7px)); }
+}
+
+@keyframes ndTrack {
+  0%, 100% { transform: translate(-50%, -50%) rotate(-5deg); }
+  50% { transform: translate(-50%, -50%) rotate(5deg); }
+}
+
+@keyframes ecamBlink {
+  0%, 82%, 100% { opacity: 1; }
+  90% { opacity: 0.25; }
+}
+
+@keyframes phaseDots {
+  from { width: 0; }
+  to { width: 1.2em; }
+}
