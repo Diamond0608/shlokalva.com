@@ -3,7 +3,8 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Bounds, Center, OrbitControls, useBounds, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { Maximize2, Pause, Play, RotateCcw, Scissors } from "lucide-react";
+import { Maximize2, Pause, Play, RotateCcw } from "lucide-react";
+import { CutControls, initialCut, resolveCut, type CutState } from "./CutControls";
 
 // Soft studio reflections so the inside of a cutaway is actually readable.
 function StudioLight() {
@@ -34,7 +35,7 @@ function cutProgress(elapsed: number) {
   return 0;
 }
 
-function ProjectModel({ src, cutaway, cutOn }: { src: string; cutaway: boolean; cutOn: boolean }) {
+function ProjectModel({ src, cutaway, cut, liveRef }: { src: string; cutaway: boolean; cut: CutState; liveRef: { current: number } }) {
   const { scene } = useGLTF(src);
   const gl = useThree((state) => state.gl);
   const rootRef = useRef<THREE.Group>(null);
@@ -67,10 +68,12 @@ function ProjectModel({ src, cutaway, cutOn }: { src: string; cutaway: boolean; 
       range.current = { min: box.min.y, max: box.max.y };
     }
     const { min, max } = range.current;
-    const cut = cutOn ? cutProgress(state.clock.elapsedTime) : 0;
+    const auto = cutProgress(state.clock.elapsedTime);
+    liveRef.current = auto;
+    const amount = resolveCut(cut, auto);
     // Everything above the plane is removed; at full cut about the upper 80% is gone.
     const target = max - (max - min) * 0.8;
-    plane.constant = max + 1 - cut * (max + 1 - target);
+    plane.constant = max + 1 - amount * (max + 1 - target);
   });
 
   return (
@@ -105,7 +108,8 @@ export default function ProjectModelViewer({ src, cutaway = false }: { src: stri
   const viewerRef = useRef<HTMLDivElement>(null);
   const [autoRotate, setAutoRotate] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [cutOn, setCutOn] = useState(true);
+  const [cut, setCut] = useState<CutState>(initialCut);
+  const liveRef = useRef(0);
 
   const resetView = () => {
     const controls = controlsRef.current;
@@ -171,7 +175,7 @@ export default function ProjectModelViewer({ src, cutaway = false }: { src: stri
 
         <Suspense fallback={null}>
           <Bounds fit clip margin={1.25}>
-            <ProjectModel src={src} cutaway={cutaway} cutOn={cutOn} />
+            <ProjectModel src={src} cutaway={cutaway} cut={cut} liveRef={liveRef} />
             <BoundsHandle apiRef={boundsRef} />
           </Bounds>
         </Suspense>
@@ -200,18 +204,13 @@ export default function ProjectModelViewer({ src, cutaway = false }: { src: stri
             <RotateCcw size={15} />
             <span>Reset</span>
           </button>
-          {cutaway && (
-            <button onClick={() => setCutOn((value) => !value)} aria-label={cutOn ? "Turn the cutaway off" : "Turn the cutaway on"}>
-              <Scissors size={15} />
-              <span>{cutOn ? "Cutaway: On" : "Cutaway: Off"}</span>
-            </button>
-          )}
           <button onClick={toggleFullscreen} aria-label="Toggle fullscreen">
             <Maximize2 size={15} />
             <span>Fullscreen</span>
           </button>
         </div>
       </div>
+      {cutaway && <CutControls state={cut} setState={setCut} liveRef={liveRef} className="cut-controls-bar" />}
       <div className="project-model-hint">Drag To Inspect • Scroll To Zoom</div>
     </div>
   );

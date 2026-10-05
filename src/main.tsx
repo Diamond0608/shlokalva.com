@@ -289,7 +289,7 @@ const spotlight: Array<{ title: string; body: string; gallery: GalleryImage[] }>
   {
     title: "Cyber Club, Helios And Iris",
     body:
-      "Helios, Iris and Cyber Club events, on stage and behind the scenes.",
+      "Helios, Iris and Cyber Club (President, earlier Vice President) events, on stage and behind the scenes.",
     gallery: [
       { src: images.cyberPodium, alt: "Speaking at a Cyber Club or Helios event", caption: "On Stage" },
       { src: images.cyberLabOne, alt: "Running a school tech event", caption: "Running Events" },
@@ -794,6 +794,24 @@ function LazyMount({ children }: { children: React.ReactNode }) {
 
 function App() {
   const [booted, setBooted] = useState(false);
+  const [activeNav, setActiveNav] = useState("");
+
+  // Seat-map nav: the row for the section currently on screen lights up.
+  useEffect(() => {
+    const targets = nav.map(([, , id]) => document.getElementById(id)).filter((el): el is HTMLElement => !!el);
+    const onScroll = () => {
+      const line = window.innerHeight * 0.4;
+      let current = "";
+      targets.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= line && rect.bottom > line) current = el.id;
+      });
+      setActiveNav(current);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [activeImage, setActiveImage] = useState<GalleryImage | null>(null);
   const reducedMotion = useReducedMotion();
@@ -849,9 +867,14 @@ function App() {
         <a className="seat-brand" href="#top">
           VT-PLN
         </a>
-        {nav.map(([seat, label, target, hint]) => (
-          <a key={seat} href={`#${target}`}>
-            <span>{seat}</span>
+        {nav.map(([seat, label, target, hint], index) => (
+          <a key={seat} href={`#${target}`} className={activeNav === target ? "on" : undefined} aria-current={activeNav === target ? "location" : undefined}>
+            <span className="seat-row" aria-hidden="true">
+              <b>Row {index + 1}</b>
+              <i /><i /><i />
+              <u />
+              <i /><i /><i />
+            </span>
             <strong>{label}</strong>
             <small>{hint}</small>
           </a>
@@ -927,7 +950,7 @@ function App() {
         <div>
           <span>Also</span>
           <strong>Cyber Club President</strong>
-          <p>Robotics Club founder and committee member.</p>
+          <p>Earlier Vice President. Robotics Club founder and committee member.</p>
           <a className="glance-btn" href="#timeline">
             See The Timeline <ChevronRight size={15} />
           </a>

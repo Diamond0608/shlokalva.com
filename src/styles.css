@@ -3903,7 +3903,7 @@ h3 {
 
 .tl-card-box {
   position: relative;
-  max-width: 24rem;
+  max-width: 27rem;
   padding: 0.65rem 0.85rem 0.7rem;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -5208,3 +5208,159 @@ h3 {
   font-size: 0.74rem;
   letter-spacing: 0.02em;
 }
+
+/* ===== Round 5: seat-map nav, softer stars, gentle section fades, cutaway controls ===== */
+.flight-nav a {
+  gap: 0.25rem;
+  padding: 0.5rem 0.55rem;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  color: var(--sky);
+}
+
+.seat-row b {
+  margin-right: 0.3rem;
+  font-size: 0.56rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.seat-row i {
+  width: 0.34rem;
+  height: 0.42rem;
+  border-radius: 2px 2px 1px 1px;
+  background: rgba(137, 216, 255, 0.32);
+  transition: background 220ms ease, box-shadow 220ms ease;
+}
+
+.seat-row u {
+  width: 0.28rem;
+}
+
+.flight-nav a:hover .seat-row i {
+  background: rgba(255, 138, 42, 0.6);
+}
+
+.flight-nav a.on {
+  border-color: var(--amber);
+  background: rgba(255, 138, 42, 0.12);
+}
+
+.flight-nav a.on .seat-row i {
+  background: var(--amber);
+  box-shadow: 0 0 6px rgba(255, 138, 42, 0.7);
+}
+
+.flight-nav a.on .seat-row b {
+  color: var(--amber);
+}
+
+@media (max-width: 980px) {
+  .seat-row {
+    justify-content: center;
+  }
+}
+
+/* A little fewer stars */
+.proj::before {
+  -webkit-mask-size: 520px 396px;
+  mask-size: 520px 396px;
+  opacity: 0.6;
+}
+
+.proj::after {
+  -webkit-mask-size: 380px 330px;
+  mask-size: 380px 330px;
+  opacity: 0.3;
+}
+
+.tl-sky::before {
+  -webkit-mask-size: 680px 497px;
+  mask-size: 680px 497px;
+  opacity: 0.5;
+}
+
+/* Section backgrounds fade in and out instead of starting with a hard edge */
+.band::before,
+#contact::before {
+  border: 0 !important;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%, #000 78%, transparent 100%);
+}
+
+.band::before {
+  inset-block: -4rem;
+}
+
+#contact::before {
+  inset-block: -5rem 0;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 40%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 40%);
+}
+
+/* Cutaway controls (both 3D viewers) */
+.cut-controls {
+  position: absolute;
+  left: 0.8rem;
+  bottom: 0.8rem;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(5, 7, 10, 0.8);
+}
+
+.cut-controls button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.38rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.045);
+  color: var(--cream);
+  font-size: 0.62rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.cut-controls button:hover,
+.cut-controls button[aria-pressed="true"] {
+  border-color: var(--line-strong);
+  background: rgba(255, 138, 42, 0.14);
+}
+
+.cut-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--muted);
+  font-size: 0.6rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cut-slider input {
+  width: clamp(6rem, 14vw, 10rem);
+  accent-color: var(--amber);
+}
+
+@media (max-width: 640px) {
+  .cut-controls {
+    right: 0.8rem;
+  }
+}
+
+.seat-row { flex-wrap: wrap; row-gap: 0.18rem; }
+.seat-row b { flex-basis: 100%; margin-right: 0; white-space: nowrap; }

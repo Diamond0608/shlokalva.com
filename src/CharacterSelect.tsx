@@ -63,7 +63,7 @@ const characters: Character[] = [
     ultimate: { name: "Rally Call", text: "Everyone gets a plan, and maybe some angry yelling." },
     signature: "Makes the plan, then the backup plan, then the group chat",
     weakness: "Stressed.",
-    quests: ["Team Dinoco", "Cyber Club", "Robotics Club"]
+    quests: ["Team Dinoco", "Cyber Club President", "Robotics Club"]
   },
   {
     id: "explorer",

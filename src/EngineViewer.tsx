@@ -10,6 +10,7 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { CutControls, initialCut, resolveCut, type CutState } from "./CutControls";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
 // scene.glb is a single merged mesh (one node, no named bodies), so a true exploded view of separate
@@ -54,7 +55,7 @@ function RefitBounds({ apiRef }: { apiRef: { current: ReturnType<typeof useBound
   return null;
 }
 
-function TurbofanModel() {
+function TurbofanModel({ cutState, liveRef }: { cutState: CutState; liveRef: { current: number } }) {
   const { scene, animations } = useGLTF("/scene.glb");
   const modelRef = useRef<THREE.Group>(null);
   const motionRootRef = useRef<THREE.Group>(null);
@@ -109,7 +110,9 @@ function TurbofanModel() {
     }
     const { min, max } = range.current;
     const mid = (min + max) / 2;
-    const cut = cutProgress(state.clock.elapsedTime);
+    const auto = cutProgress(state.clock.elapsedTime);
+    liveRef.current = auto;
+    const cut = resolveCut(cutState, auto);
     // Everything above the plane is removed; at cut = 1 only the lower half remains.
     plane.constant = max + 1 - cut * (max + 1 - (mid + (max - min) * 0.02));
   });
@@ -166,6 +169,8 @@ class EngineErrorBoundary extends React.Component<
 
 export default function EngineViewer() {
   const [visible] = useState(true);
+  const [cutState, setCutState] = useState<CutState>(initialCut);
+  const liveRef = useRef(0);
   const controlsRef = useRef<any>(null);
   const stateRef = useRef<{ camera: THREE.Camera } | null>(null);
   const startPos = useRef<THREE.Vector3 | null>(null);
@@ -226,7 +231,7 @@ export default function EngineViewer() {
 
             <Suspense fallback={null}>
               <Bounds fit clip margin={1.18}>
-                <TurbofanModel />
+                <TurbofanModel cutState={cutState} liveRef={liveRef} />
                 <RefitBounds apiRef={boundsRef} />
               </Bounds>
             </Suspense>
@@ -240,6 +245,7 @@ export default function EngineViewer() {
               rotateSpeed={0.65}
             />
           </Canvas>
+          <CutControls state={cutState} setState={setCutState} liveRef={liveRef} className="cut-controls-engine" />
           <div className="engine-zoom" role="group" aria-label="Turbofan zoom controls">
             <button onClick={() => zoom(1)} aria-label="Zoom in">
               <ZoomIn size={17} />
