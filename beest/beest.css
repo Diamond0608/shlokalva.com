@@ -349,3 +349,21 @@ h2.small {
   width: 100%;
   height: auto;
 }
+
+.approval {
+  margin: 1.4rem 0 0;
+}
+
+.approval img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.approval figcaption {
+  margin-top: 0.4rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
