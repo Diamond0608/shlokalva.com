@@ -379,3 +379,25 @@ h2.small {
 .ai-note strong {
   color: var(--cream);
 }
+
+.sound-btn {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 30;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(5, 7, 10, 0.85);
+  color: var(--cream);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.sound-btn:hover {
+  border-color: var(--amber);
+}

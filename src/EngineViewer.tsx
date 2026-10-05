@@ -9,7 +9,7 @@ import {
   useGLTF
 } from "@react-three/drei";
 import * as THREE from "three";
-import { RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
+import { Maximize2, Pause, Play, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { CutControls, initialCut, resolveCut, type CutState } from "./CutControls";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 
@@ -175,9 +175,12 @@ export default function EngineViewer() {
   const stateRef = useRef<{ camera: THREE.Camera } | null>(null);
   const startPos = useRef<THREE.Vector3 | null>(null);
   const level = useRef(0);
+  const viewerRef = useRef<HTMLDivElement>(null);
+  const [autoRotate, setAutoRotate] = useState(false);
+  const [expanded, setExpanded] = useState(false);
   const boundsRef = useRef<ReturnType<typeof useBounds> | null>(null);
 
-  // Buttons rather than scroll-wheel zoom, so the engine never hijacks page scrolling.
+  // Zoom: scroll wheel / pinch (OrbitControls) plus these buttons.
   const zoom = (step: number) => {
     const controls = controlsRef.current;
     const camera = stateRef.current?.camera;
@@ -199,8 +202,41 @@ export default function EngineViewer() {
     level.current = 0;
   };
 
+  // Native fullscreen where allowed, otherwise a fixed full-window fallback.
+  const toggleFullscreen = async () => {
+    const node = viewerRef.current;
+    if (!node) return;
+    if (expanded) {
+      setExpanded(false);
+      return;
+    }
+    if (document.fullscreenElement) {
+      await document.exitFullscreen().catch(() => undefined);
+      return;
+    }
+    try {
+      if (!node.requestFullscreen) throw new Error("unsupported");
+      await Promise.race([node.requestFullscreen(), new Promise((_, reject) => window.setTimeout(reject, 600))]);
+      if (!document.fullscreenElement) setExpanded(true);
+    } catch {
+      if (!document.fullscreenElement) setExpanded(true);
+    }
+  };
+
+  useEffect(() => {
+    if (!expanded) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopImmediatePropagation();
+        setExpanded(false);
+      }
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [expanded]);
+
   return (
-    <div className="engine-viewer">
+    <div ref={viewerRef} className={expanded ? "engine-viewer is-expanded" : "engine-viewer"}>
       {!visible ? (
         <EngineLoading />
       ) : (
@@ -239,7 +275,9 @@ export default function EngineViewer() {
             <OrbitControls
               ref={controlsRef}
               enablePan={false}
-              enableZoom={false}
+              zoomSpeed={0.85}
+              autoRotate={autoRotate}
+              autoRotateSpeed={1.6}
               enableDamping
               dampingFactor={0.06}
               rotateSpeed={0.65}
@@ -253,8 +291,14 @@ export default function EngineViewer() {
             <button onClick={() => zoom(-1)} aria-label="Zoom out">
               <ZoomOut size={17} />
             </button>
+            <button onClick={() => setAutoRotate((value) => !value)} aria-label={autoRotate ? "Pause auto rotation" : "Start auto rotation"}>
+              {autoRotate ? <Pause size={16} /> : <Play size={16} />}
+            </button>
             <button onClick={reset} aria-label="Reset view">
               <RotateCcw size={16} />
+            </button>
+            <button onClick={toggleFullscreen} aria-label="Toggle fullscreen">
+              <Maximize2 size={16} />
             </button>
           </div>
         </EngineErrorBoundary>

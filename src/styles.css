@@ -5269,20 +5269,20 @@ h3 {
 
 /* A little fewer stars */
 .proj::before {
-  -webkit-mask-size: 520px 396px;
-  mask-size: 520px 396px;
+  -webkit-mask-size: 600px 457px;
+  mask-size: 600px 457px;
   opacity: 0.6;
 }
 
 .proj::after {
-  -webkit-mask-size: 380px 330px;
-  mask-size: 380px 330px;
+  -webkit-mask-size: 439px 381px;
+  mask-size: 439px 381px;
   opacity: 0.3;
 }
 
 .tl-sky::before {
-  -webkit-mask-size: 680px 497px;
-  mask-size: 680px 497px;
+  -webkit-mask-size: 785px 574px;
+  mask-size: 785px 574px;
   opacity: 0.5;
 }
 
@@ -5364,3 +5364,17 @@ h3 {
 
 .seat-row { flex-wrap: wrap; row-gap: 0.18rem; }
 .seat-row b { flex-basis: 100%; margin-right: 0; white-space: nowrap; }
+
+/* Turbofan viewer: fullscreen / expanded and wheel zoom */
+.engine-viewer:fullscreen,
+.engine-viewer.is-expanded {
+  width: 100vw;
+  height: 100vh;
+  background: #05070a;
+}
+
+.engine-viewer.is-expanded {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+}

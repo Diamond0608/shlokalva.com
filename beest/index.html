@@ -176,8 +176,41 @@
       <p class="ai-note"><strong>Made with AI.</strong> This site was built with AI assistance (Claude, by Anthropic). The devlog entries, photos and results are my own work.</p>
     </main>
 
+    <button type="button" id="sound" class="sound-btn" aria-pressed="true">Sound: On</button>
+
     <script>
       (function () {
+        // Background music: same Mozart overture as the main page. Browsers only allow audio after a
+        // gesture, so it starts on the first scroll, tap or key press. The choice is shared with the main page.
+        var KEY = "portfolio-sound";
+        var on = true;
+        try { on = localStorage.getItem(KEY) !== "off"; } catch (e) {}
+        var music = new Audio("https://upload.wikimedia.org/wikipedia/commons/e/e2/Mozart%2C_The_Marriage_of_Figaro_%28overture%29.ogg");
+        music.loop = true;
+        music.volume = 0.42;
+        music.preload = "none";
+        var btn = document.getElementById("sound");
+        var started = false;
+        var sync = function () {
+          btn.textContent = on ? "Sound: On" : "Sound: Off";
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        };
+        var start = function () {
+          if (!on || started) return;
+          music.play().then(function () { started = true; detach(); }).catch(function () {});
+        };
+        var events = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"];
+        var detach = function () { events.forEach(function (e) { window.removeEventListener(e, start); }); };
+        events.forEach(function (e) { window.addEventListener(e, start, { passive: true }); });
+        btn.addEventListener("click", function (ev) {
+          ev.stopPropagation();
+          on = !on;
+          try { localStorage.setItem(KEY, on ? "on" : "off"); } catch (e) {}
+          if (on) { started = false; events.forEach(function (e) { window.addEventListener(e, start, { passive: true }); }); start(); }
+          else music.pause();
+          sync();
+        });
+        sync();
         var all = function () { return document.querySelectorAll("details.entry"); };
         document.getElementById("expand").addEventListener("click", function () { all().forEach(function (d) { d.open = true; }); });
         document.getElementById("collapse").addEventListener("click", function () { all().forEach(function (d) { d.open = false; }); });

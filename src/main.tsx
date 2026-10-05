@@ -817,10 +817,16 @@ function App() {
   const reducedMotion = useReducedMotion();
   useMozartLoop(soundEnabled);
 
+  // The /beest/ page reads this so the sound choice carries across pages.
+  useEffect(() => {
+    try { localStorage.setItem("portfolio-sound", soundEnabled ? "on" : "off"); } catch { /* storage unavailable */ }
+  }, [soundEnabled]);
+
   const handleSoundToggle = () => {
     setSoundEnabled((value) => {
       const next = !value;
       window.dispatchEvent(new CustomEvent("portfolio:sound-toggle", { detail: { enabled: next } }));
+      try { localStorage.setItem("portfolio-sound", next ? "on" : "off"); } catch { /* storage unavailable */ }
       return next;
     });
   };
