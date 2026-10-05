@@ -5728,3 +5728,17 @@ h3 {
   90% { opacity: 0.8; transform: scale(1.25); }
   100% { opacity: 0; transform: scale(0.05); }
 }
+
+/* "Made with AI" notes: small and quiet */
+.site-footer {
+  padding: 0.9rem 0 1.4rem;
+  font-size: 0.6rem;
+  line-height: 1.4;
+  opacity: 0.8;
+}
+
+.hero-ai-note {
+  margin-top: 0.6rem;
+  font-size: 0.58rem;
+  opacity: 0.8;
+}

@@ -298,7 +298,7 @@ const experiences = [
   {
     title: "Helios And Iris",
     subtitle: "Robotics Fest Volunteer And Event Head",
-    image: images.cyberRoboticsOne,
+    image: images.blackShirtCohorts,
     body: "Volunteered at Helios Interschool Robotics Fest and was one of the event heads for Robo-FC at Iris."
   }
 ];
