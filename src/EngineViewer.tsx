@@ -178,6 +178,7 @@ export default function EngineViewer() {
   const viewerRef = useRef<HTMLDivElement>(null);
   const [autoRotate, setAutoRotate] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [wheelZoom, setWheelZoom] = useState(false);
   const boundsRef = useRef<ReturnType<typeof useBounds> | null>(null);
 
   // Zoom: scroll wheel / pinch (OrbitControls) plus these buttons.
@@ -236,7 +237,12 @@ export default function EngineViewer() {
   }, [expanded]);
 
   return (
-    <div ref={viewerRef} className={expanded ? "engine-viewer is-expanded" : "engine-viewer"}>
+    <div
+      ref={viewerRef}
+      className={expanded ? "engine-viewer is-expanded" : "engine-viewer"}
+      onPointerDown={() => setWheelZoom(true)}
+      onPointerLeave={() => setWheelZoom(false)}
+    >
       {!visible ? (
         <EngineLoading />
       ) : (
@@ -275,6 +281,7 @@ export default function EngineViewer() {
             <OrbitControls
               ref={controlsRef}
               enablePan={false}
+              enableZoom={wheelZoom}
               zoomSpeed={0.85}
               autoRotate={autoRotate}
               autoRotateSpeed={1.6}
@@ -284,6 +291,7 @@ export default function EngineViewer() {
             />
           </Canvas>
           <CutControls state={cutState} setState={setCutState} liveRef={liveRef} className="cut-controls-engine" />
+          <div className="engine-wheel-hint">{wheelZoom ? "Scroll to zoom" : "Click the model to scroll-zoom"}</div>
           <div className="engine-zoom" role="group" aria-label="Turbofan zoom controls">
             <button onClick={() => zoom(1)} aria-label="Zoom in">
               <ZoomIn size={17} />
