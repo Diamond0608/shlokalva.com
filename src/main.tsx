@@ -187,7 +187,7 @@ const projects: Project[] = [
   },
   {
     id: "dwello",
-    status: { label: "Completed", tone: "done", note: "Three models, a report and an animation delivered." },
+    status: { label: "Completed", tone: "done", note: "Four CAD models, a simulation study, an animation and a written report delivered." },
     learned: "I learnt how fuel flow rates actually work, how to bring that into numericals, and how to write project reports that go deep and explain every design choice.",
     title: "Aircraft Propulsion Internship",
     eyebrow: "Dwello Aerospace",
@@ -195,16 +195,17 @@ const projects: Project[] = [
     summary:
       "During my one-month Dwello Aerospace internship, I worked on aircraft propulsion, including ramjet and turbofan CAD models, calculations, simulation, animation, and a final technical report.",
     facts: [
-      "Designed three propulsion models around ramjet and turbofan problem statements.",
-      "Produced CAD models including turbofan and ramjet variants.",
-      "Created simulation and animation work alongside a written aircraft propulsion report.",
-      "Documented propulsion concepts and the methodology behind the model choices."
+      "Started from a ramjet problem statement (80 kg/s of air, 0.2 kg/s of fuel, inlet Mach 2, exit Mach 2.9, 70,000 N of thrust) and solved the thrust and mass-flow equations by hand for the inlet and exit areas: about 0.097 m² at the inlet and 0.297 m² (roughly 0.61 m across) at the exit nozzle.",
+      "Modelled four engines in Fusion 360: an annular and a can-combustor ramjet in titanium, and two turbofans in aluminium with the Al-Li alloy in mind, showing the fan, shaft, low- and high-pressure compressors and turbines, core and bypass ducts.",
+      "Shaped the blades for their jobs: short and straight for compressors, swirled for turbines, tilted on the front fan to push air in and guard against foreign objects.",
+      "Ran wind-tunnel airflow studies (ramjet at Mach 4, turbofan at Mach 0.6) and thermal analyses with stated assumptions for convection, emissivity and a 2000 °C combustion core.",
+      "Animated the turbofan, drew a dimensioned drawing of the ramjet, and wrote a report that explains each design choice and openly says it is not a real-world engine."
     ],
     stack: ["Fusion 360", "CAD Modelling", "Aircraft Propulsion", "Simulation", "Technical Reporting"],
     stats: [
       { label: "Duration", value: "1 Month" },
-      { label: "Domain", value: "Propulsion" },
-      { label: "Models", value: "3" },
+      { label: "Design Thrust", value: "70,000 N" },
+      { label: "Models", value: "4 CAD" },
       { label: "Output", value: "Report + Animation" }
     ],
     gallery: [
